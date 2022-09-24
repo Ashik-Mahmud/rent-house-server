@@ -11,6 +11,9 @@ app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+/* Database Connections */
+const dbConnection = require('./../utils/dbConnection');
+dbConnection();
 
 /* Test Routes */
 app.get("/", (req, res) => {
