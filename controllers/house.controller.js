@@ -4,6 +4,7 @@ const {
   getAllHousesService,
   getHouseByIdService,
   updateHouseService,
+  findByIdService,
 } = require("../services/house.services");
 
 // @Routes POST /api/v1/houses/create
@@ -181,7 +182,7 @@ const getHouseById = async (req, res) => {
 // @access  Private
 const updateHouse = async (req, res) => {
     try {
-        const house = await House.findById(req.params.id);
+        const house = await findByIdService(req.params.id);
         if(!house){
             return res.status(404).json({
                 success: false,
@@ -209,7 +210,39 @@ const updateHouse = async (req, res) => {
 }
 
 
+// @route   DELETE api/houses/:id
+// @desc    Delete house
+// @access  Private
+const deleteHouse = async (req, res) => {
+    try {
+        const house = await findByIdService(req.params.id);
+        if(!house){
+            return res.status(404).json({
+                success: false,
+                message: "House not found"
+            })
+        }
+        if(house.owner.toString() !== req.user.id){
+            return res.status(401).json({
+                success: false,
+                message: "Not authorized"
+            })
+        }
+        await house.remove();
+        res.status(200).json({
+            success: true,
+            message: "House deleted successfully"
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        })
+    }
+}
 
 
 
-module.exports = { createHouse, getAllHouses, getHouseById, updateHouse };
+
+
+module.exports = { createHouse, getAllHouses, getHouseById, updateHouse , deleteHouse};

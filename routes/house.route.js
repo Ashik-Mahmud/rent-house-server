@@ -7,6 +7,7 @@ const houseController = require('../controllers/house.controller');
 router.post("/create", VerifyToken, houseController.createHouse);
 router.get('/', houseController.getAllHouses);
 router.patch("/update/:id", VerifyToken, houseController.updateHouse);
+router.delete("/delete/:id", VerifyToken, houseController.deleteHouse);
 router.get('/:id', houseController.getHouseById);
 
 module.exports = router;
