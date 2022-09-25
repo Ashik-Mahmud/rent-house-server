@@ -34,3 +34,15 @@ exports.getHouseByIdService = async (id) => {
         console.log(error.message);
     }
 }
+
+/* Find By ID and Update  */
+exports.updateHouseService = async (id, body) => {
+    try {
+        const house = await House.findByIdAndUpdate(id, body, {new: true});
+        return house;
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
