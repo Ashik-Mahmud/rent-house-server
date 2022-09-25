@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const IssuesToken = require("../utils/IssuesJwt");
-const { findUserByEmailService } = require("../services/user.services");
+const { findUserByEmailService, updateUserProfileService } = require("../services/user.services");
 
 //@routes POST /api/users
 //@desc Register a user
@@ -214,7 +214,7 @@ const changePassword = async (req, res) => {
 // @desc Update Profile
 // @access Private
 const updateProfile = async (req, res) => {
-    const { email, name } = req.body;
+    const { email, name, address, phone, avatar, status } = req.body;
     //Simple validation
     if (!email || !name) {
         return res
@@ -230,9 +230,11 @@ const updateProfile = async (req, res) => {
                 .status(400)
                 .json({ success: false, message: "User does not exist" });
 
-        user.name = name;
-        await user.save();
-        res.send({ success: true, message: "Profile updated successfully done." });
+        const updatedUser = await updateUserProfileService(user, req.body);        
+       if(updatedUser){
+        res.send({ success: true, message: "Profile updated successfully done." , result: updatedUser});
+       }
+        
     } catch (error) {
         res.status(500).json({ success: false, message: "Server Error" });
     }

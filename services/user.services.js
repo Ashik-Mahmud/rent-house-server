@@ -10,3 +10,18 @@ exports.findUserByEmailService = async(email) => {
        
     }
 }
+
+
+/* Update Profile Service */
+exports.updateUserProfileService = async(user, body) => {
+    try {
+        const updatedUser = await User.findOneAndUpdate(
+            {_id: user._id},
+            body,
+            {new: true}
+        );
+        return updatedUser;
+    } catch (error) {
+        console.log(error.message);
+    }
+}
