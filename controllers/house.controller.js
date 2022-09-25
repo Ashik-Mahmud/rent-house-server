@@ -2,6 +2,7 @@ const House = require("../models/house.model");
 const {
   createHouseService,
   getAllHousesService,
+  getHouseByIdService,
 } = require("../services/house.services");
 
 // @Routes POST /api/v1/houses/create
@@ -132,9 +133,6 @@ const getAllHouses = async (req, res) => {
     queries.limit = limit;
   }
 
-
-  
-
   try {
     const houses = await getAllHousesService(queries);
     res.status(200).json({
@@ -150,4 +148,34 @@ const getAllHouses = async (req, res) => {
   }
 };
 
-module.exports = { createHouse, getAllHouses };
+
+// @route   GET api/houses/:id
+// @desc    Get house by id
+// @access  Public
+const getHouseById = async (req, res) => {
+    try {
+        const house = await getHouseByIdService(req.params.id);
+        if(!house){
+            return res.status(404).json({
+                success: false,
+                message: "House not found"
+            })
+        }
+        res.status(200).json({
+            success: true,
+            message: "House found",
+            data: house
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        })
+    }
+}
+
+
+
+
+
+module.exports = { createHouse, getAllHouses, getHouseById };

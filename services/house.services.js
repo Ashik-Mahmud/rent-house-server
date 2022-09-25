@@ -23,3 +23,14 @@ exports.getAllHousesService = async (queries) => {
         console.log(error.message);
     }
 }
+
+
+/* Get House By Id Services */
+exports.getHouseByIdService = async (id) => {
+    try {
+        const house = await House.findById(id).populate("owner", "name email");
+        return house;
+    } catch (error) {
+        console.log(error.message);
+    }
+}
