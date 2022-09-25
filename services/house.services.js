@@ -65,3 +65,13 @@ exports.changeIsBookedService = async (id, body) => {
         console.log(error.message);
     }
 }
+
+/* Get Top 4 Houses */
+exports.getTop4HousesService = async () => {
+    try {
+        const houses = await House.find().sort({views: -1, likes: -1}).limit(4);
+        return houses;
+    } catch (error) {
+        console.log(error.message);
+    }
+}

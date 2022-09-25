@@ -7,6 +7,7 @@ const {
   findByIdService,
   changeIsBookedService,
   findByIdHouseService,
+  getTop4HousesService,
 } = require("../services/house.services");
 
 // @Routes POST /api/v1/houses/create
@@ -212,6 +213,28 @@ const updateHouse = async (req, res) => {
 }
 
 
+// @route GET api/top-4-houses
+// @desc Get top 4 houses
+// @access Public
+const getTop4Houses = async (req, res) => {
+    try {
+        const houses = await getTop4HousesService();
+        res.status(200).json({
+            success: true,
+            message: "Top 4 houses",
+            data: houses
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        })
+    }
+}
+
+
+
+
 // @route   DELETE api/houses/:id
 // @desc    Delete house
 // @access  Private
@@ -278,7 +301,6 @@ const changeIsBooked = async (req, res) => {
 
 
 
-
 // @routes PATCH /api/v1/houses/toggle-like/:id
 // @desc   Toggle like house
 // @access Public
@@ -315,4 +337,4 @@ const toggleLikeHouse = async (req, res) => {
 
 
 
-module.exports = { createHouse, getAllHouses, getHouseById, updateHouse , deleteHouse, changeIsBooked, toggleLikeHouse};
+module.exports = { createHouse, getAllHouses, getHouseById, updateHouse , deleteHouse, changeIsBooked, toggleLikeHouse, getTop4Houses};

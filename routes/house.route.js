@@ -6,6 +6,7 @@ const ViewsCount = require('../middlewares/ViewsCount');
 
 /* Init Controllers */
 router.get('/', houseController.getAllHouses);
+router.get("/top-4-houses", houseController.getTop4Houses);
 router.get('/:id', ViewsCount, houseController.getHouseById);
 router.patch('/like-count/:id', houseController.toggleLikeHouse);
 
