@@ -10,11 +10,13 @@ const app = require('./app');
 const houseRouter = require('./../routes/house.route');
 const userRouter = require('./../routes/user.route');
 const adminRouter = require('../routes/admin.route');
+const reviewRouter = require('../routes/review.route');
 
 /* Init Routes */
 app.use("/api/v1/houses", houseRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/admin", adminRouter);
+app.use("/api/v1/reviews", reviewRouter);
 
 
 
