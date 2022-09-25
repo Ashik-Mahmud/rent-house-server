@@ -54,3 +54,14 @@ exports.findByIdService = async (id) => {
         console.log(error.message);
     }
 }
+
+
+/* change isBooked or not */
+exports.changeIsBookedService = async (id, body) => {
+    try {
+        const house = await House.findByIdAndUpdate(id, body, {new: true});
+        return house;
+    } catch (error) {
+        console.log(error.message);
+    }
+}
