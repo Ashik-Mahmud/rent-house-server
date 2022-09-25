@@ -45,6 +45,7 @@ const reviewSchemaForHouse = new mongoose.Schema({
     email: {
         type: String,
         trim: true,
+        lowercase: true,
         validate: {
             validator: function (v) {
                 return validator.isEmail(v);

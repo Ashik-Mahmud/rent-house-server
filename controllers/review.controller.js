@@ -2,6 +2,7 @@
 // @routes /api/v1/reviews/public-review
 // @desc Public review
 
+const { Reviews } = require("../models/review.model");
 const { createPublicReviewService, createReviewForHouseService } = require("../services/review.services");
 
 // @access  public
@@ -62,4 +63,54 @@ const createReviewForHouse = async (req, res) => {
 }
 
 
-module.exports = { createPublicReview, createReviewForHouse };
+// @routes /api/v1/reviews/get-reviews-by-house-id
+// @desc Get all reviews by house id
+// @access Public
+const getAllReviewsByHouseId = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const reviews = await Reviews.find({ house: id });
+        res.status(200).json({
+            success: true,
+            data: reviews
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+// @routes /api/v1/reviews/delete-review-by-id
+// @desc Delete review by id
+// @access Private
+const deleteReviewById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const review = await Reviews.findById(id);
+        if(!review){
+            return res.status(404).json({
+                success: false,
+                message: "Review not found"
+            })
+        }
+        await review.remove();
+        res.status(200).json({
+            success: true,
+            message: "Review deleted successfully"
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+
+
+
+
+
+module.exports = { createPublicReview, createReviewForHouse, getAllReviewsByHouseId, deleteReviewById };
