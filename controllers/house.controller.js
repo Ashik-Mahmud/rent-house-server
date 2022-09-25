@@ -1,5 +1,8 @@
 const House = require("../models/house.model");
-const { createHouseService, getAllHousesService } = require("../services/house.services");
+const {
+  createHouseService,
+  getAllHousesService,
+} = require("../services/house.services");
 
 // @Routes POST /api/v1/houses/create
 // @Desc Create a new house
@@ -58,71 +61,93 @@ const createHouse = async (req, res) => {
 // @access  Public
 
 const getAllHouses = async (req, res) => {
-    const { page = 1, limit = 10, category, houseType, houseUseFor, bedrooms, bathrooms, district, city, isBachelorRoom, address, name} = req.query;
+  const {
+    page = 1,
+    limit = 10,
+    category,
+    houseType,
+    houseUseFor,
+    bedrooms,
+    bathrooms,
+    district,
+    city,
+    isBachelorRoom,
+    address,
+    name,
+    startPrice,
+    endPrice,
+  } = req.query;
+
+  let queries = {};
+
+  if (category) {
+    queries.category = category;
+  }
+
+  if (houseType) {
+    queries.houseType = houseType;
+  }
+
+  if (houseUseFor) {
+    queries.houseUseFor = houseUseFor;
+  }
+
+  if (bedrooms) {
+    queries.bedrooms = bedrooms;
+  }
+
+  if (bathrooms) {
+    queries.bathrooms = bathrooms;
+  }
+
+  if (district) {
+    queries.district = district;
+  }
+
+  if (city) {
+    queries.city = city;
+  }
+
+  if (isBachelorRoom) {
+    queries.isBachelorRoom = isBachelorRoom;
+  }
+
+  if (address) {
+    queries.address = eval(`/.*${address}.*/i`);
+  }
+
+  if (name) {
+    queries.name = eval(`/.*${name}.*/i`);
+  }
+
+  if(startPrice && endPrice){
+    queries.price = { $gte: startPrice, $lte: endPrice };
+  }
+  
     
-    let queries = {};
-    if(category){
-        queries.category = category;
-    }
 
-    if(houseType){
-        queries.houseType = houseType;
-    }
-   
-    if(houseUseFor){
-        queries.houseUseFor = houseUseFor
-    }
-
-    if(bedrooms){
-        queries.bedrooms = bedrooms;
-    }
-
-    if(bathrooms){
-        queries.bathrooms = bathrooms
-    }
-
-    if(district){
-        queries.district = district;
-    }
-
-    if(city){
-        queries.city = city;
-    }
-
-    if(isBachelorRoom){
-        queries.isBachelorRoom = isBachelorRoom
-    }
-
-    if(address){
-        queries.address = address;
-    }
-    
-    if(name){
-        address.name = name;
-    }
-
-    /* Pagination */
-    if(page || limit){
-        const skippedItems = parseInt(page - 1) * Number(limit);
-        queries.skip = skippedItems;
-        queries.limit = limit;
-    }
-
-    try {
-        const houses = await getAllHousesService(queries);
-        res.status(200).json({
-            success: true,
-            message: "All houses",
-            data: houses
-        })
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Server Error",
-        });
-    }
-}
+  /* Pagination */
+  if (page || limit) {
+    queries.skip = (page - 1) * limit;
+    queries.limit = limit;
+  }
 
 
+  
+
+  try {
+    const houses = await getAllHousesService(queries);
+    res.status(200).json({
+      success: true,
+      message: "All houses",
+      data: houses,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
 
 module.exports = { createHouse, getAllHouses };

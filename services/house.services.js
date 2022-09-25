@@ -16,7 +16,9 @@ exports.getAllHousesService = async (queries) => {
        
     try {
         const houses = await House.find(queries).skip(queries.skip).limit(queries.limit).populate("owner", "name email");
-        return houses;
+        /* Get Total Numbers of Houses */
+         const totalHouses = await House.countDocuments();
+        return { totalHouses, houses};
     } catch (error) {
         console.log(error.message);
     }
