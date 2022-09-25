@@ -279,5 +279,40 @@ const changeIsBooked = async (req, res) => {
 
 
 
+// @routes PATCH /api/v1/houses/toggle-like/:id
+// @desc   Toggle like house
+// @access Public
+const toggleLikeHouse = async (req, res) => {
+    try {
+        const {clicked} = req.query;
+        const house = await findByIdHouseService(req.params.id);
+               
+        if(!house){
+            return res.status(404).json({
+                success: false,
+                message: "House not found"
+            })
+        }
+        
+        if(clicked === "true"){
+            house.likes = house.likes + 1;
+        }else{
+            house.likes = house.likes - 1;
+        }
+        await house.save();
+        res.status(200).json({
+            success: true,
+            message: clicked === "true" ? "Liked house" : "Dislike house",
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Server Error"
+        })
 
-module.exports = { createHouse, getAllHouses, getHouseById, updateHouse , deleteHouse, changeIsBooked};
+    }
+}
+
+
+
+module.exports = { createHouse, getAllHouses, getHouseById, updateHouse , deleteHouse, changeIsBooked, toggleLikeHouse};
