@@ -1,6 +1,12 @@
 const User = require("../models/user.model")
 
 /* Create user service */
-const createUserService = async() =>{
-    return await User.create()
+exports.findUserByEmailService = async(email) => {
+    try {
+        const user = await User.findOne({email});
+        return user;
+    } catch (error) {
+       console.log(error.message);
+       
+    }
 }
