@@ -9,10 +9,12 @@ const app = require('./app');
 /* Imports Routes */
 const houseRouter = require('./../routes/house.route');
 const userRouter = require('./../routes/user.route');
+const adminRouter = require('../routes/admin.route');
 
 /* Init Routes */
 app.use("/api/v1/houses", houseRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/admin", adminRouter);
 
 
 

@@ -6,6 +6,7 @@ const {
   updateHouseService,
   findByIdService,
   changeIsBookedService,
+  findByIdHouseService,
 } = require("../services/house.services");
 
 // @Routes POST /api/v1/houses/create
@@ -183,7 +184,7 @@ const getHouseById = async (req, res) => {
 // @access  Private
 const updateHouse = async (req, res) => {
     try {
-        const house = await findByIdService(req.params.id);
+        const house = await findByIdHouseService(req.params.id);
         if(!house){
             return res.status(404).json({
                 success: false,
@@ -216,7 +217,7 @@ const updateHouse = async (req, res) => {
 // @access  Private
 const deleteHouse = async (req, res) => {
     try {
-        const house = await findByIdService(req.params.id);
+        const house = await findByIdHouseService(req.params.id);
         if(!house){
             return res.status(404).json({
                 success: false,
@@ -248,7 +249,7 @@ const deleteHouse = async (req, res) => {
 // @access Private
 const changeIsBooked = async (req, res) => {
     try {
-        const house = await findByIdService(req.params.id);
+        const house = await findByIdHouseService(req.params.id);
         if(!house){
             return res.status(404).json({
                 success: false,

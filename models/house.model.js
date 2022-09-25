@@ -180,6 +180,14 @@ const houseSchema = new mongoose.Schema(
         message: "Please select correct status for house",
       },
     },
+    likes: {
+        type: Number,
+        default: 0,
+    },
+    views: {
+        type: Number,
+        default: 0,
+    },
   },
   {
     timestamps: true,

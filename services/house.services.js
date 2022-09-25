@@ -46,7 +46,7 @@ exports.updateHouseService = async (id, body) => {
 }
 
 /* get Single house find by id */
-exports.findByIdService = async (id) => {
+exports.findByIdHouseService = async (id) => {
     try {
         const house = await House.findById(id);
         return house;

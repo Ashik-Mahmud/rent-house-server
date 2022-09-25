@@ -4,6 +4,7 @@ const IssuesToken = (newUser, res) =>{
     const payload = {
         user: {
           id: newUser.id,
+          role: newUser.role,
         },
       };
       jwt.sign(
