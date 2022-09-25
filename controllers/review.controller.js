@@ -3,7 +3,7 @@
 // @desc Public review
 
 const { Reviews } = require("../models/review.model");
-const { createPublicReviewService, createReviewForHouseService } = require("../services/review.services");
+const { createPublicReviewService, createReviewForHouseService, findByIdReviewService } = require("../services/review.services");
 
 // @access  public
 const createPublicReview = async (req, res) => {
@@ -69,7 +69,7 @@ const createReviewForHouse = async (req, res) => {
 const getAllReviewsByHouseId = async (req, res) => {
     const { id } = req.params;
     try {
-        const reviews = await Reviews.find({ house: id });
+        const reviews = await findByIdReviewService({ house: id });
         res.status(200).json({
             success: true,
             data: reviews
@@ -88,7 +88,7 @@ const getAllReviewsByHouseId = async (req, res) => {
 const deleteReviewById = async (req, res) => {
     const { id } = req.params;
     try {
-        const review = await Reviews.findById(id);
+        const review = await findByIdReviewService(id);
         if(!review){
             return res.status(404).json({
                 success: false,
