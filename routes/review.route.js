@@ -4,6 +4,6 @@ const router = require('express').Router();
 const reviewController = require('../controllers/review.controller');
 
 /* Init Routes */
-router.post("/public-review", reviewController.publicReview);
+router.post("/create-public-review", reviewController.createPublicReview);
 
 module.exports = router;

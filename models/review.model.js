@@ -11,6 +11,12 @@ const publicReviewSchema = new mongoose.Schema({
     email: {
         type: String,
         trim: true,
+        validate: {
+            validator: function (v) {
+                return validator.isEmail(v);
+            }
+        }
+        
     },  
     rating: {
         type: Number,

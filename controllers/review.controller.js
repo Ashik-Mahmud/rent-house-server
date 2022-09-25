@@ -1,27 +1,28 @@
 
 // @routes /api/v1/reviews/public-review
 // @desc Public review
+
+const { createPublicReviewService } = require("../services/review.services");
+
 // @access  public
-const publicReview = async (req, res) => {
-    const { houseId, rating, comment } = req.body;
+const createPublicReview = async (req, res) => {
+    const { name,  rating, comment } = req.body;
+    /* simple validation */
+    if(!name || !rating || !comment){
+        return res.status(400).json({
+            success: false,
+            message: "Please fill all fields"
+        })
+    }
     try {
-        const house = await findByIdHouseService(houseId);
-        if(!house){
-            return res.status(404).json({
-                success: false,
-                message: "House not found"
-            })
-        }
-        const review = await createReviewService({
-            houseId,
-            rating,
-            comment
-        });
-        res.status(200).json({
+        const review = await createPublicReviewService({ ...req.body });
+        res.status(201).json({
             success: true,
             message: "Review created successfully",
-            review
-        })
+            data: review
+        })    
+
+
     } catch (error) {
         res.status(500).json({
             success: false,
@@ -30,4 +31,4 @@ const publicReview = async (req, res) => {
     }
 }
 
-module.exports = { publicReview };
+module.exports = { createPublicReview };
