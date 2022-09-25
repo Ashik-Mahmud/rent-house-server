@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const IssuesToken = require("../utils/IssuesJwt");
-const { findUserByEmailService, updateUserProfileService } = require("../services/user.services");
+const { findUserByEmailService, updateUserProfileService, getHouseListByUserIdService } = require("../services/user.services");
 
 //@routes POST /api/users
 //@desc Register a user
@@ -241,6 +241,22 @@ const updateProfile = async (req, res) => {
 };
 
 
+// @Routes GET /api/users/house-list
+// @desc Get House List
+// @access Private
+const getHouseByUserId = async (req, res) => {
+        
+    try {
+        const houseList = await getHouseListByUserIdService(req.user.id);
+        if (houseList) {
+            res.send({ success: true, message: "House List", result: houseList });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Server Error" });
+    }
+};
+
+
 
 // @routes GET /api/users
 // @desc Get all users
@@ -259,5 +275,6 @@ module.exports = {
   loginUser,
   resetPassword,
   changePassword,
-  updateProfile
+  updateProfile,
+  getHouseByUserId
 };

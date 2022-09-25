@@ -1,3 +1,4 @@
+const House = require("../models/house.model");
 const User = require("../models/user.model")
 
 /* Create user service */
@@ -21,6 +22,17 @@ exports.updateUserProfileService = async(user, body) => {
             {new: true}
         );
         return updatedUser;
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+
+/* Get Houses List by User ID */
+exports.getHouseListByUserIdService = async(userId) => {
+    try {
+        const houseList = await House.find({owner: userId});
+        return houseList;
     } catch (error) {
         console.log(error.message);
     }
