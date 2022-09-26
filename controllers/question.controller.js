@@ -85,4 +85,30 @@ const acceptQuestionAndAnswer = async(req, res) =>{
 
 }
 
-module.exports = { askQuestion, getQuestionsForHouse,acceptQuestionAndAnswer}
+
+// @routes DELETE api/questions/delete-question/:id
+// @desc DELETE question by ID
+// @access private
+
+const deleteQuestion = async(req, res) =>{
+    const deleteId = req.params.id;
+    try {
+        const question = await findQuestionByIdService(deleteId);
+        await question.remove();
+        res.status(201).send({
+            success: true,
+            message: "Question Deleted successfully done."
+        })
+        
+    } catch (error) {
+        res.status(404).send({
+            success: false,
+            message: "Server Error"+ error.message
+        })
+    }
+}
+
+
+
+
+module.exports = { askQuestion, getQuestionsForHouse,acceptQuestionAndAnswer, deleteQuestion}
