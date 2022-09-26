@@ -14,17 +14,11 @@ const questionSchema = new mongoose.Schema(
             trim: true,
             maxLength: [30, "Name cannot exceed 30 characters"],
         },
-        phone: {
-            type: String,
-            required: [true, "Please enter your phone number"],
-            trim: true,
-            maxLength: [30, "Phone number cannot exceed 30 characters"],
-        },
+        
         email: {
             type: String,
             trim: true,
             lowercase: true,
-            required: [true, "Please enter your email"],
             validate: {
                 validator: function (v) {
                     return validator.isEmail(v);
@@ -37,6 +31,14 @@ const questionSchema = new mongoose.Schema(
             trim: true,
             maxLength: [500, "Question cannot exceed 500 characters"],
         },
+        answer: {
+            type: String,
+            trim: true,
+        },
+        accepted: {
+            type: Boolean,
+            default: false,
+        }
     },
     {
         timestamps: true,

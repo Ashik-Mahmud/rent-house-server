@@ -5,7 +5,7 @@ const questionController = require('../controllers/question.controller');
 const VerifyToken = require('../middlewares/VerifyToken');
 
 /* Init Routes */
-router.post("/ask-question", questionController.askQuestion);
+router.post("/ask-question/:houseId", questionController.askQuestion);
 
 
 module.exports = router;
