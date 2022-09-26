@@ -9,6 +9,8 @@ const {
   findByIdHouseService,
   getTop4HousesService,
 } = require("../services/house.services");
+const { sendHouseAddedEmail } = require("../utils/sendEmail");
+
 
 // @Routes POST /api/v1/houses/create
 // @Desc Create a new house
@@ -54,6 +56,7 @@ const createHouse = async (req, res) => {
       message: "House created successfully",
       data: house,
     });
+    sendHouseAddedEmail(req.user.email, house.name);
   } catch (error) {
     res.status(500).json({
       success: false,

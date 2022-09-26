@@ -5,6 +5,7 @@ const IssuesToken = (newUser, res) =>{
         user: {
           id: newUser.id,
           role: newUser.role,
+          email: newUser.email,
         },
       };
       jwt.sign(
