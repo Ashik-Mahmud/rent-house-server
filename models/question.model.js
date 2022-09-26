@@ -22,6 +22,7 @@ const questionSchema = new mongoose.Schema(
         },
         answer: {
             type: String,
+            default: "none",
             trim: true,
         },
         accepted: {

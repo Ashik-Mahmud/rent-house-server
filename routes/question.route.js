@@ -7,7 +7,7 @@ const VerifyToken = require('../middlewares/VerifyToken');
 /* Init Routes */
 router.post("/ask-question/:houseId", questionController.askQuestion);
 router.get("/questions-for-house/:id", VerifyToken, questionController.getQuestionsForHouse);
-router.patch("/accept-question", VerifyToken, questionController.acceptQuestion)
+router.patch("/answer-question", VerifyToken, questionController.acceptQuestionAndAnswer)
 
 
 module.exports = router;

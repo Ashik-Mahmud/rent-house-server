@@ -1,7 +1,7 @@
 // @routes api/v1/questions/ask-question
 // @desc Ask question
 
-const { createQuestionService, getQuestionsForHouseService } = require("../services/question.services");
+const { createQuestionService, getQuestionsForHouseService, findQuestionByIdService } = require("../services/question.services");
 
 // @access Private
 const askQuestion = async (req, res) => {
@@ -58,12 +58,26 @@ const getQuestionsForHouse = async(req, res) =>{
 // @desc Accept Question
 // @access Private
 
-const acceptQuestion = async(req, res) =>{
-    const questionId = req.params.id;
+const acceptQuestionAndAnswer = async(req, res) =>{
+    const {questionId, answer} = req.body;
+       
     try{
-
+        const question = await findQuestionByIdService(questionId);
+        if(question.accepted === false){
+            question.accepted = true;
+            question.answer = answer;
+        }else{
+            question.accepted = false;
+            question.answer = "none";
+        }
+        await question.save();
+        res.status(201).send({
+            success: true,
+            message: "Question Accepted and answered Successfully done",
+            data: question
+        })
     } catch(err){
-        res.status(404).res({
+        res.status(404).send({
             success: false,
             message: "Server Error"
         })
@@ -71,4 +85,4 @@ const acceptQuestion = async(req, res) =>{
 
 }
 
-module.exports = { askQuestion, getQuestionsForHouse,acceptQuestion }
+module.exports = { askQuestion, getQuestionsForHouse,acceptQuestionAndAnswer}

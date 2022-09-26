@@ -12,3 +12,8 @@ exports.getQuestionsForHouseService = async(id) =>{
     return result;
 }
 
+/* Find Question By ID Services */
+exports.findQuestionByIdService = async(id) =>{
+    const result = await Question.findById(id);
+    return result;
+}
