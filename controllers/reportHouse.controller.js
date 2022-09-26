@@ -5,6 +5,7 @@
 const House = require("../models/house.model");
 const { findByIdHouseService } = require("../services/house.services");
 const { createReportServices } = require("../services/reportHoues.services");
+const { sendReportEmail } = require("../utils/sendEmail");
 
 const createReport = async(req, res) =>{
     
@@ -26,6 +27,7 @@ const createReport = async(req, res) =>{
             message: "Report Added successfully.",
             data: reports
         })
+        sendReportEmail(houseHolderEmail, houseUrl, reportTitle, reportDetails);
     }catch(err){
         res.status(404).send({
             success: false,
