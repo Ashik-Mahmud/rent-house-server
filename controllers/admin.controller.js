@@ -195,6 +195,33 @@ const sendEmailToUsers = async (req, res) => {
 
 
 
+// @routes PATCH api/admin/make-admin/:id
+// @desc Make general Users as admin
+// @access private
+
+const makeAdmin = async(req, res) =>{
+    const userId = req.params.id;
+    try{
+        const user = await findByIdUserService(userId);
+        if(user.role === 'user' && user.status === 'active'){
+            user.role = 'admin'
+        }else{
+            user.role = 'user'
+        }
+        await user.save();
+        res.status(201).send({
+            success: true,
+            message: "User successfully created as Admin"
+        })
+        
+    }catch(err){
+        res.status(404).send({
+            success: false,
+            message: "Server Error"+ err.message
+        })
+    }
+}
 
 
-module.exports = { acceptHouse, rejectHouse, getAllUsers, actionUser, deleteUser, sendEmailToUsers };
+
+module.exports = { acceptHouse, rejectHouse, getAllUsers, actionUser, deleteUser, sendEmailToUsers, makeAdmin };

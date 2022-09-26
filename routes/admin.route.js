@@ -12,5 +12,6 @@ router.get("/users", VerifyToken, VerifyAdmin, adminController.getAllUsers);
 router.patch("/action-user/:id", VerifyToken, VerifyAdmin, adminController.actionUser);
 router.delete("/delete-user/:id", VerifyToken, VerifyAdmin, adminController.deleteUser);
 router.post("/send-email-to-users", VerifyToken, VerifyAdmin, adminController.sendEmailToUsers);
+router.patch("/make-admin/:id", VerifyToken, VerifyAdmin, adminController.makeAdmin)
 
 module.exports = router;
