@@ -6,3 +6,9 @@ exports.createQuestionService = async (data) => {
     return newQuestion;
 }
 
+/* Get All the Question by the House ID  Services*/
+exports.getQuestionsForHouseService = async(id) =>{
+    const result = await Question.find({house: id})
+    return result;
+}
+

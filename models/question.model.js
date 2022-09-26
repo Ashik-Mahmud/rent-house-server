@@ -14,17 +14,6 @@ const questionSchema = new mongoose.Schema(
             trim: true,
             maxLength: [30, "Name cannot exceed 30 characters"],
         },
-        
-        email: {
-            type: String,
-            trim: true,
-            lowercase: true,
-            validate: {
-                validator: function (v) {
-                    return validator.isEmail(v);
-                }
-            }
-        },
         question: {
             type: String,
             required: [true, "Please enter your question"],
