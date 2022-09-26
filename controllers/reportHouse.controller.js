@@ -4,7 +4,7 @@
 
 const House = require("../models/house.model");
 const { findByIdHouseService } = require("../services/house.services");
-const { createReportServices } = require("../services/reportHoues.services");
+const { createReportServices, reportsForHouseService } = require("../services/reportHoues.services");
 const { sendReportEmail } = require("../utils/sendEmail");
 
 const createReport = async(req, res) =>{
@@ -37,4 +37,27 @@ const createReport = async(req, res) =>{
 }
 
 
-module.exports = {createReport}
+// @routes GET api/v1/report-house/reports-by-house
+// @desc Get All the Reports for particular House
+// @access Private
+
+const reportsForHouse = async(req, res) =>{
+    const houseId = req.params.id;
+    try {
+        const reports = await reportsForHouseService(houseId)
+        res.status(201).send({
+            success: true,
+            message: "Founds Reports by This ID",
+            data: reports
+        })
+    } catch (error) {
+        res.status(404).send({
+            success: true,
+            message: "server error"
+        })
+    }
+
+}
+
+
+module.exports = {createReport, reportsForHouse}
