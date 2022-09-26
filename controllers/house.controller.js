@@ -53,7 +53,7 @@ const createHouse = async (req, res) => {
     const house = await createHouseService({ ...req.body, owner: req.user.id });
     res.status(201).json({
       success: true,
-      message: "House created successfully",
+      message: "House created successfully & sent you email",
       data: house,
     });
     sendHouseAddedEmail(req.user.email, house.name);

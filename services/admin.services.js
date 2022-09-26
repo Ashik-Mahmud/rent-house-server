@@ -22,3 +22,13 @@ exports.findByIdUserService = async (id) => {
         console.log(error.message);
     }
 }
+
+/* Get All total Users */
+exports.getActiveUsersService = async () => {
+    try {
+        const totalUsers = await User.find({role: "user", status: "active"})
+        return totalUsers;
+    } catch (error) {
+        console.log(error.message);
+    }
+}

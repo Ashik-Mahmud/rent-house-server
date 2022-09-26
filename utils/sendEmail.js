@@ -41,5 +41,34 @@ const sendHouseAddedEmail = async(email, name) => {
 
 }
 
+/* Sent Bulk Mail */
+const sendBulkEmailForAllUsers = async(emails, subject, message) => {
+             
+    var emailFormat = {
+        from: process.env.EMAIL_ADDRESS,
+        to: emails, 
+        subject: subject,
+        text: message,
+        html: `
+        <div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
+            <p style="font-weight: bold">Hello Folks,</p>
+            <p>${message}</p>
+            <p>Regards - <br/> <a href="https://tools-manufactures.web.app" target="_blank" >Rent House</a></p>
+            <address>Rangpur Road, Gobindagonj, Gaibandha</address>
+            <p>Mobile: +8801875474547</p>
+            <p>Email: rent@house.com</p>
+        </div>
+        `,
+        };
+        client.sendMail(emailFormat, function(err, info){
+            if (err){
+                console.log(err);
+            }
+            else {
+                console.log('Message sent: ', info.response);
+            }
+        });
+}
 
-module.exports = {sendHouseAddedEmail};
+
+module.exports = {sendHouseAddedEmail, sendBulkEmailForAllUsers};

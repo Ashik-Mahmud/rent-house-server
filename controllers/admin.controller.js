@@ -2,8 +2,9 @@
 // @routes /api/v1/admin/accept
 // @desc Accept house
 
-const { getAllUsersService, findByIdUserService } = require("../services/admin.services");
+const { getAllUsersService, findByIdUserService, getActiveUsersService } = require("../services/admin.services");
 const { findByIdHouseService } = require("../services/house.services");
+const { sendBulkEmailForAllUsers } = require("../utils/sendEmail");
 
 // @access Private
 const acceptHouse = async (req, res) => {
@@ -160,7 +161,40 @@ const deleteUser = async (req, res) => {
 }
 
 
+// @routes /api/v1/admin/send-email-to-users
+// @desc Send email to users
+// @access Private
+const sendEmailToUsers = async (req, res) => {
+    try {
+        const {isAllUsers=true, subject, content } = req.body;
+        if(!subject || !content){
+            return res.status(400).json({
+                success: false,
+                message: "Please enter all fields"
+            })
+        }
+        let emails = "";
+        if(isAllUsers){
+         const users = await getActiveUsersService();
+         emails = users.map(user => user.email).join(",");
+        }else{
+            emails = req.body.emails;
+        }   
+        await sendBulkEmailForAllUsers(emails, subject, content);
+        res.status(200).json({
+            success: true,
+            message: "Send emails successfully"
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Server Error"+ error.message
+        })
+    }
+}
 
 
 
-module.exports = { acceptHouse, rejectHouse, getAllUsers, actionUser, deleteUser };
+
+
+module.exports = { acceptHouse, rejectHouse, getAllUsers, actionUser, deleteUser, sendEmailToUsers };
