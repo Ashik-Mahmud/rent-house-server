@@ -180,6 +180,14 @@ const houseSchema = new mongoose.Schema(
         message: "Please select correct status for house",
       },
     },
+    allowQuestion: {
+        type: Boolean,
+        default: true,
+    },
+    allowReview: {
+        type: Boolean,
+        default: true,
+    },
     likes: {
         type: Number,
         default: 0,
