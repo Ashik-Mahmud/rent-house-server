@@ -43,6 +43,30 @@ const UserSchema = new mongoose.Schema(
       default: "user",
       enum: ["user", "admin"],
     },
+    facebookLink: {
+        type: String,
+        validate: {
+            validator: function (v) {
+              return validator.isURL(v);
+            },
+          },
+    },
+    twitterLink: {
+        type: String,
+        validate: {
+            validator: function (v) {
+              return validator.isURL(v);
+            },
+          },
+    },
+    instagramLink: {
+        type: String,
+        validate: {
+            validator: function (v) {
+              return validator.isURL(v);
+            },
+          },
+    },
     avatar: {
       type: String,
       default:
