@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const path = require("path")
 const IssuesToken = require("../utils/IssuesJwt");
 const { findUserByEmailService, updateUserProfileService, getHouseListByUserIdService } = require("../services/user.services");
 const { sendVerificationEmail } = require("../utils/sendEmail");
@@ -69,6 +70,35 @@ const createUser = async (req, res) => {
   }
 };
 
+
+// @Routes POST /api/users/verify-email
+// @desc Verify Email
+// @access Public
+const verifyEmail = async (req, res) => {
+    const { token } = req.params;
+              
+    try {
+        const user = await User.findOne({
+            verificationToken: token,
+            verificationTokenExpires: { $gt: Date.now() },
+        });
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: "Verification token is invalid or has expired",
+            });
+        }
+        user.verificationToken = undefined;
+        user.verificationTokenExpires = undefined;
+        user.isVerified = true;
+        await user.save();
+        
+        res.sendFile(path.resolve('views/VerifyMailTemp.html'));
+        
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Server Error" });
+    }
+};
 
 
 
@@ -282,6 +312,7 @@ const getUsers = async (req, res) => {
 module.exports = {
   getUsers,
   createUser,
+  verifyEmail,
   loginUser,
   resetPassword,
   changePassword,
