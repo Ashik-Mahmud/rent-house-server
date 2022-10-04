@@ -2,8 +2,10 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const IssuesToken = require("../utils/IssuesJwt");
 const { findUserByEmailService, updateUserProfileService, getHouseListByUserIdService } = require("../services/user.services");
+const { sendVerificationEmail } = require("../utils/sendEmail");
 
 //@routes POST /api/users
 //@desc Register a user
@@ -51,9 +53,17 @@ const createUser = async (req, res) => {
         if (err) throw err;
         newUser.password = hash;
         await newUser.save();
-        res.send({ success: true, message: "User created successfully done." });
+        res.send({ success: true, message: "User created successfully done & send you verification email." });
       });
     });
+    const token = crypto.randomBytes(20).toString("hex");
+    newUser.verificationToken = token;
+    newUser.verificationTokenExpires = Date.now() + 3600000; // 1 hour
+    await newUser.save();
+    // send Verification Email to User
+    sendVerificationEmail(email, token);
+
+
   } catch (error) {
     res.status(500).json({ success: false, message: "Server Error" });
   }

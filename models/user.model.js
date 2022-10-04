@@ -77,6 +77,18 @@ const UserSchema = new mongoose.Schema(
         },
       },
     },
+    verificationToken: {
+        type: String,
+        default: null,
+    },
+    isVerified: {
+        type: Boolean,
+        default: false,
+    },
+    verificationTokenExpires: {
+        type: Date,
+        default: null,
+    },
     status: {
       type: String,
       default: "active",
