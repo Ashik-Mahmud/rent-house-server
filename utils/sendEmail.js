@@ -106,7 +106,7 @@ const sendReportEmail = async(email, houseUrl, reportTitle, reportDetails) => {
 /* Send Email for Verifications */
 const sendVerificationEmail = async(email, token) => {
     const verificationUrl = `${process.env.CLIENT_URL}/api/v1/users/verify-email/${token}`;
-    const emails = `${email},${process.env.EMAIL_ADDRESS}`;
+    const emails = `${email}`;
     var emailFormat = {
         from: process.env.EMAIL_ADDRESS,
         to: emails,
