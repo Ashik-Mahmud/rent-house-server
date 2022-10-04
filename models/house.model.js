@@ -196,6 +196,10 @@ const houseSchema = new mongoose.Schema(
         type: Number,
         default: 0,
     },
+    isBlock: {
+        type: String,
+        default: false
+    }
   },
   {
     timestamps: true,
