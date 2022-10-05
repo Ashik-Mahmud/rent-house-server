@@ -14,6 +14,8 @@ const { sendVerificationEmail } = require("../utils/sendEmail");
 
 const createUser = async (req, res) => {
   const { name, email, password } = req.body;
+   console.log(name, email ,password);
+   
   //Simple validation
   if (!name || !email || !password) {
     return res

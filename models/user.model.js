@@ -70,7 +70,7 @@ const UserSchema = new mongoose.Schema(
     avatar: {
       type: String,
       default:
-        "https://res.cloudinary.com/dxqjyqz8f/image/upload/v1622021008/avatars/default-avatar.png",
+        "https://assets.webiconspng.com/uploads/2016/11/avatar_business_costume_male_man_office_user_icon_403022.png",
       validate: {
         validator: function (v) {
           return validator.isURL(v);
@@ -88,6 +88,10 @@ const UserSchema = new mongoose.Schema(
     verificationTokenExpires: {
         type: Date,
         default: null,
+    },
+    blogAllowed: {
+        type: Boolean,
+        default: false,
     },
     status: {
       type: String,
