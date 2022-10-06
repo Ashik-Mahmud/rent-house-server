@@ -16,14 +16,12 @@ const IssuesToken = (newUser, res) =>{
         },
         (err, token) => {
           if (err) throw err;
+          const { password, __v,verificationToken, verificationTokenExpires, ...user } = newUser.toObject();
+          
           res.status(200).json({
             success: true,
             token,
-            user: {
-              id: newUser.id,
-              name: newUser.name,
-              email: newUser.email,
-            },
+            user: user,
           });
         }
       );

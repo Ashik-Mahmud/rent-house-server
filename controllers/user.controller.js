@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const path = require("path")
 const IssuesToken = require("../utils/IssuesJwt");
-const { findUserByEmailService, updateUserProfileService, getHouseListByUserIdService } = require("../services/user.services");
+const { findUserByEmailService, updateUserProfileService, getHouseListByUserIdService, findUserByIdService } = require("../services/user.services");
 const { sendVerificationEmail } = require("../utils/sendEmail");
 
 //@routes POST /api/users
@@ -257,6 +257,7 @@ const changePassword = async (req, res) => {
 // @access Private
 const updateProfile = async (req, res) => {
     const { email, name, address, phone, avatar, status } = req.body;
+        
     //Simple validation
     if (!email || !name) {
         return res
@@ -272,9 +273,10 @@ const updateProfile = async (req, res) => {
                 .status(400)
                 .json({ success: false, message: "User does not exist" });
 
-        const updatedUser = await updateUserProfileService(user, req.body);        
+        const updatedUser = await updateUserProfileService(user, req.body);      
+        const {password, ...others}  = updatedUser.toObject();
        if(updatedUser){
-        res.send({ success: true, message: "Profile updated successfully done." , result: updatedUser});
+        res.send({ success: true, message: "Profile updated successfully done." , result: others});
        }
         
     } catch (error) {
@@ -311,6 +313,20 @@ const getUsers = async (req, res) => {
   }
 };
 
+
+// @routes GET /api/users/:id
+// @desc Get user by id
+// @access Private
+const getUserById = async (req, res) => {
+    try {
+        const user = await findUserByIdService(req.params.id);
+        res.status(200).send({ success: true, data: user });
+    } catch (error) {
+        res.status(500).send({ success: false, message: "Server Error" });
+    }
+};
+
+
 module.exports = {
   getUsers,
   createUser,
@@ -319,5 +335,5 @@ module.exports = {
   resetPassword,
   changePassword,
   updateProfile,
-  getHouseByUserId
+  getHouseByUserId, getUserById
 };

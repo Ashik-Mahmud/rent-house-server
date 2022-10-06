@@ -26,6 +26,7 @@ app.use("/api/v1/report-house", reportHouseRouter)
 
 
 
+
 /* Global Error Handlers and Route Validations */
 app.use((req, res, next) => {
     res.status(404).send({success: false, message: "Route not found"});

@@ -37,3 +37,13 @@ exports.getHouseListByUserIdService = async(userId) => {
         console.log(error.message);
     }
 }
+
+/* Find Single user by ID */
+exports.findUserByIdService = async(id) => {
+    try {
+        const user = await User.findById(id).select("-password -__v -verificationToken -verificationTokenExpires");
+        return user;
+    } catch (error) {
+        console.log(error.message);
+    }
+}
