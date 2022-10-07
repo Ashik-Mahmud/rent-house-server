@@ -290,9 +290,33 @@ const updateProfile = async (req, res) => {
 // @access private
 
 const changeProfileImage = async (req, res, next) =>{
-    console.log(req.body);    
-    res.send({success: true, message: "Hello World", data: req.file})
+    const { email } = req.body;   
+    //Simple validation
+    if (!email) {
+        return res
+            .status(400)
+            .json({ success: false, message: "Please enter all fields" });
+
+    }
+    try {
+        //Check for existing user
+        const user = await findUserByEmailService(email);
+        if (!user)
+            return res
+                .status(400)
+                .json({ success: false, message: "User does not exist" });
+
+        user.profileImage = req.file.filename;
+        await user.save();
+        res.send({ success: true, message: "Profile picture updated successfully done." });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Server Error" });
+    }
 }
+
+
+    
+
 
 // @Routes GET /api/users/house-list
 // @desc Get House List

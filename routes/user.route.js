@@ -47,12 +47,7 @@ const upload = multer({
 router.post("/create", usersController.createUser);
 router.get("/verify-email/:token", usersController.verifyEmail);
 router.patch("/update-profile", VerifyToken, usersController.updateProfile);
-router.post(
-  "/change-profile-picture",
-  
-  upload.single("profile-picture"),
-  usersController.changeProfileImage
-);
+router.post("/change-profile-picture", VerifyToken, upload.single("profileImage"),  usersController.changeProfileImage);
 router.post("/login", usersController.loginUser);
 router.post("/reset-password", usersController.resetPassword);
 router.post("/change-password", usersController.changePassword);

@@ -47,3 +47,4 @@ exports.findUserByIdService = async(id) => {
         console.log(error.message);
     }
 }
+

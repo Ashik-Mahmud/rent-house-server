@@ -77,6 +77,10 @@ const UserSchema = new mongoose.Schema(
         },
       },
     },
+    profileImage: {
+        type: String,
+        trim: true
+    },
     verificationToken: {
         type: String,
         default: null,
