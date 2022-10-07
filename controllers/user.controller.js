@@ -4,6 +4,7 @@ const User = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const path = require("path")
+const fs = require("fs");
 const IssuesToken = require("../utils/IssuesJwt");
 const { findUserByEmailService, updateUserProfileService, getHouseListByUserIdService, findUserByIdService } = require("../services/user.services");
 const { sendVerificationEmail } = require("../utils/sendEmail");
@@ -306,6 +307,10 @@ const changeProfileImage = async (req, res, next) =>{
                 .status(400)
                 .json({ success: false, message: "User does not exist" });
 
+        if(user?.profileImage){
+            await deleteFile(user?.profileImage);
+        }
+
         user.profileImage = req.file.filename;
         await user.save();
         res.send({ success: true, message: "Profile picture updated successfully done." });
@@ -314,6 +319,19 @@ const changeProfileImage = async (req, res, next) =>{
     }
 }
 
+const deleteFile = async (fileName) => {    
+    try {
+        const filePath = path.join(__dirname, `../uploads/profiles/${fileName}`);
+        await fs.unlink(filePath, (err) => {
+            if (err) {
+                console.error(err)
+                return
+            }
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
 
     
 
