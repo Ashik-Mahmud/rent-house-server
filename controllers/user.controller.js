@@ -285,6 +285,15 @@ const updateProfile = async (req, res) => {
 };
 
 
+// @routes PATCH /api/users/change-profile-picture
+// @desc PATCH just change the profile picture
+// @access private
+
+const changeProfileImage = async (req, res, next) =>{
+    console.log(req.body);    
+    res.send({success: true, message: "Hello World", data: req.file})
+}
+
 // @Routes GET /api/users/house-list
 // @desc Get House List
 // @access Private
@@ -335,5 +344,5 @@ module.exports = {
   resetPassword,
   changePassword,
   updateProfile,
-  getHouseByUserId, getUserById
+  getHouseByUserId, getUserById, changeProfileImage
 };
