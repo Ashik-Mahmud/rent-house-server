@@ -163,12 +163,46 @@ const resetPassword = async (req, res) => {
  
   
   const token = crypto.randomBytes(20).toString("hex");
-  newUser.verificationToken = token;
-  newUser.verificationTokenExpires = Date.now() + 3600000; // 1 hour
-  await newUser.save();
+  user.verificationToken = token;
+  user.verificationTokenExpires = Date.now() + 3600000; // 1 hour
+  await user.save();
   // send Verification Email to User
   sendVerificationEmailWithResetLink(email, token);
 };
+
+
+// @routes GET /api/v2/users/verify-reset-password-email
+// @desc Reset Password email verify
+// @access Private
+
+const verifyResetPasswordMail = async (req, res) => {
+    const { token } = req.params;
+  
+    try {
+      const user = await User.findOne({
+        verificationToken: token,
+        verificationTokenExpires: { $gt: Date.now() },
+      });
+      if (!user) {
+        return res.status(400).json({
+          success: false,
+          message: "Verification token is invalid or has expired",
+        });
+      }
+      user.verificationToken = undefined;
+      user.verificationTokenExpires = undefined;
+      user.isVerified = true;
+      await user.save();
+  
+      res.redirect("http://localhost:3000/new-password")
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Server Error" });
+    }
+  };
+
+
+
+
 
 // @Routes POST /api/users/change-password
 // @desc Change Password
@@ -359,4 +393,5 @@ module.exports = {
   getHouseByUserId,
   getUserById,
   changeProfileImage,
+  verifyResetPasswordMail
 };

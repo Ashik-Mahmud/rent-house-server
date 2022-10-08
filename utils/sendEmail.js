@@ -142,7 +142,7 @@ const sendVerificationEmail = async(email, token) => {
 
 /* Send Verification Email With Password Reset Link */
 const sendVerificationEmailWithResetLink = async(email, token) => {
-    const verificationUrl = `${process.env.CLIENT_URL}/api/v1/users/verify-reset-email/${token}`;
+    const verificationUrl = `${process.env.CLIENT_URL}/api/v1/users/verify-reset-password-email/${token}`;
     const emails = `${email}`;
     var emailFormat = {
         from: process.env.EMAIL_ADDRESS,
