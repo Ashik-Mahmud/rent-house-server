@@ -47,7 +47,7 @@ const upload = multer({
 /* Putting Limiter for Reset Password Routes */
 
 
-const resetPasswordLinkLimiter = rateLimit({
+const putLimiterForCallApi = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
 	max: 3, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
 	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
@@ -60,8 +60,8 @@ router.get("/verify-email/:token", usersController.verifyEmail);
 router.get("/verify-reset-password-email/:token", usersController.verifyResetPasswordMail);
 router.patch("/update-profile", VerifyToken, usersController.updateProfile);
 router.post("/change-profile-picture", VerifyToken, upload.single("profileImage"),  usersController.changeProfileImage);
-router.post("/login", usersController.loginUser);
-router.post("/reset-password", resetPasswordLinkLimiter,  usersController.resetPassword);
+router.post("/login", putLimiterForCallApi, usersController.loginUser);
+router.post("/reset-password", putLimiterForCallApi,  usersController.resetPassword);
 router.post("/change-password", usersController.changePassword);
 router.get("/", usersController.getUsers);
 router.get("/me/:id", VerifyToken, usersController.getUserById);
