@@ -140,8 +140,48 @@ const sendVerificationEmail = async(email, token) => {
 }
 
 
+/* Send Verification Email With Password Reset Link */
+const sendVerificationEmailWithResetLink = async(email, token) => {
+    const verificationUrl = `${process.env.CLIENT_URL}/api/v1/users/verify-reset-email/${token}`;
+    const emails = `${email}`;
+    var emailFormat = {
+        from: process.env.EMAIL_ADDRESS,
+        to: emails,
+        subject: 'Verify your Reset Email address',
+        text: `Please verify your email address by clicking the link below.
+
+        ${verificationUrl}
+        `
+        ,
+        html: `
+        <div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
+            <p style="font-weight: bold">Hello there,</p>
+            <p>Please Click on this link to reset your password.</p>
+            <a href="${verificationUrl}" target="_blank" >${verificationUrl}</a>
+            <p> This Link only valid for 1 hour after 1 hour this link will not work.</p>
+            <p>Regards - <br/> <a href="https://tools-manufactures.web.app" target="_blank" >Rent House</a></p>
+            <address>Rangpur Road, Gobindagonj, Gaibandha</address>
+            <p>Mobile: +8801875474547</p>
+            <p>Email: rent@house.com</p>
+        </div>
+        `,
+        };
+        client.sendMail(emailFormat, function(err, info){
+            if (err){
+                console.log(err);
+            }
+            else {
+                console.log('Message sent: ', info.response);
+            }
+        });
+}
+
+
+ 
 
 
 
 
-module.exports = {sendHouseAddedEmail, sendBulkEmailForAllUsers, sendReportEmail, sendVerificationEmail};
+
+
+module.exports = {sendHouseAddedEmail, sendBulkEmailForAllUsers, sendReportEmail, sendVerificationEmail, sendVerificationEmailWithResetLink};
