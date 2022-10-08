@@ -72,6 +72,8 @@ router.post("/change-profile-picture", VerifyToken, upload.single("profileImage"
 router.post("/login", loginLimiter,usersController.loginUser);
 router.post("/reset-password", putLimiterForCallApi,  usersController.resetPassword);
 router.post("/change-password", usersController.changePassword);
+router.post("/change-password/new", usersController.changePasswordWithoutOldPassword);
+
 router.get("/", usersController.getUsers);
 router.get("/me/:id", VerifyToken, usersController.getUserById);
 router.get("/houses", VerifyToken, usersController.getHouseByUserId);

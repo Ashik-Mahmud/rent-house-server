@@ -262,6 +262,65 @@ const changePassword = async (req, res) => {
   }
 };
 
+
+// @Routes POST /api/users/change-password/new
+// @desc Change Password Without Old Password
+// @access Private
+
+const changePasswordWithoutOldPassword = async (req, res) => {
+    const { id, newPassword } = req.body;
+    
+    
+    //Simple validation
+    if (!id || !newPassword) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Please enter all fields" });
+    }
+  
+    // Password Length Validation
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 6 characters",
+      });
+    }
+  
+    // Password Strength Validation
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/;
+    if (!passwordRegex.test(newPassword)) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Password must contain at least 1 uppercase, 1 lowercase, 1 number and 1 special character",
+      });
+    }
+  
+    try {
+      //Check for existing user
+      const user = await User.findById(id);
+  
+      if (!user)
+        return res
+          .status(400)
+          .json({ success: false, message: "User does not exist" });
+    
+      //Create salt & hash
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+      await user.save();
+      res.send({ success: true, message: "Password changed successfully done." });
+    } catch (error) {
+      res.status(500).json({ success: false, message: "Server Error" });
+    }
+  };
+
+
+
+
+
+
 // @Routes POST /api/users/update-profile
 // @desc Update Profile
 // @access Private
@@ -394,5 +453,6 @@ module.exports = {
   getHouseByUserId,
   getUserById,
   changeProfileImage,
-  verifyResetPasswordMail
+  verifyResetPasswordMail,
+  changePasswordWithoutOldPassword
 };
