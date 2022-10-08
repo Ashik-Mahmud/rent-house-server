@@ -30,3 +30,13 @@ exports.findByIdReviewService = async (id) => {
         console.log(error.message);
     }
 }
+
+/* Get Reviews By User ID */
+exports.getAllReviewsByUserId = async(id)=>{
+    try {
+        const reviews = await Reviews.find({"author.userId": id});
+        return reviews;
+    } catch (error) {
+        console.error(error.message);
+    }
+}

@@ -3,7 +3,7 @@
 // @desc Public review
 
 const { Reviews } = require("../models/review.model");
-const { createReviewService, createReviewForHouseService, findByIdReviewService } = require("../services/review.services");
+const { createReviewService, createReviewForHouseService, findByIdReviewService, getAllReviewsByUserId } = require("../services/review.services");
 
 // @access  public
 const createReview = async (req, res) => {
@@ -32,6 +32,35 @@ const createReview = async (req, res) => {
         })
     }
 }
+
+
+// @routes /api/v1/reviews/get-all-reviews-by-userId
+// @desc Get all reviews by id
+// @access Private
+const getAllReviewByUserId = async (req, res) => {
+    const { id } = req.params;
+    if(!userId){
+        return res.status(400).json({
+            success: false,
+            message: "bad request"
+        })
+    }
+    try {
+        const reviews = await getAllReviewsByUserId(id);
+        res.status(201).json({
+            success: true,
+            message: "Get all reviews successfully",
+            count: reviews.length,
+            data: reviews
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
 
 // @routes /api/v1/reviews/create-review-for-house
 // @desc Create review for house
@@ -114,4 +143,4 @@ const deleteReviewById = async (req, res) => {
 
 
 
-module.exports = { createReview, createReviewForHouse, getAllReviewsByHouseId, deleteReviewById };
+module.exports = { createReview, createReviewForHouse, getAllReviewsByHouseId, deleteReviewById, getAllReviewByUserId };
