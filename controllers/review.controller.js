@@ -3,20 +3,21 @@
 // @desc Public review
 
 const { Reviews } = require("../models/review.model");
-const { createPublicReviewService, createReviewForHouseService, findByIdReviewService } = require("../services/review.services");
+const { createReviewService, createReviewForHouseService, findByIdReviewService } = require("../services/review.services");
 
 // @access  public
-const createPublicReview = async (req, res) => {
-    const { name,  rating, comment } = req.body;
+const createReview = async (req, res) => {
+    const { author,  rating, content } = req.body;
+    
     /* simple validation */
-    if(!name || !rating || !comment){
+    if(!rating || !content || !author.userId){
         return res.status(400).json({
             success: false,
             message: "Please fill all fields"
         })
     }
     try {
-        const review = await createPublicReviewService({ ...req.body });
+        const review = await createReviewService({ ...req.body });
         res.status(201).json({
             success: true,
             message: "Review created successfully",
@@ -113,4 +114,4 @@ const deleteReviewById = async (req, res) => {
 
 
 
-module.exports = { createPublicReview, createReviewForHouse, getAllReviewsByHouseId, deleteReviewById };
+module.exports = { createReview, createReviewForHouse, getAllReviewsByHouseId, deleteReviewById };

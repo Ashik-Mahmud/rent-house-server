@@ -1,9 +1,9 @@
-const {PublicReviews, Reviews} = require("../models/review.model");
+const { Reviews, ReviewsForHouse } = require("../models/review.model");
 
 /* Create Public Review Services */
-exports.createPublicReviewService = async (body) => {
+exports.createReviewService = async (body) => {
     try {
-        const review = await PublicReviews.create(body);
+        const review = await Reviews.create(body);
         return review;
     } catch (error) {
         console.log(error.message);
@@ -14,7 +14,7 @@ exports.createPublicReviewService = async (body) => {
 /* Create Review Services for House  */
 exports.createReviewForHouseService = async (body) => {
     try {
-        const review = await Reviews.create(body);
+        const review = await ReviewsForHouse.create(body);
         return review;
     } catch (error) {
         console.log(error.message);
@@ -24,7 +24,7 @@ exports.createReviewForHouseService = async (body) => {
 /* Reviews Services Find by ID */
 exports.findByIdReviewService = async (id) => {
     try {
-        const review = await Reviews.findById(id);
+        const review = await ReviewsForHouse.findById(id);
         return review;
     } catch (error) {
         console.log(error.message);

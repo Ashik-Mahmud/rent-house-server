@@ -1,30 +1,19 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 
-const publicReviewSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, "Please enter your name"],
-        trim: true,
-        maxLength: [30, "Name cannot exceed 30 characters"],
+const reviewSchema = new mongoose.Schema({
+    author: {
+        type: Object,
+        required: true
+    
     },
-    email: {
-        type: String,
-        trim: true,
-        validate: {
-            validator: function (v) {
-                return validator.isEmail(v);
-            }
-        }
-
-    },  
     rating: {
         type: Number,
         required: [true, "Please enter house rating"],
         min: [1, "Rating must be at least 1.0"],
         max: [5, "Rating must cannot exceed 5.0"],
     },
-    comment: {
+    content: {
         type: String,
         required: [true, "Please enter house comment"],
     },
@@ -68,6 +57,6 @@ const reviewSchemaForHouse = new mongoose.Schema({
     },
 })
 
-const PublicReviews = mongoose.model("PublicReviews", publicReviewSchema);
-const Reviews = mongoose.model("Reviews", reviewSchemaForHouse);
-module.exports = {PublicReviews, Reviews};
+const Reviews = mongoose.model("reviews", reviewSchema);
+const ReviewsForHouse = mongoose.model("Reviews", reviewSchemaForHouse);
+module.exports = {Reviews, ReviewsForHouse};

@@ -5,7 +5,7 @@ const reviewController = require('../controllers/review.controller');
 const VerifyToken = require('../middlewares/VerifyToken');
 
 /* Init Routes */
-router.post("/create-public-review", reviewController.createPublicReview);
+router.post("/create-review", VerifyToken, reviewController.createReview);
 router.post("/create-review-for-house", reviewController.createReviewForHouse);
 router.get("/get-reviews-by-house-id/:id", reviewController.getAllReviewsByHouseId);
 

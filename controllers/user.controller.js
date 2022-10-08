@@ -200,7 +200,7 @@ const resetPassword = async (req, res) => {
 // @desc Change Password
 // @access Private
 const changePassword = async (req, res) => {
-  const { email, oldPassword, newPassword } = req.body;
+  const { email, oldPassword, newPassword } = req.body;  
   //Simple validation
   if (!email || !oldPassword || !newPassword) {
     return res
@@ -230,6 +230,7 @@ const changePassword = async (req, res) => {
   try {
     //Check for existing user
     const user = await findUserByEmailService(email);
+        
     if (!user)
       return res
         .status(400)
