@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const multer = require("multer");
 const path = require("path");
+const rateLimit = require('express-rate-limit')
 
 /* Import Controllers */
 const usersController = require("../controllers/user.controller");
@@ -43,6 +44,16 @@ const upload = multer({
 });
 
 
+/* Putting Limiter for Reset Password Routes */
+
+
+const resetPasswordLinkLimiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 3, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+})
+
 /* Init Controllers */
 router.post("/create", usersController.createUser);
 router.get("/verify-email/:token", usersController.verifyEmail);
@@ -50,7 +61,7 @@ router.get("/verify-reset-password-email/:token", usersController.verifyResetPas
 router.patch("/update-profile", VerifyToken, usersController.updateProfile);
 router.post("/change-profile-picture", VerifyToken, upload.single("profileImage"),  usersController.changeProfileImage);
 router.post("/login", usersController.loginUser);
-router.post("/reset-password", usersController.resetPassword);
+router.post("/reset-password", resetPasswordLinkLimiter,  usersController.resetPassword);
 router.post("/change-password", usersController.changePassword);
 router.get("/", usersController.getUsers);
 router.get("/me/:id", VerifyToken, usersController.getUserById);

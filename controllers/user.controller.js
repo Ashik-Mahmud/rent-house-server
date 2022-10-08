@@ -159,8 +159,8 @@ const resetPassword = async (req, res) => {
   //Check for existing user
   const user = await findUserByEmailService(email);
   if (!user)
-    return res.status(400).json({ success: false, message: "Invalid users" });
- 
+    return res.status(400).json({ success: false, message: "This Email is not registered yet." });
+
   
   const token = crypto.randomBytes(20).toString("hex");
   user.verificationToken = token;
@@ -168,6 +168,7 @@ const resetPassword = async (req, res) => {
   await user.save();
   // send Verification Email to User
   sendVerificationEmailWithResetLink(email, token);
+  res.status(200).send({success: true, message: "We will sent you email with Password reset Link. Please check your email."})
 };
 
 
@@ -194,7 +195,7 @@ const verifyResetPasswordMail = async (req, res) => {
       user.isVerified = true;
       await user.save();
   
-      res.redirect("http://localhost:3000/new-password")
+      res.redirect("http://localhost:3000/new-password/true")
     } catch (error) {
       res.status(500).json({ success: false, message: "Server Error" });
     }
