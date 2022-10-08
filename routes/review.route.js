@@ -6,7 +6,7 @@ const VerifyToken = require('../middlewares/VerifyToken');
 
 /* Init Routes */
 router.post("/create-review", VerifyToken, reviewController.createReview);
-router.get("/all-reviews-by-userId/:id",  VerifyToken, reviewController.getAllReviewByUserId);
+router.get("/get-reviews-by-user/:id",  VerifyToken, reviewController.getAllReviewByUserId);
 router.delete("/delete-review/:id", VerifyToken, reviewController.deleteReviewById);
 
 

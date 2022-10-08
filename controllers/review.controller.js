@@ -39,7 +39,7 @@ const createReview = async (req, res) => {
 // @access Private
 const getAllReviewByUserId = async (req, res) => {
     const { id } = req.params;
-    if(!userId){
+    if(!id){
         return res.status(400).json({
             success: false,
             message: "bad request"
