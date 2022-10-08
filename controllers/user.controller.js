@@ -195,7 +195,7 @@ const verifyResetPasswordMail = async (req, res) => {
       user.isVerified = true;
       await user.save();
   
-      res.redirect("http://localhost:3000/new-password/true")
+      res.redirect(`http://localhost:3000/new-password/${user?._id}`)
     } catch (error) {
       res.status(500).json({ success: false, message: "Server Error" });
     }
