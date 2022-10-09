@@ -1,23 +1,20 @@
-
-const nodemailer = require('nodemailer');
-const sgTransport = require('nodemailer-sendgrid-transport');
+const nodemailer = require("nodemailer");
+const sgTransport = require("nodemailer-sendgrid-transport");
 
 const options = {
-    auth: {
-      api_key: process.env.EMAIL_API_KEY
-    }
-  }
+  auth: {
+    api_key: process.env.EMAIL_API_KEY,
+  },
+};
 const client = nodemailer.createTransport(sgTransport(options));
 
-
-const sendHouseAddedEmail = async(email, name) => {
-           
-    var emailFormat = {
-        from: process.env.EMAIL_ADDRESS,
-        to: email, 
-        subject: `Hurray!! House successfully created Now Waiting for Admin Approved`,
-        text: `your house ${name} successfully created at ${Date.now().toLocaleString()} Now Waiting for Admin Approved`,
-        html: `
+const sendHouseAddedEmail = async (email, name) => {
+  var emailFormat = {
+    from: process.env.EMAIL_ADDRESS,
+    to: email,
+    subject: `Hurray!! House successfully created Now Waiting for Admin Approved`,
+    text: `your house ${name} successfully created at ${Date.now().toLocaleString()} Now Waiting for Admin Approved`,
+    html: `
         <div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
           <p style="font-weight: bold">Hello ${email},</p>
           <p>Thanks for your patients <br/> Your house <strong>${name} </strong> successfully created at <b>${new Date().toDateString()} at ${new Date().toLocaleTimeString()}</b> Now Waiting for Admin Approved. It might be take 24 hours. Have nice day. </p>
@@ -28,28 +25,24 @@ const sendHouseAddedEmail = async(email, name) => {
           <p>Email: rent@house.com</p>
         </div>
         `,
-      };
-      client.sendMail(emailFormat, function(err, info){
-        if (err){
-          console.log(err);
-        }
-        else {
-          console.log('Message sent: ', info.response);
-        }
-    });
-  
-
-}
+  };
+  client.sendMail(emailFormat, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Message sent: ", info.response);
+    }
+  });
+};
 
 /* Sent Bulk Mail */
-const sendBulkEmailForAllUsers = async(emails, subject, message) => {
-             
-    var emailFormat = {
-        from: process.env.EMAIL_ADDRESS,
-        to: emails, 
-        subject: subject,
-        text: message,
-        html: `
+const sendBulkEmailForAllUsers = async (emails, subject, message) => {
+  var emailFormat = {
+    from: process.env.EMAIL_ADDRESS,
+    to: emails,
+    subject: subject,
+    text: message,
+    html: `
         <div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
             <p style="font-weight: bold">Hello Folks,</p>
             <p>${message}</p>
@@ -59,27 +52,25 @@ const sendBulkEmailForAllUsers = async(emails, subject, message) => {
             <p>Email: rent@house.com</p>
         </div>
         `,
-        };
-        client.sendMail(emailFormat, function(err, info){
-            if (err){
-                console.log(err);
-            }
-            else {
-                console.log('Message sent: ', info.response);
-            }
-        });
-}
-
+  };
+  client.sendMail(emailFormat, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Message sent: ", info.response);
+    }
+  });
+};
 
 /* Send Report Email */
-const sendReportEmail = async(email, houseUrl, reportTitle, reportDetails) => {
-        const emails = `${email},${process.env.EMAIL_ADDRESS}`;               
-        var emailFormat = {
-            from: process.env.EMAIL_ADDRESS,
-            to: emails, 
-            subject: `Report for ${reportTitle}`,
-            text: `Report for ${houseUrl}`,
-            html: `
+const sendReportEmail = async (email, houseUrl, reportTitle, reportDetails) => {
+  const emails = `${email},${process.env.EMAIL_ADDRESS}`;
+  var emailFormat = {
+    from: process.env.EMAIL_ADDRESS,
+    to: emails,
+    subject: `Report for ${reportTitle}`,
+    text: `Report for ${houseUrl}`,
+    html: `
             <div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
                 <p style="font-weight: bold">Hello there,</p>
                 <p>There is a report for house. Take a look <br/> Report Title: <b>${reportTitle}</b> <br/> Report Details: <b>${reportDetails} </b></p>
@@ -91,32 +82,29 @@ const sendReportEmail = async(email, houseUrl, reportTitle, reportDetails) => {
                 <p>Email: rent@house.com</p>
             </div>
             `,
-            };
-            client.sendMail(emailFormat, function(err, info){
-                if (err){
-                    console.log(err);
-                }
-                else {
-                    console.log('Message sent: ', info.response);
-                }
-            });
-
-}
+  };
+  client.sendMail(emailFormat, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Message sent: ", info.response);
+    }
+  });
+};
 
 /* Send Email for Verifications */
-const sendVerificationEmail = async(email, token) => {
-    const verificationUrl = `${process.env.CLIENT_URL}/api/v1/users/verify-email/${token}`;
-    const emails = `${email}`;
-    var emailFormat = {
-        from: process.env.EMAIL_ADDRESS,
-        to: emails,
-        subject: 'Verify your email address',
-        text: `Please verify your email address by clicking the link below.
+const sendVerificationEmail = async (email, token) => {
+  const verificationUrl = `${process.env.CLIENT_URL}/api/v1/users/verify-email/${token}`;
+  const emails = `${email}`;
+  var emailFormat = {
+    from: process.env.EMAIL_ADDRESS,
+    to: emails,
+    subject: "Verify your email address",
+    text: `Please verify your email address by clicking the link below.
 
         ${verificationUrl}
-        `
-        ,
-        html: `
+        `,
+    html: `
         <div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
             <p style="font-weight: bold">Hello there,</p>
             <p>Please verify your email address by clicking the link below.</p>
@@ -128,32 +116,29 @@ const sendVerificationEmail = async(email, token) => {
             <p>Email: rent@house.com</p>
         </div>
         `,
-        };
-        client.sendMail(emailFormat, function(err, info){
-            if (err){
-                console.log(err);
-            }
-            else {
-                console.log('Message sent: ', info.response);
-            }
-        });
-}
-
+  };
+  client.sendMail(emailFormat, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Message sent: ", info.response);
+    }
+  });
+};
 
 /* Send Verification Email With Password Reset Link */
-const sendVerificationEmailWithResetLink = async(email, token) => {
-    const verificationUrl = `${process.env.CLIENT_URL}/api/v1/users/verify-reset-password-email/${token}`;
-    const emails = `${email}`;
-    var emailFormat = {
-        from: process.env.EMAIL_ADDRESS,
-        to: emails,
-        subject: 'Verify your Reset Email address',
-        text: `Please verify your email address by clicking the link below.
+const sendVerificationEmailWithResetLink = async (email, token) => {
+  const verificationUrl = `${process.env.CLIENT_URL}/api/v1/users/verify-reset-password-email/${token}`;
+  const emails = `${email}`;
+  var emailFormat = {
+    from: process.env.EMAIL_ADDRESS,
+    to: emails,
+    subject: "Verify your Reset Email address",
+    text: `Please verify your email address by clicking the link below.
 
         ${verificationUrl}
-        `
-        ,
-        html: `
+        `,
+    html: `
         <div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
             <p style="font-weight: bold">Hello there,</p>
             <p>Please Click on this link to reset your password.</p>
@@ -165,23 +150,47 @@ const sendVerificationEmailWithResetLink = async(email, token) => {
             <p>Email: rent@house.com</p>
         </div>
         `,
-        };
-        client.sendMail(emailFormat, function(err, info){
-            if (err){
-                console.log(err);
-            }
-            else {
-                console.log('Message sent: ', info.response);
-            }
-        });
-}
+  };
+  client.sendMail(emailFormat, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Message sent: ", info.response);
+    }
+  });
+};
 
+/* Send Email With Feature Request */
 
- 
+const sendEmailForFeatureRequest = (subject, requestText, author) => {
+  
+  const emails = `${author?.email}`;
+  var emailFormat = {
+    from: emails,
+    to: process.env.EMAIL_ADDRESS,
+    subject: subject,
+    text: `${author?.name} is request for features or bugs maybe.`,
+    html: `<div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
+              <p style="font-weight: bold">Hello there,</p>
+              <p>${author?.name} is request for features or bugs maybe. He/she is a ${author?.role} to the HouseLagbe.</p>
+              ${requestText}
+          </div>
+          `,
+  };
+  client.sendMail(emailFormat, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Message sent: ", info.response);
+    }
+  });
+};
 
-
-
-
-
-
-module.exports = {sendHouseAddedEmail, sendBulkEmailForAllUsers, sendReportEmail, sendVerificationEmail, sendVerificationEmailWithResetLink};
+module.exports = {
+  sendHouseAddedEmail,
+  sendBulkEmailForAllUsers,
+  sendReportEmail,
+  sendVerificationEmail,
+  sendVerificationEmailWithResetLink,
+  sendEmailForFeatureRequest,
+};

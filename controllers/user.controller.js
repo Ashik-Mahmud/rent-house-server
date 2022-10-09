@@ -12,7 +12,11 @@ const {
   getHouseListByUserIdService,
   findUserByIdService,
 } = require("../services/user.services");
-const { sendVerificationEmail, sendVerificationEmailWithResetLink } = require("../utils/sendEmail");
+const {
+  sendVerificationEmail,
+  sendVerificationEmailWithResetLink,
+  sendEmailForFeatureRequest,
+} = require("../utils/sendEmail");
 
 //@routes POST /api/users
 //@desc Register a user
@@ -159,51 +163,51 @@ const resetPassword = async (req, res) => {
   //Check for existing user
   const user = await findUserByEmailService(email);
   if (!user)
-    return res.status(400).json({ success: false, message: "This Email is not registered yet." });
+    return res
+      .status(400)
+      .json({ success: false, message: "This Email is not registered yet." });
 
-  
   const token = crypto.randomBytes(20).toString("hex");
   user.verificationToken = token;
   user.verificationTokenExpires = Date.now() + 3600000; // 1 hour
   await user.save();
   // send Verification Email to User
   sendVerificationEmailWithResetLink(email, token);
-  res.status(200).send({success: true, message: "We will sent you email with Password reset Link. Please check your email."})
+  res.status(200).send({
+    success: true,
+    message:
+      "We will sent you email with Password reset Link. Please check your email.",
+  });
 };
-
 
 // @routes GET /api/v2/users/verify-reset-password-email
 // @desc Reset Password email verify
 // @access Private
 
 const verifyResetPasswordMail = async (req, res) => {
-    const { token } = req.params;
-  
-    try {
-      const user = await User.findOne({
-        verificationToken: token,
-        verificationTokenExpires: { $gt: Date.now() },
+  const { token } = req.params;
+
+  try {
+    const user = await User.findOne({
+      verificationToken: token,
+      verificationTokenExpires: { $gt: Date.now() },
+    });
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Verification token is invalid or has expired",
       });
-      if (!user) {
-        return res.status(400).json({
-          success: false,
-          message: "Verification token is invalid or has expired",
-        });
-      }
-      user.verificationToken = undefined;
-      user.verificationTokenExpires = undefined;
-      user.isVerified = true;
-      await user.save();
-  
-      res.redirect(`http://localhost:3000/new-password/${user?._id}`)
-    } catch (error) {
-      res.status(500).json({ success: false, message: "Server Error" });
     }
-  };
+    user.verificationToken = undefined;
+    user.verificationTokenExpires = undefined;
+    user.isVerified = true;
+    await user.save();
 
-
-
-
+    res.redirect(`http://localhost:3000/new-password/${user?._id}`);
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
 
 // @Routes POST /api/users/change-password
 // @desc Change Password
@@ -262,64 +266,57 @@ const changePassword = async (req, res) => {
   }
 };
 
-
 // @Routes POST /api/users/change-password/new
 // @desc Change Password Without Old Password
 // @access Private
 
 const changePasswordWithoutOldPassword = async (req, res) => {
-    const { id, newPassword } = req.body;
-    
-    
-    //Simple validation
-    if (!id || !newPassword) {
+  const { id, newPassword } = req.body;
+
+  //Simple validation
+  if (!id || !newPassword) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Please enter all fields" });
+  }
+
+  // Password Length Validation
+  if (newPassword.length < 6) {
+    return res.status(400).json({
+      success: false,
+      message: "Password must be at least 6 characters",
+    });
+  }
+
+  // Password Strength Validation
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/;
+  if (!passwordRegex.test(newPassword)) {
+    return res.status(400).json({
+      success: false,
+      message:
+        "Password must contain at least 1 uppercase, 1 lowercase, 1 number and 1 special character",
+    });
+  }
+
+  try {
+    //Check for existing user
+    const user = await User.findById(id);
+
+    if (!user)
       return res
         .status(400)
-        .json({ success: false, message: "Please enter all fields" });
-    }
-  
-    // Password Length Validation
-    if (newPassword.length < 6) {
-      return res.status(400).json({
-        success: false,
-        message: "Password must be at least 6 characters",
-      });
-    }
-  
-    // Password Strength Validation
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/;
-    if (!passwordRegex.test(newPassword)) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Password must contain at least 1 uppercase, 1 lowercase, 1 number and 1 special character",
-      });
-    }
-  
-    try {
-      //Check for existing user
-      const user = await User.findById(id);
-  
-      if (!user)
-        return res
-          .status(400)
-          .json({ success: false, message: "User does not exist" });
-    
-      //Create salt & hash
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-      user.password = hashedPassword;
-      await user.save();
-      res.send({ success: true, message: "Password changed successfully done." });
-    } catch (error) {
-      res.status(500).json({ success: false, message: "Server Error" });
-    }
-  };
+        .json({ success: false, message: "User does not exist" });
 
-
-
-
-
+    //Create salt & hash
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+    res.send({ success: true, message: "Password changed successfully done." });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
+};
 
 // @Routes POST /api/users/update-profile
 // @desc Update Profile
@@ -442,16 +439,27 @@ const getUserById = async (req, res) => {
   }
 };
 
-
 /* Send Feature Request */
 
-const sendFeatureRequest = async(req, res) => {
-    console.log(req.body);
-    
-}
+const sendFeatureRequest = async (req, res) => {
+  console.log(req.body);
 
+  const { subject, requestText, author } = req.body;
 
+  if (!subject || !requestText) {
+    return res.status(400).send({
+      success: false,
+      message: "All fields is required.",
+    });
+  }
 
+  await sendEmailForFeatureRequest(subject, requestText, author);
+  res.status(200).send({
+    success: true,
+    message: `Your message has been sent to the App Admin. Wait to Admin response.`
+  })
+
+};
 
 module.exports = {
   getUsers,
@@ -466,5 +474,5 @@ module.exports = {
   changeProfileImage,
   verifyResetPasswordMail,
   changePasswordWithoutOldPassword,
-  sendFeatureRequest
+  sendFeatureRequest,
 };
