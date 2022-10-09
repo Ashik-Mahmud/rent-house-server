@@ -1,4 +1,5 @@
 const House = require("../models/house.model");
+const path = require("path");
 const {
   createHouseService,
   getAllHousesService,
@@ -31,7 +32,10 @@ const createHouse = async (req, res) => {
     author,
   } = data;
 
-   
+  const host = req.hostname;
+  const filePath = req.protocol + "://" + host + '/' ;
+  
+  
 
   /* Validation Items */
   if (
@@ -52,7 +56,7 @@ const createHouse = async (req, res) => {
   }
 
   const previewImage = req.files.previewImage[0].filename;
-  const galleryImages = req.files.galleryImage?.map((image)=> image.filename)
+  const galleryImages = req.files.galleryImage?.map((image)=>  image.filename)
 
 
 

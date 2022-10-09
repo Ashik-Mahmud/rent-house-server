@@ -5,6 +5,8 @@ const path = require("path");
 /* Import Controllers */
 const houseController = require("../controllers/house.controller");
 const ViewsCount = require("../middlewares/ViewsCount");
+const VerifyUser = require("../middlewares/VerifyUser");
+
 
 /* Config for Upload Preview Image */
 const storage = multer.diskStorage({
@@ -59,7 +61,7 @@ router.patch("/like-count/:id", houseController.toggleLikeHouse);
 /* Private Routes */
 router.post(
   "/create",
-  VerifyToken,
+  VerifyToken,VerifyUser,
   upload.fields([
     { name: "previewImage", maxCount: 1 },
     { name: "galleryImage", maxCount: 5 },
