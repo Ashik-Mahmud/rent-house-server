@@ -195,11 +195,18 @@ const getHouseById = async (req, res) => {
 // @access Private
 const getHouseByUserID = async (req, res) => {
     try {
-        const house = await findByIdHouseService(req.params.id);
+        const house = await House.find({ owner: req.params.id });     
+        if (!house) {
+            return res.status(404).json({
+                success: false,
+                message: "House not found",
+            });
+        }
         res.status(200).json({
             success: true,
             message: "House found",
             data: house,
+            count: house.length,
         });
     } catch (error) {
         res.status(500).json({
