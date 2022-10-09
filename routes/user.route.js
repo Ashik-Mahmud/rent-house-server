@@ -74,6 +74,10 @@ router.post("/reset-password", putLimiterForCallApi,  usersController.resetPassw
 router.post("/change-password", usersController.changePassword);
 router.post("/change-password/new", usersController.changePasswordWithoutOldPassword);
 
+router.post("/send-feature-request", VerifyToken, usersController.sendFeatureRequest)
+
+
+
 router.get("/", usersController.getUsers);
 router.get("/me/:id", VerifyToken, usersController.getUserById);
 router.get("/houses", VerifyToken, usersController.getHouseByUserId);

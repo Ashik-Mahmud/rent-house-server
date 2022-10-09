@@ -442,6 +442,17 @@ const getUserById = async (req, res) => {
   }
 };
 
+
+/* Send Feature Request */
+
+const sendFeatureRequest = async(req, res) => {
+    console.log(req.body);
+    
+}
+
+
+
+
 module.exports = {
   getUsers,
   createUser,
@@ -454,5 +465,6 @@ module.exports = {
   getUserById,
   changeProfileImage,
   verifyResetPasswordMail,
-  changePasswordWithoutOldPassword
+  changePasswordWithoutOldPassword,
+  sendFeatureRequest
 };
