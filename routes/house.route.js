@@ -68,6 +68,7 @@ router.post(
   ]),
   houseController.createHouse
 );
+router.get("/get-house-by-user/:id", VerifyToken, houseController.getHouseByUserID);
 router.patch("/update/:id", VerifyToken, houseController.updateHouse);
 router.delete("/delete/:id", VerifyToken, houseController.deleteHouse);
 

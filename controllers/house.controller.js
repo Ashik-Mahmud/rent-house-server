@@ -190,6 +190,30 @@ const getHouseById = async (req, res) => {
   }
 };
 
+// @route GET api/houses/get-house-by-user/:id
+// @desc Get house by user id
+// @access Private
+const getHouseByUserID = async (req, res) => {
+    try {
+        const house = await findByIdHouseService(req.params.id);
+        res.status(200).json({
+            success: true,
+            message: "House found",
+            data: house,
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Server error",
+        });
+    }
+};
+
+
+
+
+
+
 // @route   PUT api/houses/:id
 // @desc    Update house
 // @access  Private
@@ -346,4 +370,5 @@ module.exports = {
   changeIsBooked,
   toggleLikeHouse,
   getTop4Houses,
+  getHouseByUserID
 };
