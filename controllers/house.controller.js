@@ -31,15 +31,15 @@ const createHouse = async (req, res) => {
     author,
   } = data;
 
-  /* Validation Items */
+   
 
+  /* Validation Items */
   if (
     !name ||
     !description ||
     !price ||
     !district ||
     !city ||
-    !googleMapLocation ||
     !bathrooms ||
     !bedrooms ||
     !category ||
@@ -51,10 +51,13 @@ const createHouse = async (req, res) => {
       .json({ success: false, message: "Please enter all fields" });
   }
 
-  return console.log(req.files);
+  const previewImage = req.files.previewImage[0].filename;
+  const galleryImages = req.files.galleryImage?.map((image)=> image.filename)
+
+
 
   try {
-    const house = await createHouseService({ ...data, owner: author?.id });
+    const house = await createHouseService({ ...data, image: previewImage, gallery: galleryImages, owner: author?.id });
     res.status(201).json({
       success: true,
       message: "House created successfully & sent you email",

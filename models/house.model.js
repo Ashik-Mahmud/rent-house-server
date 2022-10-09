@@ -130,11 +130,6 @@ const houseSchema = new mongoose.Schema(
       {
         type: String,
         required: true,
-        validate: {
-          validator: function (value) {
-            return validator.isURL(value);
-          },
-        },
         message: "Please enter valid image URLs",
       },
     ],
@@ -149,12 +144,7 @@ const houseSchema = new mongoose.Schema(
     googleMapLocation: {
       type: String,
       trim: true,
-      validate: {
-        validator: function (value) {
-          return validator.isURL(value);
-        },
-        message: "Please enter valid google map location",
-      },
+      
     },
     owner: {
       type: mongoose.Schema.ObjectId,
