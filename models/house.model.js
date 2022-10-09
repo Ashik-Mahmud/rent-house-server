@@ -16,7 +16,7 @@ const houseSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please enter house type"],
       enum: {
-        values: ["Bungalow", "Duplex", "Flat", "Terrace"],
+        values: ["Bungalow", "Duplex", "Flat", "Terrace", "General"],
         message: "Please select correct house type for house",
       },
     },
@@ -161,16 +161,16 @@ const houseSchema = new mongoose.Schema(
       ref: "user",
     },
     isAvailable: {
-      type: Boolean,
-      default: true,
+      type: String,
+      enum: ['Yes', "No"],
     },
     isBooked: {
-      type: Boolean,
-      default: false,
+        type: String,
+        enum: ['Yes', "No"],
     },
     isBachelorRoom: {
-      type: Boolean,
-      default: false,
+        type: String,
+        enum: ['Yes', "No"],
     },
     status: {
       type: String,
@@ -181,12 +181,14 @@ const houseSchema = new mongoose.Schema(
       },
     },
     allowQuestion: {
-        type: Boolean,
-        default: true,
+      type: String,
+      enum: ['Yes', "No"],
+      default: 'No'
     },
     allowReview: {
-        type: Boolean,
-        default: true,
+      type: String,
+      enum: ['Yes', "No"],
+      default: 'No'
     },
     likes: {
         type: Number,
@@ -197,7 +199,7 @@ const houseSchema = new mongoose.Schema(
         default: 0,
     },
     isBlock: {
-        type: String,
+        type: Boolean,
         default: false
     }
   },
