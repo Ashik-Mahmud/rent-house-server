@@ -37,10 +37,9 @@ const houseSchema = new mongoose.Schema(
       },
     },
     price: {
-      type: Number,
+      type: String,
       required: [true, "Please enter house price per month"],
-      maxLength: [4, "House price per month cannot exceed 4 characters"],
-      default: 0.0,
+      
     },
     bedrooms: {
       type: Number,
