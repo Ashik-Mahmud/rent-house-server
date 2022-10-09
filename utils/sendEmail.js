@@ -168,7 +168,7 @@ const sendEmailForFeatureRequest = (subject, requestText, author) => {
   var emailFormat = {
     from: emails,
     to: process.env.EMAIL_ADDRESS,
-    subject: subject,
+    subject: subject + ' - from Feature Request & Bugs',
     text: `${author?.name} is request for features or bugs maybe.`,
     html: `<div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
              <div style="padding: 1rem; border: 1px solid #ccc;">
