@@ -171,9 +171,15 @@ const sendEmailForFeatureRequest = (subject, requestText, author) => {
     subject: subject,
     text: `${author?.name} is request for features or bugs maybe.`,
     html: `<div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
-              <p style="font-weight: bold">Hello there,</p>
-              <p>${author?.name} is request for features or bugs maybe. He/she is a ${author?.role} to the HouseLagbe.</p>
-              ${requestText}
+             <div style="padding: 1rem; border: 1px solid #ccc;">
+               <h3 style="font-weight: bold; margin: 1rem 0rem; border-bottom: 1px solid #ccc">Email Sender: </h3>
+               <p><b>${author?.name}</b> is request for features or bugs maybe. He/she is a <b>${author?.role === 'user' ? "House Holder" : author?.role}</b> to the HouseLagbe.</p>
+             </div>
+
+             <div style="padding: 1rem; border: 1px solid #ccc;">
+                <h3 style="font-weight: bold; margin: 1rem 0rem; border-bottom: 1px solid #ccc">Text For Sender: </h3>
+                ${requestText}
+             </div>              
           </div>
           `,
   };
