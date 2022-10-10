@@ -11,6 +11,7 @@ const {
   updateUserProfileService,
   getHouseListByUserIdService,
   findUserByIdService,
+  getAuthenticatedUsersService,
 } = require("../services/user.services");
 const {
   sendVerificationEmail,
@@ -421,7 +422,8 @@ const getHouseByUserId = async (req, res) => {
 // @access Private
 const getUsers = async (req, res) => {
   try {
-    res.status(200).send({ success: true, message: "Get Users" });
+    const users = await getAuthenticatedUsersService();
+    res.status(200).send({ success: true, message: "Get Users", data: users , count: users.length});
   } catch (error) {
     res.status(500).send({ success: false, message: "Server Error" });
   }

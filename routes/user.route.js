@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit')
 /* Import Controllers */
 const usersController = require("../controllers/user.controller");
 const VerifyToken = require("../middlewares/VerifyToken");
+const VerifyAdmin = require("../middlewares/VerifyAdmin")
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -78,7 +79,7 @@ router.post("/send-feature-request", VerifyToken, usersController.sendFeatureReq
 
 
 
-router.get("/", usersController.getUsers);
+router.get("/admin", VerifyToken, VerifyAdmin, usersController.getUsers);
 router.get("/me/:id", VerifyToken, usersController.getUserById);
 router.get("/houses", VerifyToken, usersController.getHouseByUserId);
 

@@ -48,3 +48,13 @@ exports.findUserByIdService = async(id) => {
     }
 }
 
+
+/* Get Authenticated Users Services */
+exports.getAuthenticatedUsersService = async() => {
+    try {
+        const usersList = await User.find({});
+        return usersList;
+    } catch (error) {
+        console.log(error.message);
+    }
+}
