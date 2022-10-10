@@ -495,6 +495,26 @@ const sendFeatureRequest = async (req, res) => {
 
 };
 
+
+/* Change Admin Role By Admin */
+
+const changeAdminRole = async(req, res) =>{
+    const {role, id} = req.body;
+    const user = await findUserByIdService(id);
+    if(!user) return res.status(404).send({success:false, message: `User doesn't exist`})
+    if(user.role === role) return res.status(403).send({success: false, message: `This user already ${role === 'user' ? 'House Holder' : role}`})
+
+    user.role = role;
+    user.save();
+    res.status(200).send({
+        success: true,
+        message: `Congratulation! Now your ${role === 'user' ? 'House Holder' : role}` 
+    })    
+}
+
+
+
+
 module.exports = {
   getUsers,
   createUser,
@@ -509,4 +529,5 @@ module.exports = {
   verifyResetPasswordMail,
   changePasswordWithoutOldPassword,
   sendFeatureRequest,
+  changeAdminRole
 };
