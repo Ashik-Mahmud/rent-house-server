@@ -531,6 +531,19 @@ const changeAdminStatus = async(req, res) =>{
     })    
 }
 
+/* Delete User By Admin */
+const deleteAdminUser = async(req, res) =>{
+    const {id} = req.params;
+    const user = await findUserByIdService(id);
+    if(!user) return res.status(404).send({success:false, message: `User doesn't exist`})
+    await user.remove();
+    res.status(200).send({
+        success: true,
+        message: `Congratulation! Now your user has been deleted`
+    })
+}
+
+
 
 
 module.exports = {
@@ -548,5 +561,6 @@ module.exports = {
   changePasswordWithoutOldPassword,
   sendFeatureRequest,
   changeAdminRole,
-  changeAdminStatus
+  changeAdminStatus,
+  deleteAdminUser
 };
