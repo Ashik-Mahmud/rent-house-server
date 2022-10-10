@@ -26,7 +26,8 @@ const BlogSchema = new Schema({
     },
     likes: {
         type: Number,
-        default: 0
+        default: 0,
+        min: 0
     },
     comments: [
         {

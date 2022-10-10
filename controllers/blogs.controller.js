@@ -178,6 +178,45 @@ const changeAvailable = async(req, res) => {
 }
 
 
+// @routes PATCH /api/v1/blogs/toggle-like/:id
+// @desc   Toggle like blog
+// @access Public
+const toggleLikeBlog = async (req, res) => {
+    try {
+      const { clicked } = req.query;
+      const blog = await findBlogByIdService(req.params.id);
+  
+      if (!blog) {
+        return res.status(404).json({
+          success: false,
+          message: "Blog not found",
+        });
+      }
+
+      if(blog.likes < 0) return res.status(403).send({success: false, message: "Thanks for extra dislike"});
+
+  
+      if (clicked === "true") {
+        blog.likes = blog.likes + 1;
+      } else {
+        blog.likes = blog.likes - 1;
+      }
+      await blog.save();
+      res.status(200).json({
+        success: true,
+        message: clicked === "true" ? "Liked Blog" : "Dislike Blog",
+        data: blog
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        message: "Server Error",
+      });
+    }
+  };
+  
+
+
 
 /* Import controller */
 module.exports = {
@@ -186,5 +225,6 @@ module.exports = {
   getBlogById,
   updateBlogById,
   deleteBlogById,
-  changeAvailable
+  changeAvailable,
+  toggleLikeBlog
 };
