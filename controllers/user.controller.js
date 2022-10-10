@@ -133,6 +133,12 @@ const loginUser = async (req, res) => {
       return res
         .status(400)
         .json({ success: false, message: "User does not exist" });
+    
+    if(user?.status === 'inactive') {
+        return res
+        .status(400)
+        .json({ success: false, message: "You are Blocked.Please Contact Admin" });
+    }
 
     //Validate password
     const isMatch = await bcrypt.compare(password, user.password);
@@ -421,16 +427,26 @@ const getHouseByUserId = async (req, res) => {
 // @desc Get all users
 // @access Private
 const getUsers = async (req, res) => {
-  try {
-    const users = await getAuthenticatedUsersService();
+    const {role} = req.query;
+        
+    let filter = {};
+    if (role === 'All') {
+        filter = {};
+    }else{
+        filter.role = role;
+    }
+        
+   
     
+  try {
+    const users = await getAuthenticatedUsersService(filter);
     
     if (users.length > 0) {
         return res.status(200).send({ success: true, message: "Get Users", data: users , count: users.length});
     }
 
     res.status(404)
-        .json({ success: false, message: 'No House found, Please add a house first.' });
+        .json({ success: false, message: 'No Users Found' });
 
 
     } catch (error) {   

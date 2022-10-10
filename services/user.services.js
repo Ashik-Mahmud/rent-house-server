@@ -50,9 +50,10 @@ exports.findUserByIdService = async(id) => {
 
 
 /* Get Authenticated Users Services */
-exports.getAuthenticatedUsersService = async() => {
+exports.getAuthenticatedUsersService = async(filter) => {
+    
     try {
-        const usersList = await User.find({});
+        const usersList = await User.find(filter);
         return usersList;
     } catch (error) {
         console.log(error.message);
