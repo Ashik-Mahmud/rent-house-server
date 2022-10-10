@@ -149,6 +149,36 @@ const deleteBlogById = async (req, res) => {
   }
 };
 
+
+// @routes api/v1/blogs/change-available/:id
+// @desc change availability for blogs
+// @access private
+
+const changeAvailable = async(req, res) => {
+    const {id} = req.params;
+    const {status} = req.query;
+    try {
+        const blog = await findBlogByIdService(id);
+        if(!blog) return res.status(403).send({
+            success: false,
+            message: "No blog found this {ID}"
+        })
+
+        blog.status = status;
+        blog.save();
+        res.status(202).send({
+            success: true,
+            message: "Change Status in",
+            data: blog
+        })
+
+    } catch (error) {
+        
+    }
+}
+
+
+
 /* Import controller */
 module.exports = {
   createBlog,
@@ -156,4 +186,5 @@ module.exports = {
   getBlogById,
   updateBlogById,
   deleteBlogById,
+  changeAvailable
 };

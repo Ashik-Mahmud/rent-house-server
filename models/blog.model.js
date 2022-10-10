@@ -34,9 +34,10 @@ const BlogSchema = new Schema({
             ref: "comment"
         }
     ],
-    available: {
-        type: Boolean,
-        default: true
+    status: {
+        type: String,
+        default: 'active',
+        enum: ['active', 'inactive']
     },
 }, {
     timestamps: true
