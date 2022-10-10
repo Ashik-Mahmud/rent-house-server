@@ -98,16 +98,10 @@ const getBlogById = async (req, res) => {
 // @access private
 
 const updateBlogById = async (req, res) => {
-  const { title, category, description, imageUrl, id } = req.body;
-  if (!title || !category || !description || !imageUrl || !id) {
-    return res.status(403).send({
-      success: false,
-      message: "All fields are required",
-    });
-  }
-
+  const {id} = req.params;
+ 
   try {
-    const result = await updateBlogByIdService(req.body);
+    const result = await updateBlogByIdService(req.body, id);
     if (!result)
       return res.status(403).send({
         success: false,
