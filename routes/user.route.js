@@ -81,6 +81,7 @@ router.post("/send-feature-request", VerifyToken, usersController.sendFeatureReq
 
 router.get("/admin", VerifyToken, VerifyAdmin, usersController.getUsers);
 router.patch("/admin/change-role", VerifyToken, VerifyAdmin, usersController.changeAdminRole)
+router.patch("/admin/change-status", VerifyToken, VerifyAdmin, usersController.changeAdminStatus)
 router.get("/me/:id", VerifyToken, usersController.getUserById);
 router.get("/houses", VerifyToken, usersController.getHouseByUserId);
 

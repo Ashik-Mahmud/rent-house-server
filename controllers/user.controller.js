@@ -499,19 +499,35 @@ const sendFeatureRequest = async (req, res) => {
 /* Change Admin Role By Admin */
 
 const changeAdminRole = async(req, res) =>{
-    const {role, id} = req.body;
+    const {query, id} = req.body;
     const user = await findUserByIdService(id);
     if(!user) return res.status(404).send({success:false, message: `User doesn't exist`})
-    if(user.role === role) return res.status(403).send({success: false, message: `This user already ${role === 'user' ? 'House Holder' : role}`})
+    if(user.role === query) return res.status(403).send({success: false, message: `This user already ${query === 'user' ? 'House Holder' : query}`})
 
-    user.role = role;
+    user.role = query;
     user.save();
     res.status(200).send({
         success: true,
-        message: `Congratulation! Now your ${role === 'user' ? 'House Holder' : role}` 
+        message: `Congratulation! Now your ${query === 'user' ? 'House Holder' : query}` 
     })    
 }
 
+
+/* Change Admin Status By Admin */
+
+const changeAdminStatus = async(req, res) =>{
+    const {query, id} = req.body;
+    const user = await findUserByIdService(id);
+    if(!user) return res.status(404).send({success:false, message: `User doesn't exist`})
+    if(user.status === query) return res.status(403).send({success: false, message: `This user already ${query}`})
+
+    user.status = query;
+    user.save();
+    res.status(200).send({
+        success: true,
+        message: `Congratulation! Now your ${query}` 
+    })    
+}
 
 
 
@@ -529,5 +545,6 @@ module.exports = {
   verifyResetPasswordMail,
   changePasswordWithoutOldPassword,
   sendFeatureRequest,
-  changeAdminRole
+  changeAdminRole,
+  changeAdminStatus
 };
