@@ -423,11 +423,23 @@ const getHouseByUserId = async (req, res) => {
 const getUsers = async (req, res) => {
   try {
     const users = await getAuthenticatedUsersService();
-    res.status(200).send({ success: true, message: "Get Users", data: users , count: users.length});
-  } catch (error) {
-    res.status(500).send({ success: false, message: "Server Error" });
-  }
+    
+    
+    if (users.length > 0) {
+        return res.status(200).send({ success: true, message: "Get Users", data: users , count: users.length});
+    }
+
+    res.status(404)
+        .json({ success: false, message: 'No House found, Please add a house first.' });
+
+
+    } catch (error) {   
+    console.log(error.message);
+    res.status(500).json({ success: false, message: 'Server Error' });
+    }
 };
+    
+
 
 // @routes GET /api/users/:id
 // @desc Get user by id
