@@ -129,10 +129,12 @@ const loginUser = async (req, res) => {
   try {
     //Check for existing user
     const user = await findUserByEmailService(email);
+    
     if (!user)
       return res
         .status(400)
         .json({ success: false, message: "User does not exist" });
+           
     
     if(user?.status === 'inactive') {
         return res
