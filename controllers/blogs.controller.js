@@ -127,6 +127,7 @@ const updateBlogById = async (req, res) => {
 
 const deleteBlogById = async (req, res) => {
   const { id } = req.params;
+   
   try {
     const result = await findBlogAndDeleteService(id);
     if (!result)
