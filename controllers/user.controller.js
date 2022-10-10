@@ -367,6 +367,7 @@ const updateProfile = async (req, res) => {
 
 const changeProfileImage = async (req, res, next) => {
   const { email } = req.body;
+    
   //Simple validation
   if (!email) {
     return res
@@ -376,6 +377,7 @@ const changeProfileImage = async (req, res, next) => {
   try {
     //Check for existing user
     const user = await findUserByEmailService(email);
+   
     if (!user)
       return res
         .status(400)
@@ -390,9 +392,10 @@ const changeProfileImage = async (req, res, next) => {
     res.send({
       success: true,
       message: "Profile picture updated successfully done.",
+      user: user
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Server Error" });
+    res.status(500).json({ success: false, message: "Server Error", error });
   }
 };
 

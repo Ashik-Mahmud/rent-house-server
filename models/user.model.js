@@ -30,8 +30,6 @@ const UserSchema = new mongoose.Schema(
     address: {
       type: String,
       trim: 0,
-      maxLength: [30, "Address cannot exceed 30 characters"],
-      minLength: [3, "Address must be at least 3 characters"],
     },
     phone: {
       type: String,
@@ -45,14 +43,11 @@ const UserSchema = new mongoose.Schema(
     },
     facebookLink: {
         type: String,
-        validate: {
-            validator: function (v) {
-              return validator.isURL(v);
-            },
-          },
+        trim: true,
     },
     twitterLink: {
         type: String,
+        trim: true,
         validate: {
             validator: function (v) {
               return validator.isURL(v);
@@ -61,6 +56,7 @@ const UserSchema = new mongoose.Schema(
     },
     instagramLink: {
         type: String,
+        trim: true,
         validate: {
             validator: function (v) {
               return validator.isURL(v);
