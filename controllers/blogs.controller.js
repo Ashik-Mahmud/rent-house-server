@@ -2,12 +2,12 @@
 // @desc Create a new post
 // @access Private
 
-import {
+const {
   findBlogAndDeleteService,
   findBlogByIdService,
   findBlogsByUserIdService,
   updateBlogByIdService,
-} from "../services/blogs.services";
+} = require("../services/blogs.services");
 
 const Blog = require("../models/blog.model");
 
@@ -39,7 +39,8 @@ const createBlog = async (req, res) => {
 
 const getBlogsByUserID = async (req, res) => {
   const { id } = req.params;
-
+  console.log(id);
+  
   try {
     if (!id)
       return res.status(403).send({ success: false, message: "Invalid ID" });

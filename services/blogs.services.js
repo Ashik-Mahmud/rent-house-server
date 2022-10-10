@@ -1,7 +1,7 @@
 const Blog = require("../models/blog.model");
 
 /* Find Blogs By User ID */
-exports.findBlogsByUserIdService = async (id) => {
+exports.findBlogsByUserIdService = async (id) => {      
   try {
     const blogs = await Blog.find({ author: id });
     const count = await Blog.countDocuments();
@@ -24,8 +24,8 @@ exports.findBlogByIdService = async (id) => {
 /* Update Blog By Blog ID */
 exports.updateBlogByIdService = async(data) =>{
     const {id, ...rest} = data;
-    const data = await Blog.findOneAndUpdate({_id: id}, rest);
-    return data;
+    const result = await Blog.findOneAndUpdate({_id: id}, rest);
+    return result;
 }
 
 /* Find Blogs ANd Delete Blog by ID */
