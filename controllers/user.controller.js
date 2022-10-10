@@ -427,22 +427,26 @@ const getHouseByUserId = async (req, res) => {
 // @desc Get all users
 // @access Private
 const getUsers = async (req, res) => {
-    const {role} = req.query;
-        
+    const {role, page, limit} = req.query;
+    
     let filter = {};
+    const skip = (page - 1) * parseInt(limit);   
     if (role === 'All') {
         filter = {};
     }else{
         filter.role = role;
+    } 
+    if(page || limit) {
+        filter.skip = skip;
+        filter.limit = Number(limit);
     }
-        
-   
     
   try {
     const users = await getAuthenticatedUsersService(filter);
+    const count = await User.countDocuments();
     
     if (users.length > 0) {
-        return res.status(200).send({ success: true, message: "Get Users", data: users , count: users.length});
+        return res.status(200).send({ success: true, message: "Get Users", data: users , count: count});
     }
 
     res.status(404)
