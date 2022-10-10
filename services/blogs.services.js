@@ -1,4 +1,5 @@
 const Blog = require("../models/blog.model");
+
 /* Find Blogs By User ID */
 exports.findBlogsByUserIdService = async (id) => {
   try {
@@ -25,4 +26,10 @@ exports.updateBlogByIdService = async(data) =>{
     const {id, ...rest} = data;
     const data = await Blog.findOneAndUpdate({_id: id}, rest);
     return data;
+}
+
+/* Find Blogs ANd Delete Blog by ID */
+exports.findBlogAndDeleteService = async(id) =>{
+    const result = await Blog.findOneAndDelete(id);
+    return result;
 }

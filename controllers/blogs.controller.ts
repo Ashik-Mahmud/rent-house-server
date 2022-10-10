@@ -3,6 +3,7 @@
 // @access Private
 
 import {
+  findBlogAndDeleteService,
   findBlogByIdService,
   findBlogsByUserIdService,
   updateBlogByIdService,
@@ -125,5 +126,38 @@ const updateBlogById = async (req, res) => {
   }
 };
 
+// @routes api/v1/blogs/delete/:id
+// @desc Delete Blog by ID
+// @access private
+
+const deleteBlogById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const result = await findBlogAndDeleteService(id);
+    if (!result)
+      return res.status(403).send({
+        success: false,
+        message: "No data found",
+      });
+
+    res.status(200).send({
+      success: true,
+      message: "blog successfully deleted",
+      data: result,
+    });
+  } catch (error) {
+    res.status(403).send({
+      success: false,
+      message: error,
+    });
+  }
+};
+
 /* Import controller */
-module.exports = { createBlog, getBlogsByUserID, getBlogById, updateBlogById };
+module.exports = {
+  createBlog,
+  getBlogsByUserID,
+  getBlogById,
+  updateBlogById,
+  deleteBlogById,
+};
