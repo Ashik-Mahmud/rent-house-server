@@ -39,13 +39,25 @@ const createBlog = async (req, res) => {
 
 const getBlogsByUserID = async (req, res) => {
   const { id } = req.params;
-  console.log(id);
+  const { page , limit } = req.query;
+  console.log(page, limit);
   
   try {
+
+    const filter = {}
+    if(id) filter.author = id;
+    if(!id && !page && !limit) return;
+
+    const skip = (parseInt(page)-1)*parseInt(limit);
+    if(page && limit){
+        filter.skip = skip;
+        filter.limit = limit;
+    }
+
     if (!id)
       return res.status(403).send({ success: false, message: "Invalid ID" });
 
-    const data = await findBlogsByUserIdService(id);
+    const data = await findBlogsByUserIdService(filter);
 
     if (!data)
       return res
@@ -162,6 +174,11 @@ const changeAvailable = async(req, res) => {
         if(!blog) return res.status(403).send({
             success: false,
             message: "No blog found this {ID}"
+        })
+
+        if(blog.status === status) return res.status(403).send({
+            success: false,
+            message: `Not change status Its already ${status}`
         })
 
         blog.status = status;
