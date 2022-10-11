@@ -35,3 +35,11 @@ exports.findBlogAndDeleteService = async (id) => {
   const result = await Blog.findOneAndDelete(id);
   return result;
 };
+
+
+/* Get All blog Services */
+
+exports.findBlogsService = async (filter) => {
+    const blogs = await Blog.find(filter).skip(filter.skip).limit(filter.limit).sort({ createdAt: -1 });
+    return blogs;
+};

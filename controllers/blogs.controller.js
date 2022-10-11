@@ -7,12 +7,12 @@ const {
   findBlogByIdService,
   findBlogsByUserIdService,
   updateBlogByIdService,
+  findBlogsService,
 } = require("../services/blogs.services");
 
 const Blog = require("../models/blog.model");
 
 const createBlog = async (req, res) => {
- 
   const { title, description, imageUrl, author, category } = req.body;
   try {
     var newBlogPost = new Blog({
@@ -39,30 +39,22 @@ const createBlog = async (req, res) => {
 
 const getBlogsByUserID = async (req, res) => {
   const { id } = req.params;
-  const { page , limit, q } = req.query;
-    
+  const { page, limit, q } = req.query;
+
   try {
+    const filter = {};
+    if (id) filter.author = id;
+    if (!id && !page && !limit) return;
 
-    const filter = {}
-    if(id) filter.author = id;
-    if(!id && !page && !limit) return;
-
-    if(q){
-      const regex = new RegExp(q, 'i');
-      filter.$or = [
-        { title: regex },
-        { category: regex }
-      ];
+    if (q) {
+      const regex = new RegExp(q, "i");
+      filter.$or = [{ title: regex }, { category: regex }];
     }
 
-    console.log(filter, q);
-    
-      
-
-    const skip = (parseInt(page)-1)*parseInt(limit);
-    if(page && limit){
-        filter.skip = skip;
-        filter.limit = limit;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    if (page && limit) {
+      filter.skip = skip;
+      filter.limit = limit;
     }
 
     if (!id)
@@ -121,8 +113,8 @@ const getBlogById = async (req, res) => {
 // @access private
 
 const updateBlogById = async (req, res) => {
-  const {id} = req.params;
- 
+  const { id } = req.params;
+
   try {
     const result = await updateBlogByIdService(req.body, id);
     if (!result)
@@ -150,7 +142,7 @@ const updateBlogById = async (req, res) => {
 
 const deleteBlogById = async (req, res) => {
   const { id } = req.params;
-   
+
   try {
     const blog = await findBlogAndDeleteService(id);
     if (!blog)
@@ -172,79 +164,115 @@ const deleteBlogById = async (req, res) => {
   }
 };
 
-
 // @routes api/v1/blogs/change-available/:id
 // @desc change availability for blogs
 // @access private
 
-const changeAvailable = async(req, res) => {
-    const {id} = req.params;
-    const {status} = req.query;
-    try {
-        const blog = await findBlogByIdService(id);
-        if(!blog) return res.status(403).send({
-            success: false,
-            message: "No blog found this {ID}"
-        })
+const changeAvailable = async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.query;
+  try {
+    const blog = await findBlogByIdService(id);
+    if (!blog)
+      return res.status(403).send({
+        success: false,
+        message: "No blog found this {ID}",
+      });
 
-        if(blog.status === status) return res.status(403).send({
-            success: false,
-            message: `Not change status Its already ${status}`
-        })
+    if (blog.status === status)
+      return res.status(403).send({
+        success: false,
+        message: `Not change status Its already ${status}`,
+      });
 
-        blog.status = status;
-        blog.save();
-        res.status(202).send({
-            success: true,
-            message: "Change Status in",
-            data: blog
-        })
-
-    } catch (error) {
-        
-    }
-}
-
+    blog.status = status;
+    blog.save();
+    res.status(202).send({
+      success: true,
+      message: "Change Status in",
+      data: blog,
+    });
+  } catch (error) {}
+};
 
 // @routes PATCH /api/v1/blogs/toggle-like/:id
 // @desc   Toggle like blog
 // @access Public
 const toggleLikeBlog = async (req, res) => {
-    try {
-      const { clicked } = req.query;
-      const blog = await findBlogByIdService(req.params.id);
-  
-      if (!blog) {
-        return res.status(404).json({
-          success: false,
-          message: "Blog not found",
-        });
-      }
+  try {
+    const { clicked } = req.query;
+    const blog = await findBlogByIdService(req.params.id);
 
-      if(blog.likes < 0) return res.status(403).send({success: false, message: "Thanks for extra dislike"});
-
-  
-      if (clicked === "true") {
-        blog.likes = blog.likes + 1;
-      } else {
-        blog.likes = blog.likes - 1;
-      }
-      await blog.save();
-      res.status(200).json({
-        success: true,
-        message: clicked === "true" ? "Liked Blog" : "Dislike Blog",
-        data: blog
-      });
-    } catch (error) {
-      res.status(500).json({
+    if (!blog) {
+      return res.status(404).json({
         success: false,
-        message: "Server Error",
+        message: "Blog not found",
       });
     }
-  };
+
+    if (blog.likes < 0)
+      return res
+        .status(403)
+        .send({ success: false, message: "Thanks for extra dislike" });
+
+    if (clicked === "true") {
+      blog.likes = blog.likes + 1;
+    } else {
+      blog.likes = blog.likes - 1;
+    }
+    await blog.save();
+    res.status(200).json({
+      success: true,
+      message: clicked === "true" ? "Liked Blog" : "Dislike Blog",
+      data: blog,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
+
+// @routes GET api/v1/blogs/all
+// @desc Get All Blogs
+// @access Public
+const getAllBlog = async (req, res) => {
   
+  try {
+    const { page, limit, q } = req.query;
+    const filter = {};
+    filter.status = "active";
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    if (page && limit) {
+      filter.skip = skip;
+      filter.limit = Number(limit);
+    }
 
-
+    if (q) {
+      const regex = new RegExp(q, "i");
+      filter.$or = [{ title: regex }, { category: regex }];
+    }
+    const count = await Blog.countDocuments({ ...filter, status: "active" });
+    const data = await findBlogsService(filter);
+    if (!data)
+      return res.status(403).send({
+        success: false,
+        message: "No Blogs found",
+      });
+    res.status(200).send({
+      success: true,
+      message: "Found Blogs",
+      data,
+      count
+    });
+  } catch (error) {
+    res.status(403).send({
+      success: false,
+      message: error,
+    });
+  }
+};
 
 /* Import controller */
 module.exports = {
@@ -254,5 +282,6 @@ module.exports = {
   updateBlogById,
   deleteBlogById,
   changeAvailable,
-  toggleLikeBlog
+  toggleLikeBlog,
+  getAllBlog,
 };
