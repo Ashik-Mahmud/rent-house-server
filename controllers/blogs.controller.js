@@ -12,7 +12,7 @@ const {
 const Blog = require("../models/blog.model");
 
 const createBlog = async (req, res) => {
-  console.log(req.body);
+ 
   const { title, description, imageUrl, author, category } = req.body;
   try {
     var newBlogPost = new Blog({
@@ -20,7 +20,7 @@ const createBlog = async (req, res) => {
       category,
       description,
       imageUrl,
-      author,
+      author: author?.id || author,
     });
     await newBlogPost.save();
     res.status(201).json({
