@@ -39,14 +39,25 @@ const createBlog = async (req, res) => {
 
 const getBlogsByUserID = async (req, res) => {
   const { id } = req.params;
-  const { page , limit } = req.query;
-  console.log(page, limit);
-  
+  const { page , limit, q } = req.query;
+    
   try {
 
     const filter = {}
     if(id) filter.author = id;
     if(!id && !page && !limit) return;
+
+    if(q){
+      const regex = new RegExp(q, 'i');
+      filter.$or = [
+        { title: regex },
+        { category: regex }
+      ];
+    }
+
+    console.log(filter, q);
+    
+      
 
     const skip = (parseInt(page)-1)*parseInt(limit);
     if(page && limit){

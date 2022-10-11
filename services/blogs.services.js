@@ -4,8 +4,8 @@ const Blog = require("../models/blog.model");
 exports.findBlogsByUserIdService = async (filter) => {
        
   try {
-    const blogs = await Blog.find({ author: filter?.author }).skip(filter?.skip).limit(Number(filter?.limit));
-    const count = await Blog.countDocuments();
+    const blogs = await Blog.find(filter).skip(filter?.skip).limit(Number(filter?.limit));
+    const count = await Blog.countDocuments(filter);
 
     return { blogs, count };
   } catch (err) {
