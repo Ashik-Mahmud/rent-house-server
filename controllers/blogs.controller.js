@@ -129,17 +129,17 @@ const deleteBlogById = async (req, res) => {
   const { id } = req.params;
    
   try {
-    const result = await findBlogAndDeleteService(id);
-    if (!result)
+    const blog = await findBlogAndDeleteService(id);
+    if (!blog)
       return res.status(403).send({
         success: false,
         message: "No data found",
       });
 
+    await blog.remove();
     res.status(200).send({
       success: true,
       message: "blog successfully deleted",
-      data: result,
     });
   } catch (error) {
     res.status(403).send({
