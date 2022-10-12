@@ -55,4 +55,51 @@ const getAllBlogRequestsUsers = async( req, res ) => {
 }
 
 
-module.exports = {createBlogRequest, getAllBlogRequestsUsers}
+/* Controller for Confirm Request for blog  */
+const approveBlogRequest = async( req, res ) => {
+    try {
+        const user = await User.findById(req.query.authorId);
+        const blog = await BlogRequest.findById(req.params.id);
+        console.log("req id", blog._id)
+        console.log("user id", user._id);
+        if(blog.status === "approved") {
+              return res.status(401).json({message: "Request Already Approved"});
+        }
+        blog.status = "approved";
+        user.blogAllowed = true;
+        user.isRequestSent = undefined;
+        await blog.save();
+        await user.save();
+        return res.status(200).json({success: true, message: 'Your request has been approve by the Admin'})
+        }
+    catch(err)
+    {
+        return res.status(403).send({success: false, message: `Something went. Please try again ${err}`});
+    }
+
+}
+
+
+
+/* Deny User Request */
+const rejectBlogRequest = async( req, res ) => {
+    try {
+        const user = await User.findById(req.query.authorId);
+        const blog = await BlogRequest.findById(req.params.id);
+        if(!blog){
+            return res.status(401).json({message: "blog request not found."});
+        }
+        user.blogAllowed = false;
+        user.isRequestSent = undefined;
+        await blog.remove();
+        await user.save();
+        return res.status(200).json({success: true, message: 'Your request has been removed'})
+    } catch (error) {
+        return res.status(403).send({success: false, message: `Something went. Please try again ${error}`});
+    }
+}
+
+
+
+
+module.exports = {createBlogRequest, getAllBlogRequestsUsers, approveBlogRequest, rejectBlogRequest}
