@@ -20,7 +20,7 @@ router.get("/all-request", VerifyToken, VerifyAdmin, requestController.getAllReq
 // @routes put api/v1/request/approve-blog/:id
 // @desc Approve Blog Request
 // @access private
-router.patch("/approve-blog/:id", VerifyToken, VerifyAdmin, requestController.approveBlogRequest);
+router.patch("/approve-request/:id", VerifyToken, VerifyAdmin, requestController.approveRequest);
 
 // @routes delete api/v1/request/reject-blog/:id
 // @desc Rejection Blog Request

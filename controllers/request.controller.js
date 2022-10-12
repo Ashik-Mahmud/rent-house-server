@@ -54,21 +54,18 @@ const createBlogRequest = async (req, res) => {
 /* Get All Blog Request Users */
 const getAllRequestsUsers = async (req, res) => {
   const { page, limit, role } = req.query;
- console.log(page, limit, role);
  
   try {
     const filter = {
         filter: {reqFor: role}
     };
-    console.log(filter.filter);
-
+   
     if (page || limit) {
       const skip = (page - 1) * Number(limit);
       filter.skip = Number(skip);
       filter.limit = Number(limit);
     }
-    console.log(filter);
-    
+       
     const blogRequest = await getAllRequestService(filter);
     const count = await BlogRequest.count(filter.filter);
     if (!blogRequest) {
@@ -90,7 +87,9 @@ const getAllRequestsUsers = async (req, res) => {
 };
 
 /* Controller for Confirm Request for blog  */
-const approveBlogRequest = async (req, res) => {
+const approveRequest = async (req, res) => {
+    const { role } = req.query;
+
   try {
     const user = await User.findById(req.query.authorId);
     const blog = await BlogRequest.findById(req.params.id);
@@ -100,8 +99,13 @@ const approveBlogRequest = async (req, res) => {
       return res.status(401).json({ message: "Request Already Approved" });
     }
     blog.status = "approved";
-    user.blogAllowed = true;
-    user.isBlogRequestSent = undefined;
+    if(role === 'blog'){
+        user.blogAllowed = true;
+        user.isBlogRequestSent = undefined;
+    }else{
+        user.isHouseHolderReqSent = undefined;
+        user.role = 'user';
+    }
     await blog.save();
     await user.save();
     return res
@@ -122,14 +126,20 @@ const approveBlogRequest = async (req, res) => {
 
 /* Deny User Request */
 const rejectBlogRequest = async (req, res) => {
+    const { role } = req.query;
   try {
     const user = await User.findById(req.query.authorId);
     const blog = await BlogRequest.findById(req.params.id);
     if (!blog) {
       return res.status(401).json({ message: "blog request not found." });
     }
-    user.blogAllowed = false;
-    user.isBlogRequestSent = undefined;
+    if(role === 'blog'){
+        user.isBlogRequestSent = undefined;
+        user.blogAllowed = false;
+    }else{
+        user.isHouseHolderReqSent = undefined;
+        user.role = 'customer';
+    }
     await blog.remove();
     await user.save();
     return res
@@ -202,7 +212,7 @@ const createHouseHolderRequest = async (req, res) => {
 module.exports = {
   createBlogRequest,
   getAllRequestsUsers,
-  approveBlogRequest,
+  approveRequest,
   rejectBlogRequest,
   createHouseHolderRequest,
 };
