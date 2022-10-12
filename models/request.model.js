@@ -14,11 +14,7 @@ const blogRequestSchema = new Schema(
       trim: true,
       required: [true, "Notes cannot be empty"],
     },
-    status: {
-      type: String,
-      default: "pending",
-      enum: ["pending", "approved", "rejected"],
-    }, // pending
+    
     author: { type: Schema.Types.ObjectId, ref: "user", required: true },
   },
   { timestamps: true }

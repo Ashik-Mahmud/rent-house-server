@@ -10,3 +10,14 @@ exports.sendRequestForBlogService = async(req) => {
         throw new Error(err.message);
     }
 }
+
+/* Get All blog Request Services */
+exports.getAllBlogRequestService = async(req) => {
+    try{
+        const request = await BlogRequest.find({})
+        return request;
+    }
+    catch(err){
+        throw new Error(err.message);
+    }
+}
