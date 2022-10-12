@@ -53,7 +53,7 @@ const createBlogRequest = async (req, res) => {
 
 /* Get All Blog Request Users */
 const getAllRequestsUsers = async (req, res) => {
-  const { page, limit, role } = req.query;
+  const { page, limit, role, q } = req.query;
  
   try {
     const filter = {
@@ -65,9 +65,16 @@ const getAllRequestsUsers = async (req, res) => {
       filter.skip = Number(skip);
       filter.limit = Number(limit);
     }
+
+    if(q){
+        filter.filter.$text = {
+            $search: q,
+          };
+    }
        
     const blogRequest = await getAllRequestService(filter);
-    const count = await BlogRequest.count(filter.filter);
+    const count = await BlogRequest.countDocuments(filter.filter);
+    const unapprovedCount = await BlogRequest.countDocuments({status: 'pending'});
     if (!blogRequest) {
       return res.status(400).json({ message: "Blog Request not Found" });
     }
@@ -78,6 +85,7 @@ const getAllRequestsUsers = async (req, res) => {
         message: "Get All Request",
         req: blogRequest,
         count,
+        unapprovedCount,
       });
   } catch (error) {
     return res

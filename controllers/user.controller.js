@@ -510,6 +510,8 @@ const changeAdminRole = async(req, res) =>{
 
     if(query === 'admin'){
         user.blogAllowed = true;
+    }else{
+        user.blogAllowed = false;
     }
     user.role = query;
     user.save();
