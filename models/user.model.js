@@ -98,6 +98,10 @@ const UserSchema = new mongoose.Schema(
       default: "active",
       enum: ["active", "inactive"],
     },
+    isRequestSent: {
+        type: Boolean,
+        default: false,
+    }
   },
   {
     timestamps: true,

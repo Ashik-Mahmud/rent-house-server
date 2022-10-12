@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 const validate = require("validator");
 
-const requestSchema = new Schema(
+const blogRequestSchema = new Schema(
   {
     blogUrl: {
       type: String,
       trim: true,
-      validate: [validate.isURL, "Invalid URL"],
+      
     },
     notes: {
       type: String,
@@ -19,10 +19,10 @@ const requestSchema = new Schema(
       default: "pending",
       enum: ["pending", "approved", "rejected"],
     }, // pending
-    author: { type: Schema.Types.ObjectId, ref: "user" },
+    author: { type: Schema.Types.ObjectId, ref: "user", required: true },
   },
   { timestamps: true }
 );
 
-const Request = mongoose.model("request", requestSchema);
-module.exports = Request;
+const BlogRequest = mongoose.model("blogRequest", blogRequestSchema);
+module.exports = BlogRequest;
