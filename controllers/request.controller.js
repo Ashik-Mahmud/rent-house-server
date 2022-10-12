@@ -31,8 +31,17 @@ const createBlogRequest = async(req, res) => {
 
 /* Get All Blog Request Users */
 const getAllBlogRequestsUsers = async( req, res ) => {
+    const {page, limit} = req.query;
+    
     try {
-        const blogRequest = await getAllBlogRequestService();
+        const filter = {};
+
+        if(page || limit) {
+            const skip = (page-1) * Number(limit);
+            filter.skip = Number(skip);
+            filter.limit = Number(limit);
+        }
+        const blogRequest = await getAllBlogRequestService(filter);
         if(!blogRequest){
             return res.status(400).json({message: "Blog Request not Found"});
         }

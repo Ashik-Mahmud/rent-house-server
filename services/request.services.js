@@ -12,9 +12,9 @@ exports.sendRequestForBlogService = async(req) => {
 }
 
 /* Get All blog Request Services */
-exports.getAllBlogRequestService = async(req) => {
+exports.getAllBlogRequestService = async(filter) => {
     try{
-        const request = await BlogRequest.find({})
+        const request = await BlogRequest.find({}).skip(filter.skip).limit(filter.limit).populate("author")
         return request;
     }
     catch(err){
