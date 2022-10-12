@@ -14,7 +14,7 @@ exports.sendRequestForBlogService = async(req) => {
 /* Get All blog Request Services */
 exports.getAllBlogRequestService = async(filter) => {
     try{
-        const request = await BlogRequest.find({}).skip(filter.skip).limit(filter.limit).populate("author")
+        const request = await BlogRequest.find({}).skip(filter.skip).limit(filter.limit).populate("author", "name email phone isVerified role _id");
         return request;
     }
     catch(err){
