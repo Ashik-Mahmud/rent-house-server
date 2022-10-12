@@ -1,3 +1,4 @@
+const BlogRequest = require("../models/request.model");
 const User = require("../models/user.model");
 const { sendRequestForBlogService, getAllBlogRequestService } = require("../services/request.services");
 
@@ -32,7 +33,7 @@ const createBlogRequest = async(req, res) => {
 /* Get All Blog Request Users */
 const getAllBlogRequestsUsers = async( req, res ) => {
     const {page, limit} = req.query;
-    
+       
     try {
         const filter = {};
 
@@ -42,10 +43,11 @@ const getAllBlogRequestsUsers = async( req, res ) => {
             filter.limit = Number(limit);
         }
         const blogRequest = await getAllBlogRequestService(filter);
+        const count = await BlogRequest.count();
         if(!blogRequest){
             return res.status(400).json({message: "Blog Request not Found"});
         }
-        return res.status(200).send({ success: true, message: "All Blog Request", req: blogRequest });       
+        return res.status(200).send({ success: true, message: "All Blog Request", req: blogRequest, count });       
 
     } catch (error) {
          return res.status(500).send({success: false, message: `Something went. Please try again`});
