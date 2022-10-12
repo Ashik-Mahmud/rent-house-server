@@ -39,7 +39,7 @@ const UserSchema = new mongoose.Schema(
     role: {
       type: String,
       default: "user",
-      enum: ["user", "admin", 'customer'],
+      enum: ["user", "admin", 'customer', 'manager'],
     },
     facebookLink: {
         type: String,
