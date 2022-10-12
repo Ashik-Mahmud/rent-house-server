@@ -14,6 +14,7 @@ const reviewRouter = require('../routes/review.route');
 const questionRouter = require('../routes/question.route');
 const reportHouseRouter = require("../routes/reportHouse.route")
 const blogRouter = require("../routes/blogs.route")
+const requestRouter = require("../routes/request.route")
 /* Init Routes */
 app.use("/api/v1/houses", houseRouter);
 app.use("/api/v1/users", userRouter);
@@ -22,6 +23,7 @@ app.use("/api/v1/reviews", reviewRouter);
 app.use("/api/v1/questions", questionRouter);
 app.use("/api/v1/report-house", reportHouseRouter)
 app.use("/api/v1/blogs", blogRouter);
+app.use("/api/v1/request", requestRouter);
 
 
 
