@@ -15,7 +15,7 @@ router.post("/for-blog", VerifyToken, requestController.createBlogRequest);
 // @routs get api/v1/request/all-request
 // @desc Get All Blog Request
 // @access private
-router.get("/all-request", VerifyToken, VerifyAdmin, requestController.getAllBlogRequestsUsers);
+router.get("/all-request", VerifyToken, VerifyAdmin, requestController.getAllRequestsUsers);
 
 // @routes put api/v1/request/approve-blog/:id
 // @desc Approve Blog Request
@@ -26,6 +26,11 @@ router.patch("/approve-blog/:id", VerifyToken, VerifyAdmin, requestController.ap
 // @desc Rejection Blog Request
 // @access private
 router.delete("/cancel-request/:id", VerifyToken, VerifyAdmin, requestController.rejectBlogRequest);
+
+//@routes Post api/v1/request/for-house
+//@desc Send request for house
+//@access private
+router.post("/for-house", VerifyToken, requestController.createHouseHolderRequest);
 
 
 module.exports = router;

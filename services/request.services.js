@@ -1,9 +1,10 @@
-const BlogRequest = require("../models/request.model");
+const Request = require("../models/request.model");
+
 
 /* Send Request Services */
-exports.sendRequestForBlogService = async(req) => {
+exports.sendRequestService = async(req) => {
     try {
-        const request = await BlogRequest.create({...req.body, author: req.body.author.id});
+        const request = await Request.create({...req.body, author: req.body.author.id});
         return request;
     }
     catch(err) {
@@ -12,9 +13,9 @@ exports.sendRequestForBlogService = async(req) => {
 }
 
 /* Get All blog Request Services */
-exports.getAllBlogRequestService = async(filter) => {
+exports.getAllRequestService = async(filter) => {
     try{
-        const request = await BlogRequest.find({}).skip(filter.skip).limit(filter.limit).populate("author", "name email phone isVerified role _id");
+        const request = await Request.find(filter.filter).skip(filter.skip).limit(filter.limit).populate("author", "name avatar profileImage email phone isVerified role _id");
         return request;
     }
     catch(err){

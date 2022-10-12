@@ -98,10 +98,14 @@ const UserSchema = new mongoose.Schema(
       default: "active",
       enum: ["active", "inactive"],
     },
-    isRequestSent: {
+    isBlogRequestSent: {
         type: Boolean,
         default: false,
-    }
+    },
+    isHouseHolderReqSent: {
+        type: Boolean,
+        default: false,
+    },
   },
   {
     timestamps: true,
