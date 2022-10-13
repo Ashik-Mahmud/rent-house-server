@@ -1,16 +1,14 @@
+const User = require("../models/user.model")
 
-const User = require('../models/user.model' )
-const VerifyAdmin = async(req, res, next) => {
-
+const VerifyHouseHolder = async(req, res, next) =>{
     const user = await User.findById(req.user.id)
-        
-    if(user.role !== "admin"){
+    if(user.role !== "user"){
         return res.status(401).json({
             success: false,
             message: "Not authorized"
         })
     }
-    next();
+    next()
 }
 
-module.exports = VerifyAdmin;
+export default VerifyHouseHolder;

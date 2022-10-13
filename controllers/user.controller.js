@@ -18,6 +18,7 @@ const {
   sendVerificationEmailWithResetLink,
   sendEmailForFeatureRequest,
 } = require("../utils/sendEmail");
+const { default: mongoose } = require("mongoose");
 
 //@routes POST /api/users
 //@desc Register a user
@@ -469,8 +470,10 @@ const getUsers = async (req, res) => {
 // @desc Get user by id
 // @access Private
 const getUserById = async (req, res) => {
+    const { id } = req.params;  
+    
   try {
-    const user = await findUserByIdService(req.params.id);
+    const user = await findUserByIdService(id);
     res.status(200).send({ success: true, data: user });
   } catch (error) {
     res.status(500).send({ success: false, message: "Server Error" });
