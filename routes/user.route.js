@@ -6,7 +6,8 @@ const rateLimit = require('express-rate-limit')
 /* Import Controllers */
 const usersController = require("../controllers/user.controller");
 const VerifyToken = require("../middlewares/VerifyToken");
-const VerifyAdmin = require("../middlewares/VerifyAdmin")
+const VerifyAdmin = require("../middlewares/VerifyAdmin");
+const VerifySupAdmin = require("../middlewares/VerifySupAdmin");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -79,10 +80,10 @@ router.post("/send-feature-request", VerifyToken, usersController.sendFeatureReq
 
 
 
-router.get("/admin", VerifyToken, VerifyAdmin, usersController.getUsers);
-router.patch("/admin/change-role", VerifyToken, VerifyAdmin, usersController.changeAdminRole)
-router.patch("/admin/change-status", VerifyToken, VerifyAdmin, usersController.changeAdminStatus)
-router.delete("/admin/delete/:id", VerifyToken, VerifyAdmin, usersController.deleteAdminUser)
+router.get("/admin", VerifyToken, VerifySupAdmin, usersController.getUsers);
+router.patch("/admin/change-role", VerifyToken, VerifySupAdmin, usersController.changeAdminRole)
+router.patch("/admin/change-status", VerifyToken, VerifySupAdmin, usersController.changeAdminStatus)
+router.delete("/admin/delete/:id", VerifyToken, VerifySupAdmin, usersController.deleteAdminUser)
 
 router.get("/me/:id", VerifyToken, usersController.getUserById);
 router.get("/houses", VerifyToken, usersController.getHouseByUserId);

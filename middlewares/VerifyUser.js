@@ -1,11 +1,14 @@
+const User = require("../models/user.model");
+
 const VerifyUser = async(req, res, next) => {
-    if(req.user.role !== "user"){
+    const user = await User.findById(req.user.id)
+    if(user.role !== "user"){
         return res.status(401).json({
             success: false,
-            message:  "Not authorized"
+            message: "Not authorized"
         })
     }
-    next();
+    next()
 }
 
 module.exports = VerifyUser;

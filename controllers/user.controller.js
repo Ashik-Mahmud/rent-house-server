@@ -511,7 +511,7 @@ const changeAdminRole = async(req, res) =>{
     if(!user) return res.status(404).send({success:false, message: `User doesn't exist`})
     if(user.role === query) return res.status(403).send({success: false, message: `This user already ${query === 'user' ? 'House Holder' : query}`})
 
-    if(query === 'admin'){
+    if(query === 'admin' || query === 'manager'){
         user.blogAllowed = true;
     }else{
         user.blogAllowed = false;
