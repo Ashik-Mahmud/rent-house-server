@@ -19,6 +19,9 @@ const {
   sendEmailForFeatureRequest,
 } = require("../utils/sendEmail");
 const { default: mongoose } = require("mongoose");
+const House = require("../models/house.model");
+const Blog = require("../models/blog.model");
+const { Reviews } = require("../models/review.model");
 
 //@routes POST /api/users
 //@desc Register a user
@@ -559,6 +562,30 @@ const deleteAccountByUser = async(req, res)=>{
     const id = req.user.id;   
     const user = await findUserByIdService(id);
     if(!user) return res.status(404).send({success:false, message: `User doesn't exist`})
+
+    /* Remove House For if they house holder */
+    if(user.role === 'user'){
+        const houses = await House.find({owner: user._id});
+        houses.forEach(async house => {
+            await house.remove();
+        })
+    }
+    /* Remove Articles for particular Users */
+    const articles = await Blog.find({author: user._id});
+    if(articles){
+      articles.forEach(async article => {
+        await article.remove();
+      })
+    }
+
+    /* Remove Reviews for this users */
+    const reviews = await Reviews.find({'author.userId': user._id});
+    if(reviews){
+        reviews.forEach(async review => {
+            await review.remove();
+        })
+    }
+
     await user.remove();
     res.status(200).send({
         success: true,
