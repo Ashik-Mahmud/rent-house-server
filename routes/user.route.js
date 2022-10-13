@@ -87,5 +87,6 @@ router.delete("/admin/delete/:id", VerifyToken, VerifySupAdmin, usersController.
 
 router.get("/me/:id", VerifyToken, usersController.getUserById);
 router.get("/houses", VerifyToken, usersController.getHouseByUserId);
+router.delete("/delete-account/:id", VerifyToken, usersController.deleteAccountByUser);
 
 module.exports = router;

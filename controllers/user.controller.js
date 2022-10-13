@@ -554,6 +554,21 @@ const deleteAdminUser = async(req, res) =>{
 }
 
 
+/* Delete Account by own account holder */
+const deleteAccountByUser = async(req, res)=>{
+    const id = req.user.id;   
+    const user = await findUserByIdService(id);
+    if(!user) return res.status(404).send({success:false, message: `User doesn't exist`})
+    await user.remove();
+    res.status(200).send({
+        success: true,
+        message: `User has been deleted`
+    })
+}
+
+
+
+
 
 
 module.exports = {
@@ -572,5 +587,6 @@ module.exports = {
   sendFeatureRequest,
   changeAdminRole,
   changeAdminStatus,
-  deleteAdminUser
+  deleteAdminUser,
+  deleteAccountByUser
 };
