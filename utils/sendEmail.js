@@ -36,6 +36,7 @@ const sendHouseAddedEmail = async (email, name) => {
 };
 
 /* Sent Bulk Mail */
+
 const sendBulkEmailForAllUsers = async (emails, subject, message) => {
   var emailFormat = {
     from: process.env.EMAIL_ADDRESS,
@@ -43,13 +44,8 @@ const sendBulkEmailForAllUsers = async (emails, subject, message) => {
     subject: subject,
     text: message,
     html: `
-        <div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
-            <p style="font-weight: bold">Hello Folks,</p>
+        <div style="padding: 3rem; font-family: Poppins;font-size: 16px;border: 10px solid transparent;border-image:url(https://www.w3schools.com/cssref/border.png) 35 stretch">
             <p>${message}</p>
-            <p>Regards - <br/> <a href="https://tools-manufactures.web.app" target="_blank" >Rent House</a></p>
-            <address>Rangpur Road, Gobindagonj, Gaibandha</address>
-            <p>Mobile: +8801875474547</p>
-            <p>Email: rent@house.com</p>
         </div>
         `,
   };
