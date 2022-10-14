@@ -78,7 +78,7 @@ const rejectHouse = async (req, res) => {
 // @access Private
 const getAllUsers = async (req, res) => {
     try {
-        const users = await getAllUsersService({});
+        const users = await getAllUsersService({status: 'active', isVerified: true});
         res.status(200).json({
             success: true,
             users
@@ -165,22 +165,18 @@ const deleteUser = async (req, res) => {
 // @desc Send email to users
 // @access Private
 const sendEmailToUsers = async (req, res) => {
+    
+    
     try {
-        const {isAllUsers=true, subject, content } = req.body;
-        if(!subject || !content){
+        const {userEmails, subject, content } = req.body;
+        if(!subject || !content || !userEmails){
             return res.status(400).json({
                 success: false,
                 message: "Please enter all fields"
             })
         }
-        let emails = "";
-        if(isAllUsers){
-         const users = await getActiveUsersService();
-         emails = users.map(user => user.email).join(",");
-        }else{
-            emails = req.body.emails;
-        }   
-        await sendBulkEmailForAllUsers(emails, subject, content);
+                
+        await sendBulkEmailForAllUsers(userEmails, subject, content);
         res.status(200).json({
             success: true,
             message: "Send emails successfully"
