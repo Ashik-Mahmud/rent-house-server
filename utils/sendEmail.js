@@ -37,14 +37,15 @@ const sendHouseAddedEmail = async (email, name) => {
 
 /* Sent Bulk Mail */
 
-const sendBulkEmailForAllUsers = async (emails, subject, message) => {
+const sendBulkEmailForAllUsers = async (emails, subject, message, role) => {
   var emailFormat = {
     from: process.env.EMAIL_ADDRESS,
     to: emails,
-    subject: subject,
+    subject: subject + ' by ' + role,
     text: message,
     html: `
         <div style="padding: 3rem; font-family: Poppins;font-size: 16px;border: 10px solid transparent;border-image:url(https://www.w3schools.com/cssref/border.png) 35 stretch">
+
             <p>${message}</p>
         </div>
         `,

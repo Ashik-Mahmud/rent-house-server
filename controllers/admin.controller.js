@@ -168,6 +168,7 @@ const sendEmailToUsers = async (req, res) => {
     
     
     try {
+        const {role} = req.user;
         const {userEmails, subject, content } = req.body;
         if(!subject || !content || !userEmails){
             return res.status(400).json({
@@ -176,7 +177,7 @@ const sendEmailToUsers = async (req, res) => {
             })
         }
                 
-        await sendBulkEmailForAllUsers(userEmails, subject, content);
+        await sendBulkEmailForAllUsers(userEmails, subject, content, role);
         res.status(200).json({
             success: true,
             message: "Send emails successfully"
