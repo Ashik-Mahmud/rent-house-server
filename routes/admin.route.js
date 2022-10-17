@@ -4,7 +4,7 @@ const router = require('express').Router();
 const adminController = require('../controllers/admin.controller');
 const VerifyAdmin = require('../middlewares/VerifyAdmin');
 const VerifyToken = require('../middlewares/VerifyToken');
-
+const VerifySupAdmin = require("../middlewares/VerifySupAdmin")
 /* Init Routes */
 router.patch('/accept/:id', VerifyToken, VerifyAdmin, adminController.acceptHouse);
 router.patch('/reject/:id', VerifyToken, VerifyAdmin, adminController.rejectHouse);
@@ -13,5 +13,6 @@ router.patch("/action-user/:id", VerifyToken, VerifyAdmin, adminController.actio
 router.delete("/delete-user/:id", VerifyToken, VerifyAdmin, adminController.deleteUser);
 router.post("/emails/send", VerifyToken, VerifyAdmin, adminController.sendEmailToUsers);
 router.patch("/make-admin/:id", VerifyToken, VerifyAdmin, adminController.makeAdmin)
+router.post("/change-app-name", VerifyToken, VerifySupAdmin, adminController.changeAppName)
 
 module.exports = router;

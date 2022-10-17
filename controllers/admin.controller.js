@@ -220,5 +220,28 @@ const makeAdmin = async(req, res) =>{
 }
 
 
+/* Controller for change app name */
+const changeAppName = async(req ,res ) =>{
+    const {appName} = req.body;
+    try{
+        const app = await AppName.findOne();
+        app.name = appName;
+        await app.save();
+        res.status(200).send({
+            success: true,
+            message: "App name changed successfully"
+        })
+        
+    }catch(err){
+        res.status(404).send({
+            success: false,
+            message: "Server Error"+ err.message
+        })
+    }
+}
 
-module.exports = { acceptHouse, rejectHouse, getAllUsers, actionUser, deleteUser, sendEmailToUsers, makeAdmin };
+
+
+
+
+module.exports = { acceptHouse, rejectHouse, getAllUsers, actionUser, deleteUser, sendEmailToUsers, makeAdmin, changeAppName };
