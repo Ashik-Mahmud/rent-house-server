@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const AppSchema = new Schema({
     name: {
         type: String,
-        required: true
+        trim: true,
     },
     logo: {
         type: String,
@@ -17,6 +17,6 @@ const AppSchema = new Schema({
 
 }, {timestamps: true});
 
-const AppOptions = mongoose.model("AppOptions", AppSchema);
-module.exports = AppOptions;
+const AppOption = mongoose.model("options", AppSchema);
+module.exports = AppOption;
 

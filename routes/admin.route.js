@@ -15,4 +15,9 @@ router.post("/emails/send", VerifyToken, VerifyAdmin, adminController.sendEmailT
 router.patch("/make-admin/:id", VerifyToken, VerifyAdmin, adminController.makeAdmin)
 router.post("/change-app-name", VerifyToken, VerifySupAdmin, adminController.changeAppName)
 
+
+// public routes
+router.get("/app-options",  adminController.getAppOptions)
+
+
 module.exports = router;
