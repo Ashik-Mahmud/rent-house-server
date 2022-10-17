@@ -2,6 +2,7 @@
 // @routes /api/v1/admin/accept
 // @desc Accept house
 
+const AppOptions = require("../models/app.model");
 const { getAllUsersService, findByIdUserService, getActiveUsersService } = require("../services/admin.services");
 const { findByIdHouseService } = require("../services/house.services");
 const { sendBulkEmailForAllUsers } = require("../utils/sendEmail");
@@ -219,19 +220,18 @@ const makeAdmin = async(req, res) =>{
     }
 }
 
-
 /* Controller for change app name */
 const changeAppName = async(req ,res ) =>{
     const {appName} = req.body;
     try{
-        const app = await AppName.findOne();
+        const app = await AppOptions.findOne();
         app.name = appName;
         await app.save();
         res.status(200).send({
             success: true,
             message: "App name changed successfully"
         })
-        
+
     }catch(err){
         res.status(404).send({
             success: false,
