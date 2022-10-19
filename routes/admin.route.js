@@ -8,6 +8,7 @@ const VerifySupAdmin = require("../middlewares/VerifySupAdmin")
 /* Init Routes */
 router.patch('/accept/:id', VerifyToken, VerifyAdmin, adminController.acceptHouse);
 router.patch('/reject/:id', VerifyToken, VerifyAdmin, adminController.rejectHouse);
+router.delete('/house/delete/:id', VerifyToken, VerifyAdmin, adminController.deleteHouseByAdmin);
 router.get("/users", VerifyToken, VerifyAdmin, adminController.getAllUsers);
 router.patch("/action-user/:id", VerifyToken, VerifyAdmin, adminController.actionUser);
 router.delete("/delete-user/:id", VerifyToken, VerifyAdmin, adminController.deleteUser);

@@ -9,7 +9,10 @@ const {
   findHousesBySlugService,
 } = require("../services/admin.services");
 const { findByIdHouseService } = require("../services/house.services");
-const { sendBulkEmailForAllUsers, sendEmailWithRejectNotes } = require("../utils/sendEmail");
+const {
+  sendBulkEmailForAllUsers,
+  sendEmailWithRejectNotes,
+} = require("../utils/sendEmail");
 
 // @access Private
 const acceptHouse = async (req, res) => {
@@ -57,8 +60,9 @@ const rejectHouse = async (req, res) => {
       });
     }
     const author = {
-        name: house?.owner?.name, email: house?.owner?.email
-    }
+      name: house?.owner?.name,
+      email: house?.owner?.email,
+    };
     if (house.status !== "pending" && house.status !== "approved") {
       return res.status(400).json({
         success: false,
@@ -71,11 +75,33 @@ const rejectHouse = async (req, res) => {
       success: true,
       message: "House rejected successfully",
     });
-    sendEmailWithRejectNotes(notes, author)
+    sendEmailWithRejectNotes(notes, author);
   } catch (error) {
     res.status(500).json({
       success: false,
       message: "Server Error",
+    });
+  }
+};
+
+/* Delete House by ID for Admin or Super Admin */
+const deleteHouseByAdmin = async (req, res) => {
+  try {
+    const house = await findByIdHouseService(req.params.id);
+    if (!house)
+      return res.status(404).send({
+        success: false,
+        message: `No house found.`,
+      });
+    await house.remove();
+    res.status(202).send({
+      success: false,
+      message: `House deleted successfully done.`,
+    });
+  } catch (err) {
+    res.status(404).send({
+      success: false,
+      message: `Server Error ${err}`,
     });
   }
 };
@@ -314,4 +340,5 @@ module.exports = {
   changeAppName,
   getAppOptions,
   getHouseByQuery,
+  deleteHouseByAdmin,
 };
