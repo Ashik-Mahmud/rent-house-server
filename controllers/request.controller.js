@@ -100,7 +100,7 @@ const approveRequest = async (req, res) => {
   try {
     const user = await User.findById(req.query.authorId);
     const blog = await BlogRequest.findById(req.params.id);
-    console.log("req id", blog._id);
+    
     console.log("user id", user._id);
     if (blog.status === "approved") {
       return res.status(401).json({ message: "Request Already Approved" });
