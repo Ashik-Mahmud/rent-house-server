@@ -41,7 +41,7 @@ const sendBulkEmailForAllUsers = async (emails, subject, message, role) => {
   var emailFormat = {
     from: process.env.EMAIL_ADDRESS,
     to: emails,
-    subject: subject + ' by ' + role,
+    subject: subject + " by " + role,
     text: message,
     html: `
         <div style="padding: 3rem; font-family: Poppins;font-size: 16px;border: 10px solid transparent;border-image:url(https://www.w3schools.com/cssref/border.png) 35 stretch">
@@ -160,17 +160,20 @@ const sendVerificationEmailWithResetLink = async (email, token) => {
 /* Send Email With Feature Request */
 
 const sendEmailForFeatureRequest = (subject, requestText, author) => {
-  
   const emails = `${author?.email}`;
   var emailFormat = {
     from: emails,
     to: process.env.EMAIL_ADDRESS,
-    subject: subject + ' - from Feature Request & Bugs',
+    subject: subject + " - from Feature Request & Bugs",
     text: `${author?.name} is request for features or bugs maybe.`,
     html: `<div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
              <div style="padding: 1rem; border: 1px solid #ccc;">
                <h3 style="font-weight: bold; margin: 1rem 0rem; border-bottom: 1px solid #ccc">Email Sender: </h3>
-               <p><b>${author?.name}</b> is request for features or bugs maybe. He/she is a <b>${author?.role === 'user' ? "House Holder" : author?.role}</b> to the HouseLagbe.</p>
+               <p><b>${
+                 author?.name
+               }</b> is request for features or bugs maybe. He/she is a <b>${
+      author?.role === "user" ? "House Holder" : author?.role
+    }</b> to the HouseLagbe.</p>
              </div>
 
              <div style="padding: 1rem; border: 1px solid #ccc;">
@@ -189,6 +192,37 @@ const sendEmailForFeatureRequest = (subject, requestText, author) => {
   });
 };
 
+/* Send Email With Feature Request */
+
+const sendEmailWithRejectNotes = (notesText, author) => {
+  
+  var emailFormat = {
+    from: process.env.EMAIL_ADDRESS,
+    to: author.email,
+    subject: `Opps!! Why Admin/manager reject your house?`,
+    text: `Why Admin/manager reject your house?`,
+    html: `<div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
+      <p style="font-weight: bold">Hello ${author?.name},</p>
+      <p>There is reason to deny/reject your house. please take it normally and fill up this issues which one manager/admin mentioned.</p>
+      
+      <p style="padding: 1rem;">${notesText}</p>
+      
+      <p>Regards - <br/> <a href="https://tools-manufactures.web.app" target="_blank" >Rent House</a></p>
+      <address>Rangpur Road, Gobindagonj, Gaibandha</address>
+      <p>Mobile: +8801875474547</p>
+      <p>Email: rent@house.com</p>
+  </div>
+            `,
+  };
+  client.sendMail(emailFormat, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Message sent: ", info.response);
+    }
+  });
+};
+
 module.exports = {
   sendHouseAddedEmail,
   sendBulkEmailForAllUsers,
@@ -196,4 +230,5 @@ module.exports = {
   sendVerificationEmail,
   sendVerificationEmailWithResetLink,
   sendEmailForFeatureRequest,
+  sendEmailWithRejectNotes,
 };

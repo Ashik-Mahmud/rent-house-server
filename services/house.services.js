@@ -48,7 +48,7 @@ exports.updateHouseService = async (id, body) => {
 /* get Single house find by id */
 exports.findByIdHouseService = async (id) => {
     try {
-        const house = await House.findById(id);
+        const house = await House.findById(id).populate("owner", "email name");
         return house;
     } catch (error) {
         console.log(error.message);

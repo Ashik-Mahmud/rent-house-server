@@ -9,7 +9,7 @@ const {
   findHousesBySlugService,
 } = require("../services/admin.services");
 const { findByIdHouseService } = require("../services/house.services");
-const { sendBulkEmailForAllUsers } = require("../utils/sendEmail");
+const { sendBulkEmailForAllUsers, sendEmailWithRejectNotes } = require("../utils/sendEmail");
 
 // @access Private
 const acceptHouse = async (req, res) => {
@@ -47,6 +47,7 @@ const acceptHouse = async (req, res) => {
 // @desc Reject house
 // @access Private
 const rejectHouse = async (req, res) => {
+  const { notes } = req.body;
   try {
     const house = await findByIdHouseService(req.params.id);
     if (!house) {
@@ -55,19 +56,22 @@ const rejectHouse = async (req, res) => {
         message: "House not found",
       });
     }
+    const author = {
+        name: house?.owner?.name, email: house?.owner?.email
+    }
     if (house.status !== "pending" && house.status !== "approved") {
       return res.status(400).json({
         success: false,
         message: "House already rejected",
       });
     }
-
     house.status = "rejected";
     await house.save();
     res.status(200).json({
       success: true,
       message: "House rejected successfully",
     });
+    sendEmailWithRejectNotes(notes, author)
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -265,20 +269,20 @@ const getAppOptions = async (req, res) => {
 
 const getHouseByQuery = async (req, res) => {
   const { slug } = req.params;
-  const {limit, page, filter} = req.query;
- 
+  const { limit, page, filter } = req.query;
+
   try {
-    let fields = {}
-    if(page || limit){
-        const skip = (Number(page) - 1) * Number(limit);
-        fields.limit = Number(limit);
-        fields.skip = skip;
+    let fields = {};
+    if (page || limit) {
+      const skip = (Number(page) - 1) * Number(limit);
+      fields.limit = Number(limit);
+      fields.skip = skip;
     }
-    if(slug){
-        fields.slug = slug;
+    if (slug) {
+      fields.slug = slug;
     }
-    if(filter){
-        fields.sortBy = filter;
+    if (filter) {
+      fields.sortBy = filter;
     }
     const houses = await findHousesBySlugService(fields);
     if (!houses) {
@@ -309,5 +313,5 @@ module.exports = {
   makeAdmin,
   changeAppName,
   getAppOptions,
-  getHouseByQuery
+  getHouseByQuery,
 };
