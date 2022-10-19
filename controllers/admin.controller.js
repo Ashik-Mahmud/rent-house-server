@@ -265,8 +265,8 @@ const getAppOptions = async (req, res) => {
 
 const getHouseByQuery = async (req, res) => {
   const { slug } = req.params;
-  const {limit, page} = req.query;
-   
+  const {limit, page, filter} = req.query;
+ 
   try {
     let fields = {}
     if(page || limit){
@@ -276,6 +276,9 @@ const getHouseByQuery = async (req, res) => {
     }
     if(slug){
         fields.slug = slug;
+    }
+    if(filter){
+        fields.sortBy = filter;
     }
     const houses = await findHousesBySlugService(fields);
     if (!houses) {

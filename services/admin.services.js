@@ -42,7 +42,8 @@ exports.findHousesBySlugService = async (fields) => {
       const houses = await House.find({ status: "pending" })
         .populate("owner", "name email")
         .skip(fields.skip)
-        .limit(fields.limit);
+        .limit(fields.limit)
+        .sort(fields.sortBy);
 
       const count = await House.countDocuments({ status: "pending" });
 
@@ -52,7 +53,8 @@ exports.findHousesBySlugService = async (fields) => {
       const houses = await House.find({ status: "approved" })
         .populate("owner", "name email")
         .skip(fields.skip)
-        .limit(fields.limit);
+        .limit(fields.limit)
+        .sort(fields.sortBy);
 
       const count = await House.countDocuments({ status: "approved" });
       return { count, houses };
@@ -61,7 +63,8 @@ exports.findHousesBySlugService = async (fields) => {
       const houses = await House.find({ status: "rejected" })
         .populate("owner", "name email")
         .skip(fields.skip)
-        .limit(fields.limit);
+        .limit(fields.limit)
+        .sort(fields.sortBy);
 
       const count = await House.countDocuments({ status: "rejected" });
       return { count, houses };
