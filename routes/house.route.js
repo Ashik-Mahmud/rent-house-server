@@ -75,4 +75,6 @@ router.delete("/delete/:id", VerifyToken, houseController.deleteHouse);
 /* change house status */
 router.patch("/is-booked/:id", VerifyToken, houseController.changeIsBooked);
 
+
+
 module.exports = router;

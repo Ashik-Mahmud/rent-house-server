@@ -6,6 +6,7 @@ const {
   getAllUsersService,
   findByIdUserService,
   getActiveUsersService,
+  findHousesBySlugService,
 } = require("../services/admin.services");
 const { findByIdHouseService } = require("../services/house.services");
 const { sendBulkEmailForAllUsers } = require("../utils/sendEmail");
@@ -244,22 +245,46 @@ const changeAppName = async (req, res) => {
   }
 };
 
-
 /* Public controller */
-const getAppOptions = async(req, res) =>{
-    try {
-        const app = await AppOption.findById("634d3c647ed73523bf53b889");
-        res.status(200).send({
-        success: true,
-        app,
-        });
-    } catch (err) {
-        res.status(404).send({
+const getAppOptions = async (req, res) => {
+  try {
+    const app = await AppOption.findById("634d3c647ed73523bf53b889");
+    res.status(200).send({
+      success: true,
+      app,
+    });
+  } catch (err) {
+    res.status(404).send({
+      success: false,
+      message: "Server Error" + err.message,
+    });
+  }
+};
+
+/* Get Houses By Slug */
+
+const getHouseByQuery = async (req, res) => {
+  const { slug } = req.params;
+    
+  try {
+    const houses = await findHousesBySlugService(slug);
+    if (!houses) {
+      return res.status(404).send({
         success: false,
-        message: "Server Error" + err.message,
-        });
+        message: "House not found",
+      });
     }
-}
+    res.status(200).send({
+      success: true,
+      houses,
+    });
+  } catch (err) {
+    res.status(404).send({
+      success: false,
+      message: "Server Error" + err.message,
+    });
+  }
+};
 
 module.exports = {
   acceptHouse,
@@ -270,5 +295,6 @@ module.exports = {
   sendEmailToUsers,
   makeAdmin,
   changeAppName,
-  getAppOptions
+  getAppOptions,
+  getHouseByQuery
 };
