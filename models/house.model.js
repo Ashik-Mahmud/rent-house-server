@@ -37,7 +37,7 @@ const houseSchema = new mongoose.Schema(
       },
     },
     price: {
-      type: String,
+      type: Number,
       required: [true, "Please enter house price per month"],
       
     },

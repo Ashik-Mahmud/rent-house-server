@@ -36,19 +36,35 @@ exports.getActiveUsersService = async () => {
 };
 
 /* Find House by Slug */
-exports.findHousesBySlugService = async (slug) => {
+exports.findHousesBySlugService = async (fields) => {
   try {
-    if (slug === "unapproved") {
-      const houses = await House.find({ status: "pending" });
-      return houses;
+    if (fields.slug === "unapproved") {
+      const houses = await House.find({ status: "pending" })
+        .populate("owner", "name email")
+        .skip(fields.skip)
+        .limit(fields.limit);
+
+      const count = await House.countDocuments({ status: "pending" });
+
+      return { count, houses };
     }
-    if (slug === "approved") {
-      const houses = await House.find({ status: "approved" });
-      return houses;
+    if (fields.slug === "approved") {
+      const houses = await House.find({ status: "approved" })
+        .populate("owner", "name email")
+        .skip(fields.skip)
+        .limit(fields.limit);
+
+      const count = await House.countDocuments({ status: "approved" });
+      return { count, houses };
     }
-    if (slug === "rejected") {
-      const houses = await House.find({ status: "rejected" });
-      return houses;
+    if (fields.slug === "rejected") {
+      const houses = await House.find({ status: "rejected" })
+        .populate("owner", "name email")
+        .skip(fields.skip)
+        .limit(fields.limit);
+
+      const count = await House.countDocuments({ status: "rejected" });
+      return { count, houses };
     }
   } catch (error) {
     console.log(error.message);

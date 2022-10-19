@@ -265,9 +265,19 @@ const getAppOptions = async (req, res) => {
 
 const getHouseByQuery = async (req, res) => {
   const { slug } = req.params;
-    
+  const {limit, page} = req.query;
+   
   try {
-    const houses = await findHousesBySlugService(slug);
+    let fields = {}
+    if(page || limit){
+        const skip = (Number(page) - 1) * Number(limit);
+        fields.limit = Number(limit);
+        fields.skip = skip;
+    }
+    if(slug){
+        fields.slug = slug;
+    }
+    const houses = await findHousesBySlugService(fields);
     if (!houses) {
       return res.status(404).send({
         success: false,
@@ -276,7 +286,7 @@ const getHouseByQuery = async (req, res) => {
     }
     res.status(200).send({
       success: true,
-      houses,
+      data: houses,
     });
   } catch (err) {
     res.status(404).send({
