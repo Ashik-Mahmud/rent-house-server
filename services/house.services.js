@@ -28,7 +28,7 @@ exports.getAllHousesService = async (queries) => {
 /* Get House By Id Services */
 exports.getHouseByIdService = async (id) => {
     try {
-        const house = await House.findById(id).populate("owner", "name email");
+        const house = await House.findById(id).populate("owner", "name email phone profileImage avatar twitterLink facebookLink instagramLink linkedinLink");
         return house;
     } catch (error) {
         console.log(error.message);
