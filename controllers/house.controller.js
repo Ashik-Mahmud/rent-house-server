@@ -195,8 +195,16 @@ const getHouseById = async (req, res) => {
 // @desc Get house by user id
 // @access Private
 const getHouseByUserID = async (req, res) => {
+    const {page, limit} = req.query;
     try {
-        const house = await House.find({ owner: req.params.id });     
+        const filters = {};
+        if(page || limit){
+            filters.skip = (page - 1) * limit;
+            filters.limit = Number(limit);            
+        }
+                
+        const house = await House.find({ owner: req.params.id }).skip(filters.skip).limit(filters.limit);    
+        const count = await House.countDocuments({ owner: req.params.id }); 
         if (!house) {
             return res.status(404).json({
                 success: false,
@@ -207,7 +215,7 @@ const getHouseByUserID = async (req, res) => {
             success: true,
             message: "House found",
             data: house,
-            count: house.length,
+            count: count,
         });
     } catch (error) {
         res.status(500).json({
