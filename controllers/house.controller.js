@@ -375,17 +375,20 @@ const changeIsBooked = async (req, res) => {
 // @access Public
 const toggleLikeHouse = async (req, res) => {
   try {
-    const { clicked } = req.query;
+    const { like } = req.query;
     const house = await findByIdHouseService(req.params.id);
-
+    
     if (!house) {
       return res.status(404).json({
         success: false,
         message: "House not found",
       });
     }
-
-    if (clicked === "true") {
+       
+    if(house.likes === 0) {
+        house.likes = 0;
+    }
+    if (like === "false") {
       house.likes = house.likes + 1;
     } else {
       house.likes = house.likes - 1;
@@ -393,7 +396,7 @@ const toggleLikeHouse = async (req, res) => {
     await house.save();
     res.status(200).json({
       success: true,
-      message: clicked === "true" ? "Liked house" : "Dislike house",
+      message: like === "false" ? "Liked house" : "Dislike house",
     });
   } catch (error) {
     res.status(500).json({
