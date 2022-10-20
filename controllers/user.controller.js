@@ -29,7 +29,7 @@ const { Reviews } = require("../models/review.model");
 
 const createUser = async (req, res) => {
   const { name, email, password } = req.body;
-  
+
   //Simple validation
   if (!name || !email || !password) {
     return res
@@ -132,17 +132,19 @@ const loginUser = async (req, res) => {
   try {
     //Check for existing user
     const user = await findUserByEmailService(email);
-    
+
     if (!user)
       return res
         .status(400)
         .json({ success: false, message: "User does not exist" });
-           
-    
-    if(user?.status === 'inactive') {
-        return res
+
+    if (user?.status === "inactive") {
+      return res
         .status(400)
-        .json({ success: false, message: "You are Blocked.Please Contact Admin" });
+        .json({
+          success: false,
+          message: "You are Blocked.Please Contact Admin",
+        });
     }
 
     //Validate password
@@ -371,7 +373,7 @@ const updateProfile = async (req, res) => {
 
 const changeProfileImage = async (req, res, next) => {
   const { email } = req.body;
-    
+
   //Simple validation
   if (!email) {
     return res
@@ -381,7 +383,7 @@ const changeProfileImage = async (req, res, next) => {
   try {
     //Check for existing user
     const user = await findUserByEmailService(email);
-   
+
     if (!user)
       return res
         .status(400)
@@ -396,7 +398,7 @@ const changeProfileImage = async (req, res, next) => {
     res.send({
       success: true,
       message: "Profile picture updated successfully done.",
-      user: user
+      user: user,
     });
   } catch (error) {
     res.status(500).json({ success: false, message: "Server Error", error });
@@ -435,46 +437,50 @@ const getHouseByUserId = async (req, res) => {
 // @desc Get all users
 // @access Private
 const getUsers = async (req, res) => {
-    const {role, page, limit} = req.query;
-    
-    let filter = {};
-    const skip = (page - 1) * parseInt(limit);   
-    if (role === 'All') {
-        filter = {};
-    }else{
-        filter.role = role;
-    } 
-    if(page || limit) {
-        filter.skip = skip;
-        filter.limit = Number(limit);
+  const { role, page, limit } = req.query;
+
+  let filter = {};
+  const skip = (page - 1) * parseInt(limit);
+  if (role) {
+    if (role === "All") {
+      filter = {};
+    } else {
+      filter.role = role;
     }
-    
+  }
+  if (page || limit) {
+    filter.skip = skip;
+    filter.limit = Number(limit);
+  }
+
   try {
     const users = await getAuthenticatedUsersService(filter);
     const count = await User.countDocuments();
-    
+
     if (users.length > 0) {
-        return res.status(200).send({ success: true, message: "Get Users", data: users , count: count});
+      return res
+        .status(200)
+        .send({
+          success: true,
+          message: "Get Users",
+          data: users,
+          count: count,
+        });
     }
 
-    res.status(404)
-        .json({ success: false, message: 'No Users Found' });
-
-
-    } catch (error) {   
+    res.status(404).json({ success: false, message: "No Users Found" });
+  } catch (error) {
     console.log(error.message);
-    res.status(500).json({ success: false, message: 'Server Error' });
-    }
+    res.status(500).json({ success: false, message: "Server Error" });
+  }
 };
-    
-
 
 // @routes GET /api/users/:id
 // @desc Get user by id
 // @access Private
 const getUserById = async (req, res) => {
-    const { id } = req.params;  
-    
+  const { id } = req.params;
+
   try {
     const user = await findUserByIdService(id);
     res.status(200).send({ success: true, data: user });
@@ -500,103 +506,119 @@ const sendFeatureRequest = async (req, res) => {
   await sendEmailForFeatureRequest(subject, requestText, author);
   res.status(200).send({
     success: true,
-    message: `Your message has been sent to the App Admin. Wait to Admin response.`
-  })
-
+    message: `Your message has been sent to the App Admin. Wait to Admin response.`,
+  });
 };
-
 
 /* Change Admin Role By Admin */
 
-const changeAdminRole = async(req, res) =>{
-    const {query, id} = req.body;
-    const user = await findUserByIdService(id);
-    if(!user) return res.status(404).send({success:false, message: `User doesn't exist`})
-    if(user.role === query) return res.status(403).send({success: false, message: `This user already ${query === 'user' ? 'House Holder' : query}`})
+const changeAdminRole = async (req, res) => {
+  const { query, id } = req.body;
+  const user = await findUserByIdService(id);
+  if (!user)
+    return res
+      .status(404)
+      .send({ success: false, message: `User doesn't exist` });
+  if (user.role === query)
+    return res
+      .status(403)
+      .send({
+        success: false,
+        message: `This user already ${
+          query === "user" ? "House Holder" : query
+        }`,
+      });
 
-    if(query === 'admin' || query === 'manager'){
-        user.blogAllowed = true;
-    }else{
-        user.blogAllowed = false;
-    }
-    user.role = query;
-    user.save();
-    res.status(200).send({
-        success: true,
-        message: `Congratulation! Now your ${query === 'user' ? 'House Holder' : query}` 
-    })    
-}
-
+  if (query === "admin" || query === "manager") {
+    user.blogAllowed = true;
+  } else {
+    user.blogAllowed = false;
+  }
+  user.role = query;
+  user.save();
+  res.status(200).send({
+    success: true,
+    message: `Congratulation! Now your ${
+      query === "user" ? "House Holder" : query
+    }`,
+  });
+};
 
 /* Change Admin Status By Admin */
 
-const changeAdminStatus = async(req, res) =>{
-    const {query, id} = req.body;
-    const user = await findUserByIdService(id);
-    if(!user) return res.status(404).send({success:false, message: `User doesn't exist`})
-    if(user.status === query) return res.status(403).send({success: false, message: `This user already ${query}`})
+const changeAdminStatus = async (req, res) => {
+  const { query, id } = req.body;
+  const user = await findUserByIdService(id);
+  if (!user)
+    return res
+      .status(404)
+      .send({ success: false, message: `User doesn't exist` });
+  if (user.status === query)
+    return res
+      .status(403)
+      .send({ success: false, message: `This user already ${query}` });
 
-    user.status = query;
-    user.save();
-    res.status(200).send({
-        success: true,
-        message: `Congratulation! Now your ${query}` 
-    })    
-}
+  user.status = query;
+  user.save();
+  res.status(200).send({
+    success: true,
+    message: `Congratulation! Now your ${query}`,
+  });
+};
 
 /* Delete User By Admin */
-const deleteAdminUser = async(req, res) =>{
-    const {id} = req.params;
-    const user = await findUserByIdService(id);
-    if(!user) return res.status(404).send({success:false, message: `User doesn't exist`})
-    await user.remove();
-    res.status(200).send({
-        success: true,
-        message: `Congratulation! Now your user has been deleted`
-    })
-}
-
+const deleteAdminUser = async (req, res) => {
+  const { id } = req.params;
+  const user = await findUserByIdService(id);
+  if (!user)
+    return res
+      .status(404)
+      .send({ success: false, message: `User doesn't exist` });
+  await user.remove();
+  res.status(200).send({
+    success: true,
+    message: `Congratulation! Now your user has been deleted`,
+  });
+};
 
 /* Delete Account by own account holder */
-const deleteAccountByUser = async(req, res)=>{
-    const id = req.user.id;   
-    const user = await findUserByIdService(id);
-    if(!user) return res.status(404).send({success:false, message: `User doesn't exist`})
+const deleteAccountByUser = async (req, res) => {
+  const id = req.user.id;
+  const user = await findUserByIdService(id);
+  if (!user)
+    return res
+      .status(404)
+      .send({ success: false, message: `User doesn't exist` });
 
-    /* Remove House For if they house holder */
-    if(user.role === 'user'){
-        const houses = await House.find({owner: user._id});
-        houses.forEach(async house => {
-            await house.remove();
-        })
-    }
-    /* Remove Articles for particular Users */
-    const articles = await Blog.find({author: user._id});
-    if(articles){
-      articles.forEach(async article => {
-        await article.remove();
-      })
-    }
+  /* Remove House For if they house holder */
+  if (user.role === "user") {
+    const houses = await House.find({ owner: user._id });
+    houses.forEach(async (house) => {
+      await house.remove();
+    });
+  }
+  /* Remove Articles for particular Users */
+  const articles = await Blog.find({ author: user._id });
+  if (articles) {
+    articles.forEach(async (article) => {
+      await article.remove();
+    });
+  }
 
-    /* Remove Reviews for this users */
-    const reviews = await Reviews.find({'author.userId': user._id});
-    if(reviews){
-        reviews.forEach(async review => {
-            await review.remove();
-        })
-    }
+  /* Remove Reviews for this users */
+  const reviews = await Reviews.find({ "author.userId": user._id });
+  if (reviews) {
+    reviews.forEach(async (review) => {
+      await review.remove();
+    });
+  }
 
-    await user.remove();
-    res.status(200).send({
-        success: true,
-        message: `User has been deleted`
-    })
-}
-
-
-
-
-
+  await user.remove();
+  res.status(200).send({
+    success: true,
+    message: `User has been deleted`,
+  });
+};
 
 module.exports = {
   getUsers,
@@ -615,5 +637,5 @@ module.exports = {
   changeAdminRole,
   changeAdminStatus,
   deleteAdminUser,
-  deleteAccountByUser
+  deleteAccountByUser,
 };

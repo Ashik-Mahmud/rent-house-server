@@ -53,7 +53,7 @@ exports.findUserByIdService = async(id) => {
 exports.getAuthenticatedUsersService = async(filter) => {
         
     try {
-        const usersList = await User.find(filter).skip(filter.skip).limit(filter.limit).select("-password -__v");
+        const usersList = await User.find(filter).skip(filter.skip).limit(filter.limit).select("-password -__v");       
         return usersList;
     } catch (error) {
         console.log(error.message);
