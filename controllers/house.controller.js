@@ -1,5 +1,6 @@
 const House = require("../models/house.model");
 const path = require("path");
+const fs = require("fs");
 const {
   createHouseService,
   getAllHousesService,
@@ -283,8 +284,9 @@ const deleteHouse = async (req, res) => {
         success: false,
         message: "House not found",
       });
-    }
-    if (house.owner.toString() !== req.user.id) {
+    }    
+    
+    if (house.owner?._id.toString() !== req.user.id) {
       return res.status(401).json({
         success: false,
         message: "Not authorized",
@@ -295,6 +297,7 @@ const deleteHouse = async (req, res) => {
       success: true,
       message: "House deleted successfully",
     });
+    deleteHousesImages(house.image, house.gallery);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -302,6 +305,27 @@ const deleteHouse = async (req, res) => {
     });
   }
 };
+
+/* Delete all the images related this houses */
+const deleteHousesImages = (image, gallery) => {
+   const previewImagePath = path.join(__dirname, `../uploads/previews/${image}`);
+   const galleryImagePath = path.join(__dirname, `../uploads/gallery/`);
+    fs.unlink(previewImagePath, (err) => {
+        if (err) {
+            console.log(err);
+        }
+    });
+    gallery.forEach((img) => {
+        fs.unlink(galleryImagePath + img, (err) => {
+            if (err) {
+                console.log(err);
+            }
+        });
+    });
+};
+
+
+
 
 // @route PATCH /api/v1/houses/change-status/:id
 // @desc Change status of house
