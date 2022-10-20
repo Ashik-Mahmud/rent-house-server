@@ -226,6 +226,8 @@ const getHouseByUserID = async (req, res) => {
 // @desc    Update house
 // @access  Private
 const updateHouse = async (req, res) => {
+  
+    
   try {
     const house = await findByIdHouseService(req.params.id);
     if (!house) {
@@ -234,7 +236,7 @@ const updateHouse = async (req, res) => {
         message: "House not found",
       });
     }
-    if (house.owner.toString() !== req.user.id) {
+    if (house.owner._id.toString() !== req.user.id) {
       return res.status(401).json({
         success: false,
         message: "Not authorized",
