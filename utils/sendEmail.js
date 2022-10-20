@@ -195,7 +195,6 @@ const sendEmailForFeatureRequest = (subject, requestText, author) => {
 /* Send Email With Feature Request */
 
 const sendEmailWithRejectNotes = (notesText, author) => {
-  
   var emailFormat = {
     from: process.env.EMAIL_ADDRESS,
     to: author.email,
@@ -223,6 +222,65 @@ const sendEmailWithRejectNotes = (notesText, author) => {
   });
 };
 
+
+/* Send Approved Success Mail */
+const sendApprovedSuccessMail = (author) => {
+  const emails = `${author?.email}`;
+  var emailFormat = {
+    from: process.env.EMAIL_ADDRESS,
+    to: emails,
+    subject: "Congratulation! Your House is Approved",
+    text: `Congratulation! Your House is Approved`,
+    html: `<div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
+        <p style="font-weight: bold">Hello ${author?.name},</p>
+        <p>Congratulation! Your House is Approved. Now you can see your house in the website.</p>
+        <p>Regards - <br/> <a href="https://tools-manufactures.web.app" target="_blank" >Rent House</a></p>
+        <address>Rangpur Road, Gobindagonj, Gaibandha</address>
+        <p>Mobile: +8801875474547</p>
+        <p>Email: house@gmail.com</p>
+    </div>
+        
+        `,
+  };
+  client.sendMail(emailFormat, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Message sent: ", info.response);
+    }
+  });
+};
+
+
+/* Send Email For Delete House By Admin */
+const sendEmailForDeleteHouseByAdmin = (author) => {
+    const emails = `${author?.email}`;
+    var emailFormat = {
+        from: process.env.EMAIL_ADDRESS,
+        to: emails,
+        subject: "Opps!! Your House is Deleted",
+        text: `Opps!! Your House is Deleted`,
+        html: `<div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
+            <p style="font-weight: bold">Hello ${author?.name},</p>
+            <p>Opps!! Your House is Deleted. Please contact with admin for more information.</p>
+            <p>Regards - <br/> <a href="https://tools-manufactures.web.app" target="_blank" >Rent House</a></p>
+            <address>Rangpur Road, Gobindagonj, Gaibandha</address>
+            <p>Mobile: +8801875474547</p>
+            <p>Email: rent@house.com</p>
+        </div>
+
+        `,
+    };
+    client.sendMail(emailFormat, function (err, info) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log("Message sent: ", info.response);
+        }
+    });
+};
+
+
 module.exports = {
   sendHouseAddedEmail,
   sendBulkEmailForAllUsers,
@@ -231,4 +289,6 @@ module.exports = {
   sendVerificationEmailWithResetLink,
   sendEmailForFeatureRequest,
   sendEmailWithRejectNotes,
+  sendApprovedSuccessMail,
+  sendEmailForDeleteHouseByAdmin
 };

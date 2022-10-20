@@ -12,6 +12,8 @@ const { findByIdHouseService } = require("../services/house.services");
 const {
   sendBulkEmailForAllUsers,
   sendEmailWithRejectNotes,
+  sendApprovedSuccessMail,
+  sendEmailForDeleteHouseByAdmin,
 } = require("../utils/sendEmail");
 
 // @access Private
@@ -37,6 +39,10 @@ const acceptHouse = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "House accepted successfully",
+    });
+    sendApprovedSuccessMail({
+      email: house.owner.email,
+      name: house.owner.name,
     });
   } catch (error) {
     res.status(500).json({
@@ -97,6 +103,10 @@ const deleteHouseByAdmin = async (req, res) => {
     res.status(202).send({
       success: false,
       message: `House deleted successfully done.`,
+    });
+    sendEmailForDeleteHouseByAdmin({
+      email: house.owner.email,
+      name: house.owner.name,
     });
   } catch (err) {
     res.status(404).send({
