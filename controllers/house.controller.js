@@ -34,9 +34,7 @@ const createHouse = async (req, res) => {
   } = data;
 
   const host = req.hostname;
-  const filePath = req.protocol + "://" + host + '/' ;
-  
-  
+  const filePath = req.protocol + "://" + host + "/";
 
   /* Validation Items */
   if (
@@ -57,12 +55,15 @@ const createHouse = async (req, res) => {
   }
 
   const previewImage = req.files.previewImage[0].filename;
-  const galleryImages = req.files.galleryImage?.map((image)=>  image.filename)
-
-
+  const galleryImages = req.files.galleryImage?.map((image) => image.filename);
 
   try {
-    const house = await createHouseService({ ...data, image: previewImage, gallery: galleryImages, owner: author?.id });
+    const house = await createHouseService({
+      ...data,
+      image: previewImage,
+      gallery: galleryImages,
+      owner: author?.id,
+    });
     res.status(201).json({
       success: true,
       message: "House created successfully & sent you email",
@@ -195,47 +196,50 @@ const getHouseById = async (req, res) => {
 // @desc Get house by user id
 // @access Private
 const getHouseByUserID = async (req, res) => {
-    const {page, limit} = req.query;
-    try {
-        const filters = {};
-        if(page || limit){
-            filters.skip = (page - 1) * limit;
-            filters.limit = Number(limit);            
-        }
-                
-        const house = await House.find({ owner: req.params.id }).skip(filters.skip).limit(filters.limit);    
-        const count = await House.countDocuments({ owner: req.params.id }); 
-        if (!house) {
-            return res.status(404).json({
-                success: false,
-                message: "House not found",
-            });
-        }
-        res.status(200).json({
-            success: true,
-            message: "House found",
-            data: house,
-            count: count,
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Server error",
-        });
+  const { page, limit, q } = req.query;
+  const { id } = req.params;
+  try {
+    const filters = {};
+    if (page || limit) {
+      filters.skip = (page - 1) * limit;
+      filters.limit = Number(limit);
     }
+    if (id) {
+      filters.owner = id;
+    }
+    if (q) {
+      const regex = new RegExp(q, "i");
+      filters.$or = [{ name: regex }, { address: regex }];
+    }
+
+    const house = await House.find(filters)
+      .skip(filters.skip)
+      .limit(filters.limit);
+    const count = await House.countDocuments({ owner: req.params.id });
+    if (!house) {
+      return res.status(404).json({
+        success: false,
+        message: "House not found",
+      });
+    }
+    res.status(200).json({
+      success: true,
+      message: "House found",
+      data: house,
+      count: count,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
 };
-
-
-
-
-
 
 // @route   PUT api/houses/:id
 // @desc    Update house
 // @access  Private
 const updateHouse = async (req, res) => {
-  
-    
   try {
     const house = await findByIdHouseService(req.params.id);
     if (!house) {
@@ -294,8 +298,8 @@ const deleteHouse = async (req, res) => {
         success: false,
         message: "House not found",
       });
-    }    
-    
+    }
+
     if (house.owner?._id.toString() !== req.user.id) {
       return res.status(401).json({
         success: false,
@@ -318,24 +322,21 @@ const deleteHouse = async (req, res) => {
 
 /* Delete all the images related this houses */
 const deleteHousesImages = (image, gallery) => {
-   const previewImagePath = path.join(__dirname, `../uploads/previews/${image}`);
-   const galleryImagePath = path.join(__dirname, `../uploads/gallery/`);
-    fs.unlink(previewImagePath, (err) => {
-        if (err) {
-            console.log(err);
-        }
+  const previewImagePath = path.join(__dirname, `../uploads/previews/${image}`);
+  const galleryImagePath = path.join(__dirname, `../uploads/gallery/`);
+  fs.unlink(previewImagePath, (err) => {
+    if (err) {
+      console.log(err);
+    }
+  });
+  gallery.forEach((img) => {
+    fs.unlink(galleryImagePath + img, (err) => {
+      if (err) {
+        console.log(err);
+      }
     });
-    gallery.forEach((img) => {
-        fs.unlink(galleryImagePath + img, (err) => {
-            if (err) {
-                console.log(err);
-            }
-        });
-    });
+  });
 };
-
-
-
 
 // @route PATCH /api/v1/houses/change-status/:id
 // @desc Change status of house
@@ -411,5 +412,5 @@ module.exports = {
   changeIsBooked,
   toggleLikeHouse,
   getTop4Houses,
-  getHouseByUserID
+  getHouseByUserID,
 };
