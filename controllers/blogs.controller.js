@@ -238,12 +238,12 @@ const toggleLikeBlog = async (req, res) => {
 // @desc Get All Blogs
 // @access Public
 const getAllBlog = async (req, res) => {
-  
   try {
     const { page, limit, q } = req.query;
-    const filter = {};
+    let filter = {};
     filter.status = "active";
     const skip = (parseInt(page) - 1) * parseInt(limit);
+
     if (page && limit) {
       filter.skip = skip;
       filter.limit = Number(limit);
@@ -253,8 +253,10 @@ const getAllBlog = async (req, res) => {
       const regex = new RegExp(q, "i");
       filter.$or = [{ title: regex }, { category: regex }];
     }
-    const count = await Blog.countDocuments({ ...filter, status: "active" });
+
+    const count = await Blog.countDocuments({ status: "active" });
     const data = await findBlogsService(filter);
+
     if (!data)
       return res.status(403).send({
         success: false,
@@ -264,7 +266,7 @@ const getAllBlog = async (req, res) => {
       success: true,
       message: "Found Blogs",
       data,
-      count
+      count,
     });
   } catch (error) {
     res.status(403).send({
