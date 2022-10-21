@@ -94,7 +94,7 @@ const getAllHouses = async (req, res) => {
     bathrooms,
     district,
     city,
-    isBachelorRoom,
+    isBachelor,
     address,
     name,
     startPrice,
@@ -102,7 +102,7 @@ const getAllHouses = async (req, res) => {
   } = req.query;
 
   const parseHouseType = JSON.parse(houseType);
-  console.log(parseHouseType);
+  const parseHouseUseFor = JSON.parse(houseUseFor);
 
   let queries = { status: "approved" };
   let sortByFilter = {};
@@ -173,15 +173,23 @@ const getAllHouses = async (req, res) => {
   if (parseHouseType?.rent && parseHouseType?.sale) {
     queries.houseType = { $in: ["Rent", "Sale"] };
   }
-  if (houseUseFor) {
-    queries.houseUseFor = houseUseFor;
+  if (parseHouseUseFor?.commercial) {
+    queries.houseUseFor = "Commercial";
   }
 
-  if (bedrooms) {
+  if (parseHouseUseFor?.residential) {
+    queries.houseUseFor = "Residential";
+  }
+
+  if (parseHouseUseFor?.commercial && parseHouseUseFor?.residential) {
+    queries.houseUseFor = { $in: ["Commercial", "Residential"] };
+  }
+
+  if (Number(bedrooms)) {
     queries.bedrooms = bedrooms;
   }
 
-  if (bathrooms) {
+  if (Number(bathrooms)) {
     queries.bathrooms = bathrooms;
   }
 
@@ -193,8 +201,8 @@ const getAllHouses = async (req, res) => {
     queries.city = city;
   }
 
-  if (isBachelorRoom) {
-    queries.isBachelorRoom = isBachelorRoom;
+  if (JSON.parse(isBachelor)) {
+    queries.isBachelorRoom = "Yes";
   }
 
   if (address) {
