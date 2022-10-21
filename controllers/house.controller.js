@@ -197,17 +197,19 @@ const getAllHouses = async (req, res) => {
     queries.name = eval(`/.*${name}.*/i`);
   }
 
-  if (startPrice && endPrice) {
-    queries.price = { $gte: startPrice, $lte: endPrice };
+  /* filter by lower price and higher price */
+  if (Number(startPrice) && Number(endPrice)) {
+    queries.price = {
+      $gte: startPrice,
+      $lte: endPrice,
+    };
   }
 
   /* Pagination */
   if (page || limit) {
     queries.skip = (page - 1) * limit;
-    queries.limit = limit;
+    queries.limit = Number(limit);
   }
-
-  console.log(queries);
 
   try {
     const houses = await getAllHousesService(queries, sortByFilter);
