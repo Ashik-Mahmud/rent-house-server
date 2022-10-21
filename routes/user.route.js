@@ -77,6 +77,7 @@ router.post("/change-password", usersController.changePassword);
 router.post("/change-password/new", usersController.changePasswordWithoutOldPassword);
 
 router.post("/send-feature-request", VerifyToken, usersController.sendFeatureRequest)
+router.get("/send-verification-email/:id", VerifyToken, usersController.sendVerificationEmailController)
 
 
 
@@ -88,5 +89,6 @@ router.delete("/admin/delete/:id", VerifyToken, VerifySupAdmin, usersController.
 router.get("/me/:id", VerifyToken, usersController.getUserById);
 router.get("/houses", VerifyToken, usersController.getHouseByUserId);
 router.delete("/delete-account/:id", VerifyToken, usersController.deleteAccountByUser);
+
 
 module.exports = router;

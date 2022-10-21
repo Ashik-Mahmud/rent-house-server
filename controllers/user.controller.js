@@ -88,6 +88,37 @@ const createUser = async (req, res) => {
   }
 };
 
+// @routes GET /api/v1/users/send-verification-email
+// @desc Send Verification Email
+// @access Secure
+const sendVerificationEmailController = async (req, res) => {
+  try {
+    const user = await findUserByIdService(req.params.id);
+        
+    if (!user) {
+      return res.status(403).send({
+        success: false,
+        message: "User not found.",
+      });
+    }
+    const token = crypto.randomBytes(20).toString("hex");
+    user.verificationToken = token;
+    user.verificationTokenExpires = Date.now() + 3600000; // 1 hour
+    await user.save();
+    // send Verification Email to User
+    sendVerificationEmail(user?.email, token);
+    res.send({
+      success: true,
+      message: "send you verification email check inbox plz.",
+    });
+  } catch (err) {
+    res.status(404).send({
+      success: false,
+      message: "Error in Server " + err,
+    });
+  }
+};
+
 // @Routes POST /api/users/verify-email
 // @desc Verify Email
 // @access Public
@@ -139,12 +170,10 @@ const loginUser = async (req, res) => {
         .json({ success: false, message: "User does not exist" });
 
     if (user?.status === "inactive") {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "You are Blocked.Please Contact Admin",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "You are Blocked.Please Contact Admin",
+      });
     }
 
     //Validate password
@@ -458,14 +487,12 @@ const getUsers = async (req, res) => {
     const count = await User.countDocuments();
 
     if (users.length > 0) {
-      return res
-        .status(200)
-        .send({
-          success: true,
-          message: "Get Users",
-          data: users,
-          count: count,
-        });
+      return res.status(200).send({
+        success: true,
+        message: "Get Users",
+        data: users,
+        count: count,
+      });
     }
 
     res.status(404).json({ success: false, message: "No Users Found" });
@@ -520,14 +547,10 @@ const changeAdminRole = async (req, res) => {
       .status(404)
       .send({ success: false, message: `User doesn't exist` });
   if (user.role === query)
-    return res
-      .status(403)
-      .send({
-        success: false,
-        message: `This user already ${
-          query === "user" ? "House Holder" : query
-        }`,
-      });
+    return res.status(403).send({
+      success: false,
+      message: `This user already ${query === "user" ? "House Holder" : query}`,
+    });
 
   if (query === "admin" || query === "manager") {
     user.blogAllowed = true;
@@ -638,4 +661,5 @@ module.exports = {
   changeAdminStatus,
   deleteAdminUser,
   deleteAccountByUser,
+  sendVerificationEmailController
 };
