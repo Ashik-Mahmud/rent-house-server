@@ -84,8 +84,8 @@ const createHouse = async (req, res) => {
 
 const getAllHouses = async (req, res) => {
   const {
-    page = 1,
-    limit = 10,
+    page ,
+    limit,
     category,
     houseType,
     houseUseFor,
@@ -99,6 +99,8 @@ const getAllHouses = async (req, res) => {
     startPrice,
     endPrice,
   } = req.query;
+
+ 
 
   let queries = {status: "approved"};
 
