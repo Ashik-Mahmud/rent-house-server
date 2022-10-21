@@ -28,10 +28,10 @@ const { Reviews } = require("../models/review.model");
 //@access Public
 
 const createUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
 
   //Simple validation
-  if (!name || !email || !password) {
+  if (!name || !email || !password || !role) {
     return res
       .status(400)
       .json({ success: false, message: "Please enter all fields" });
@@ -63,7 +63,7 @@ const createUser = async (req, res) => {
       return res
         .status(400)
         .json({ success: false, message: "User already exists" });
-    const newUser = new User({ name, email, password });
+    const newUser = new User({ name, email, password, role });
     //Create salt & hash
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(newUser.password, salt, async (err, hash) => {
@@ -72,8 +72,9 @@ const createUser = async (req, res) => {
         await newUser.save();
         res.send({
           success: true,
-          message:
-            "User created successfully done & send you verification email.",
+          message: `${
+            role === "user" ? "House Holder " : "Customer "
+          } Account created successfully done & send you verification email.`,
         });
       });
     });
@@ -94,7 +95,7 @@ const createUser = async (req, res) => {
 const sendVerificationEmailController = async (req, res) => {
   try {
     const user = await findUserByIdService(req.params.id);
-        
+
     if (!user) {
       return res.status(403).send({
         success: false,
@@ -661,5 +662,5 @@ module.exports = {
   changeAdminStatus,
   deleteAdminUser,
   deleteAccountByUser,
-  sendVerificationEmailController
+  sendVerificationEmailController,
 };
