@@ -84,7 +84,8 @@ const createHouse = async (req, res) => {
 
 const getAllHouses = async (req, res) => {
   const {
-    page ,
+    page,
+    sortBy,
     limit,
     category,
     houseType,
@@ -100,9 +101,51 @@ const getAllHouses = async (req, res) => {
     endPrice,
   } = req.query;
 
- 
+  
+  let queries = { status: "approved" };
+  let sortByFilter = {}
 
-  let queries = {status: "approved"};
+  if (sortBy) {
+    /* Most Recent */
+    if (sortBy === "-createdAt") {
+        sortByFilter = {sort: '-createdAt'}
+    }
+    /* Most Popular */
+    if (sortBy === "-views") {
+        sortByFilter = {sort: '-views'}
+    }
+    /* Most Expensive */
+    if (sortBy === "-price") {
+        sortByFilter = {sort: '-price'}
+    }
+    /* Cheapest */
+    if (sortBy === "price") {
+        sortByFilter = {sort: 'price'}
+    }
+    /* Oldest */
+    if (sortBy === "createdAt") {
+        sortByFilter = {sort: 'createdAt'}
+    }
+    /* Last Weeks */
+    if (sortBy === "week") {
+        queries = { ...queries, createdAt: { $gte: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000) } }
+    }
+
+    /* Last Month */
+    if (sortBy === "month") {
+        queries = { ...queries, createdAt: { $gte: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000) } }
+    }
+
+    /* Last Year */
+    if (sortBy === "year") {
+        queries = { ...queries, createdAt: { $gte: new Date(new Date().getTime() - 365 * 24 * 60 * 60 * 1000) } }
+    }
+
+
+
+
+
+  }
 
   if (category) {
     queries.category = category;
@@ -154,8 +197,11 @@ const getAllHouses = async (req, res) => {
     queries.limit = limit;
   }
 
+  console.log(queries);
+  
+
   try {
-    const houses = await getAllHousesService(queries);
+    const houses = await getAllHousesService(queries, sortByFilter);
     res.status(200).json({
       success: true,
       message: "All houses",
@@ -379,16 +425,16 @@ const toggleLikeHouse = async (req, res) => {
   try {
     const { like } = req.query;
     const house = await findByIdHouseService(req.params.id);
-    
+
     if (!house) {
       return res.status(404).json({
         success: false,
         message: "House not found",
       });
     }
-       
-    if(house.likes === 0) {
-        house.likes = 0;
+
+    if (house.likes === 0) {
+      house.likes = 0;
     }
     if (like === "false") {
       house.likes = house.likes + 1;

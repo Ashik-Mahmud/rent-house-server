@@ -12,10 +12,10 @@ exports.createHouseService = async (body) => {
 
 
 /* Get All Houses Services */
-exports.getAllHousesService = async (queries) => {
+exports.getAllHousesService = async (queries, sortByFilter) => {
        
     try {
-        const houses = await House.find(queries).skip(queries.skip).limit(queries.limit).populate("owner", "name email");
+        const houses = await House.find(queries).skip(queries.skip).limit(queries.limit).sort(sortByFilter.sort).populate("owner", "name email");
         /* Get Total Numbers of Houses */
          const totalHouses = await House.countDocuments({status: "approved"});
         return { totalHouses, houses};
