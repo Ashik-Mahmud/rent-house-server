@@ -28,7 +28,7 @@ const { Reviews } = require("../models/review.model");
 //@access Public
 
 const createUser = async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password, role, phone } = req.body;
 
   //Simple validation
   if (!name || !email || !password || !role) {
@@ -63,7 +63,9 @@ const createUser = async (req, res) => {
       return res
         .status(400)
         .json({ success: false, message: "User already exists" });
-    const newUser = new User({ name, email, password, role });
+   
+    const newUser = new User({ name, email, password, role, phone: phone ? phone : "" });
+
     //Create salt & hash
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(newUser.password, salt, async (err, hash) => {
@@ -85,7 +87,7 @@ const createUser = async (req, res) => {
     // send Verification Email to User
     sendVerificationEmail(email, token);
   } catch (error) {
-    res.status(500).json({ success: false, message: "Server Error" });
+    res.status(500).json({ success: false, message: "Server Error"+ error });
   }
 };
 

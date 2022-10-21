@@ -34,7 +34,7 @@ const UserSchema = new mongoose.Schema(
     phone: {
       type: String,
       trim: 0,
-      minLength: [11, "Phone must be at least 11 characters"],
+      /* minLength: [11, "Phone must be at least 11 characters"], */
     },
     role: {
       type: String,

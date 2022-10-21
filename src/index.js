@@ -45,9 +45,11 @@ app.use((err, req, res, next) => {
         message: error.message
     });
 });
-process.on("unhandledRejection", (err, promise) => {
+process.on("unhandledRejection", (err, promise,) => {
     if(err){
         console.log(`Logged Error: ${err}`);
+        
         app.close(() => process.exit(1));
+       
     }
 });
