@@ -18,7 +18,8 @@ exports.getAllHousesService = async (queries, sortByFilter) => {
         const houses = await House.find(queries).skip(queries.skip).limit(queries.limit).sort(sortByFilter.sort).populate("owner", "name email");
         /* Get Total Numbers of Houses */
          const totalHouses = await House.countDocuments({status: "approved"});
-        return { totalHouses, houses};
+         const housesWithOutFilter = await House.find({status: "approved"});
+        return { totalHouses, houses, allHouse: housesWithOutFilter};
     } catch (error) {
         console.log(error.message);
     }

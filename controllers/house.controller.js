@@ -101,50 +101,60 @@ const getAllHouses = async (req, res) => {
     endPrice,
   } = req.query;
 
-  
   let queries = { status: "approved" };
-  let sortByFilter = {}
+  let sortByFilter = {};
 
   if (sortBy) {
     /* Most Recent */
     if (sortBy === "-createdAt") {
-        sortByFilter = {sort: '-createdAt'}
+      sortByFilter = { sort: "-createdAt" };
     }
     /* Most Popular */
     if (sortBy === "-views") {
-        sortByFilter = {sort: '-views'}
+      sortByFilter = { sort: "-views" };
     }
     /* Most Expensive */
     if (sortBy === "-price") {
-        sortByFilter = {sort: '-price'}
+      sortByFilter = { sort: "-price" };
     }
     /* Cheapest */
     if (sortBy === "price") {
-        sortByFilter = {sort: 'price'}
+      sortByFilter = { sort: "price" };
     }
+
     /* Oldest */
     if (sortBy === "createdAt") {
-        sortByFilter = {sort: 'createdAt'}
+      sortByFilter = { sort: "createdAt" };
     }
     /* Last Weeks */
     if (sortBy === "week") {
-        queries = { ...queries, createdAt: { $gte: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000) } }
+      queries = {
+        ...queries,
+        createdAt: {
+          $gte: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000),
+        },
+      };
     }
 
     /* Last Month */
     if (sortBy === "month") {
-        queries = { ...queries, createdAt: { $gte: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000) } }
+      queries = {
+        ...queries,
+        createdAt: {
+          $gte: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000),
+        },
+      };
     }
 
     /* Last Year */
     if (sortBy === "year") {
-        queries = { ...queries, createdAt: { $gte: new Date(new Date().getTime() - 365 * 24 * 60 * 60 * 1000) } }
+      queries = {
+        ...queries,
+        createdAt: {
+          $gte: new Date(new Date().getTime() - 365 * 24 * 60 * 60 * 1000),
+        },
+      };
     }
-
-
-
-
-
   }
 
   if (category) {
@@ -198,7 +208,6 @@ const getAllHouses = async (req, res) => {
   }
 
   console.log(queries);
-  
 
   try {
     const houses = await getAllHousesService(queries, sortByFilter);
