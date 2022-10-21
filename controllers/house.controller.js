@@ -100,7 +100,7 @@ const getAllHouses = async (req, res) => {
     endPrice,
   } = req.query;
 
-  let queries = {};
+  let queries = {status: "approved"};
 
   if (category) {
     queries.category = category;
