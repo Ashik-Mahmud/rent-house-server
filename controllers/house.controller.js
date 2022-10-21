@@ -101,6 +101,9 @@ const getAllHouses = async (req, res) => {
     endPrice,
   } = req.query;
 
+  const parseHouseType = JSON.parse(houseType);
+  console.log(parseHouseType);
+
   let queries = { status: "approved" };
   let sortByFilter = {};
 
@@ -161,10 +164,15 @@ const getAllHouses = async (req, res) => {
     queries.category = category;
   }
 
-  if (houseType) {
-    queries.houseType = houseType;
+  if (parseHouseType?.rent) {
+    queries.houseType = "Rent";
   }
-
+  if (parseHouseType?.sale) {
+    queries.houseType = "Sale";
+  }
+  if (parseHouseType?.rent && parseHouseType?.sale) {
+    queries.houseType = { $in: ["Rent", "Sale"] };
+  }
   if (houseUseFor) {
     queries.houseUseFor = houseUseFor;
   }
