@@ -21,7 +21,7 @@ app.use("/api/v1/users", userRouter);
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/reviews", reviewRouter);
 app.use("/api/v1/questions", questionRouter);
-app.use("/api/v1/report-house", reportHouseRouter)
+app.use("/api/v1/reports", reportHouseRouter)
 app.use("/api/v1/blogs", blogRouter);
 app.use("/api/v1/request", requestRouter);
 

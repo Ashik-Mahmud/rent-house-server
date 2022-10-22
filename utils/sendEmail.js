@@ -65,18 +65,22 @@ const sendReportEmail = async (email, houseUrl, reportTitle, reportDetails) => {
   var emailFormat = {
     from: process.env.EMAIL_ADDRESS,
     to: emails,
-    subject: `Report for ${reportTitle}`,
-    text: `Report for ${houseUrl}`,
+    subject: `Someone Report to your house for ${reportTitle}`,
+    text: `Someone Report to your house for  ${reportTitle}`,
     html: `
             <div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
                 <p style="font-weight: bold">Hello there,</p>
-                <p>There is a report for house. Take a look <br/> Report Title: <b>${reportTitle}</b> <br/> Report Details: <b>${reportDetails} </b></p>
-                <p> Here is the House Link Please Take look </p>
+                <p>There is a report for house. Take a look <br/> 
+                <b> Report Title:</b> ${reportTitle} <br/>
+                <b>Report Details:</b> ${reportDetails} </p>
+
+                <b>Admin Speech:</b> <br/>
+                <p> Here is the House Link Please Take look Otherwise We will mute your house. Thanks sir. </p>
                 <a href="${houseUrl}" target="_blank" >${houseUrl}</a>
-                <p>Regards - <br/> <a href="https://tools-manufactures.web.app" target="_blank" >Rent House</a></p>
+                <p>Regards - <br/> <a href="https://houselagbe.vercel.app" target="_blank" >HouseLagbe Admin Panel</a></p>
                 <address>Rangpur Road, Gobindagonj, Gaibandha</address>
                 <p>Mobile: +8801875474547</p>
-                <p>Email: rent@house.com</p>
+                <p>Email: houselagbe@gmail.com</p>
             </div>
             `,
   };
@@ -222,7 +226,6 @@ const sendEmailWithRejectNotes = (notesText, author) => {
   });
 };
 
-
 /* Send Approved Success Mail */
 const sendApprovedSuccessMail = (author) => {
   const emails = `${author?.email}`;
@@ -251,16 +254,15 @@ const sendApprovedSuccessMail = (author) => {
   });
 };
 
-
 /* Send Email For Delete House By Admin */
 const sendEmailForDeleteHouseByAdmin = (author) => {
-    const emails = `${author?.email}`;
-    var emailFormat = {
-        from: process.env.EMAIL_ADDRESS,
-        to: emails,
-        subject: "Opps!! Your House is Deleted",
-        text: `Opps!! Your House is Deleted`,
-        html: `<div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
+  const emails = `${author?.email}`;
+  var emailFormat = {
+    from: process.env.EMAIL_ADDRESS,
+    to: emails,
+    subject: "Opps!! Your House is Deleted",
+    text: `Opps!! Your House is Deleted`,
+    html: `<div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
             <p style="font-weight: bold">Hello ${author?.name},</p>
             <p>Opps!! Your House is Deleted. Please contact with admin for more information.</p>
             <p>Regards - <br/> <a href="https://tools-manufactures.web.app" target="_blank" >Rent House</a></p>
@@ -270,16 +272,15 @@ const sendEmailForDeleteHouseByAdmin = (author) => {
         </div>
 
         `,
-    };
-    client.sendMail(emailFormat, function (err, info) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log("Message sent: ", info.response);
-        }
-    });
+  };
+  client.sendMail(emailFormat, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Message sent: ", info.response);
+    }
+  });
 };
-
 
 module.exports = {
   sendHouseAddedEmail,
@@ -290,5 +291,5 @@ module.exports = {
   sendEmailForFeatureRequest,
   sendEmailWithRejectNotes,
   sendApprovedSuccessMail,
-  sendEmailForDeleteHouseByAdmin
+  sendEmailForDeleteHouseByAdmin,
 };
