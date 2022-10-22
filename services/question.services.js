@@ -17,3 +17,10 @@ exports.findQuestionByIdService = async(id) =>{
     const result = await Question.findById(id);
     return result;
 }
+
+
+/* Find Questions by Author ID */
+exports.getQuestionsByAuthorService = async(id) =>{
+    const result = await Question.find({author: id});
+    return result;
+}

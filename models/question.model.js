@@ -8,11 +8,10 @@ const questionSchema = new mongoose.Schema(
             ref: "House",
             required: true,
         },
-        name: {
-            type: String,
-            required: [true, "Please enter your name"],
-            trim: true,
-            maxLength: [30, "Name cannot exceed 30 characters"],
+        author: {
+            type: mongoose.Schema.ObjectId,
+            ref: "user",
+            required: true,
         },
         question: {
             type: String,
