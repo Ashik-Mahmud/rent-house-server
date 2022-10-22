@@ -71,7 +71,6 @@ const deleteQuestionById = async (req, res) => {
 const getQuestionsForHouse = async (req, res) => {
   const { limit, page } = req.query;
   const houseId = req.params.id;
- 
 
   try {
     let filters = {};
@@ -109,13 +108,15 @@ const acceptQuestionAndAnswer = async (req, res) => {
 
   try {
     const question = await findQuestionByIdService(questionId);
-    if (question.accepted === false) {
-      question.accepted = true;
-      question.answer = answer;
-    } else {
-      question.accepted = false;
-      question.answer = "none";
+    if (!question) {
+      return res.status(404).json({
+        success: false,
+        message: "Question not found",
+      });
     }
+
+    question.accepted = true;
+    question.answer = answer;
     await question.save();
     res.status(201).send({
       success: true,
@@ -126,27 +127,6 @@ const acceptQuestionAndAnswer = async (req, res) => {
     res.status(404).send({
       success: false,
       message: "Server Error",
-    });
-  }
-};
-
-// @routes DELETE api/questions/delete-question/:id
-// @desc DELETE question by ID
-// @access private
-
-const deleteQuestion = async (req, res) => {
-  const deleteId = req.params.id;
-  try {
-    const question = await findQuestionByIdService(deleteId);
-    await question.remove();
-    res.status(201).send({
-      success: true,
-      message: "Question Deleted successfully done.",
-    });
-  } catch (error) {
-    res.status(404).send({
-      success: false,
-      message: "Server Error" + error.message,
     });
   }
 };
@@ -180,11 +160,27 @@ const getQuestionByAuthor = async (req, res) => {
   }
 };
 
+const getAllQuestions = async (req, res) => {
+  try {
+    const questions = await Question.find({ accepted: true }).select("question answer").populate("author", "name email profileImage role avatar");
+    res.status(200).json({
+      success: true,
+      message: "All questions",
+      data: questions,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
   askQuestion,
   getQuestionsForHouse,
   acceptQuestionAndAnswer,
-  deleteQuestion,
   getQuestionByAuthor,
   deleteQuestionById,
+  getAllQuestions,
 };
