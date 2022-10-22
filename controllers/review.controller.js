@@ -75,16 +75,17 @@ const createReviewForHouse = async (req, res) => {
       message: "Please fill all fields",
     });
   }
-   
+
   try {
     const isUserReviewed = await ReviewsForHouse.find({
       house: house,
-      author: req.user._id,
+      author: author,
     });
-    if (isUserReviewed) {
+
+    if (isUserReviewed.length > 0) {
       return res.status(400).json({
         success: false,
-        message: "You already reviewed this house",
+        message: "You already reviewed this house before",
       });
     }
 
@@ -105,22 +106,63 @@ const createReviewForHouse = async (req, res) => {
   }
 };
 
+// @routes /api/v1/reviews/accept-review-by-id
+// @desc Accept review by id
+// @access Private
+const acceptReviewById = async (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    return res.status(400).json({
+      success: false,
+      message: "bad request",
+    });
+  }
+  try {
+    const review = await findByIdReviewService(id);
+    if (!review) {
+      return res.status(400).json({
+        success: false,
+        message: "Review not found",
+      });
+    }
+    review.isAccepted = true;
+    await review.save();
+    res.status(201).json({
+      success: true,
+      message: "Accept review successfully",
+      data: review,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 // @routes /api/v1/reviews/get-reviews-by-house-id
 // @desc Get all reviews by house id
 // @access Public
 const getAllReviewsByHouseId = async (req, res) => {
   const { id } = req.params;
 
-  console.log(req.user);
-
   try {
-    const reviews = await ReviewsForHouse.find({ house: id }).populate(
-      "author"
-    );
+    const reviews = await ReviewsForHouse.find({
+      house: id,
+      isAccepted: true,
+    }).populate("author");
+    const getAllReviewsForHolder = await ReviewsForHouse.find({
+      house: id,
+    }).populate("author");
 
     res.status(200).json({
       success: true,
       data: reviews,
+      internal: {
+        count: reviews.length,
+        countAll: getAllReviewsForHolder.length,
+        data: getAllReviewsForHolder,
+      },
     });
   } catch (error) {
     res.status(500).json({
@@ -156,6 +198,36 @@ const deleteReviewById = async (req, res) => {
   }
 };
 
+// @routes /api/v1/reviews/update-review-by-id
+// @desc Update review by id
+// @access Private
+const updateReviewById = async (req, res) => {
+  const { id } = req.params;
+  const { rating, comment } = req.body;
+  try {
+    const review = await findByIdReviewService(id);
+    if (!review) {
+      return res.status(404).json({
+        success: false,
+        message: "Review not found",
+      });
+    }
+    review.rating = rating;
+    review.comment = comment;
+    await review.save();
+    res.status(200).json({
+      success: true,
+      message: "Review updated successfully",
+      data: review,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 // @routes /api/v1/reviews/get-all-reviews
 // @desc Get all reviews
 // @access Private
@@ -181,4 +253,6 @@ module.exports = {
   deleteReviewById,
   getAllReviewByUserId,
   getAllReviews,
+  updateReviewById,
+  acceptReviewById,
 };

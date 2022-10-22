@@ -23,6 +23,10 @@ const reviewSchemaForHouse = new mongoose.Schema({
         type: String,
         required: [true, "Please enter house comment"],
     },
+    isAccepted: {
+        type: Boolean,
+        default: false,
+    },
     createdAt: {
         type: Date,
         default: Date.now,
