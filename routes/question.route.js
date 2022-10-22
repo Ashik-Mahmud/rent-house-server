@@ -14,7 +14,7 @@ router.delete("/delete-question/:id", VerifyToken, questionController.deleteQues
 router.get("/questions-for-house/:id", VerifyToken, VerifyUser, questionController.getQuestionsForHouse);
 
 router.patch("/answer-question", VerifyToken, questionController.acceptQuestionAndAnswer);
-router.get("/all",  questionController.getAllQuestions)
+router.get("/all/:id",  questionController.getAllQuestions)
 
 
 module.exports = router;

@@ -162,7 +162,7 @@ const getQuestionByAuthor = async (req, res) => {
 
 const getAllQuestions = async (req, res) => {
   try {
-    const questions = await Question.find({ accepted: true }).select("question answer").populate("author", "name email profileImage role avatar");
+    const questions = await Question.find({ accepted: true, house: req.params.id }).select("question answer").populate("author", "name email profileImage role avatar");
     res.status(200).json({
       success: true,
       message: "All questions",

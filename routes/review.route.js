@@ -13,7 +13,7 @@ router.get("/all", VerifyToken, reviewController.getAllReviews);
 
 
 
-router.post("/create-review-for-house", reviewController.createReviewForHouse);
+router.post("/create-review-for-house", VerifyToken, reviewController.createReviewForHouse);
 router.get("/get-reviews-by-house-id/:id", reviewController.getAllReviewsByHouseId);
 
 

@@ -1,23 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 
-const reviewSchema = new mongoose.Schema({
-    author: {
-        type: Object,
-        required: true
-    
-    },
-    rating: {
-        type: Number,
-        required: [true, "Please enter house rating"],
-        min: [1, "Rating must be at least 1.0"],
-        max: [5, "Rating must cannot exceed 5.0"],
-    },
-    content: {
-        type: String,
-        required: [true, "Please enter house comment"],
-    },
-})
 
 const reviewSchemaForHouse = new mongoose.Schema({
     house: {
@@ -25,21 +8,10 @@ const reviewSchemaForHouse = new mongoose.Schema({
         ref: "House",
         required: true,
     },
-    name: {
-        type: String,
-        required: [true, "Please enter your name"],
-        trim: true,
-        maxLength: [30, "Name cannot exceed 30 characters"],
-    },
-    email: {
-        type: String,
-        trim: true,
-        lowercase: true,
-        validate: {
-            validator: function (v) {
-                return validator.isEmail(v);
-            }
-        }
+    author: {
+        type: mongoose.Schema.ObjectId,
+        ref: "user",
+        required: true,
     },
     rating: {
         type: Number,
@@ -57,6 +29,6 @@ const reviewSchemaForHouse = new mongoose.Schema({
     },
 })
 
-const Reviews = mongoose.model("reviews", reviewSchema);
+
 const ReviewsForHouse = mongoose.model("Reviews", reviewSchemaForHouse);
-module.exports = {Reviews, ReviewsForHouse};
+module.exports = {ReviewsForHouse};
