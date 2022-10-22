@@ -7,6 +7,7 @@ const {
   findQuestionByIdService,
   getQuestionsByAuthorService,
 } = require("../services/question.services");
+const Question = require("../models/question.model");
 
 // @access Private
 const askQuestion = async (req, res) => {
@@ -38,47 +39,58 @@ const askQuestion = async (req, res) => {
   }
 };
 
-
 // @routes api/v1/questions/delete-question
 // @desc Delete question
 // @access Private
 const deleteQuestionById = async (req, res) => {
-    try {
-        const question = await findQuestionByIdService(req.params.id);
-        if (!question) {
-            return res.status(404).json({
-                success: false,
-                message: "Question not found",
-            });
-        }
-        await question.remove();
-        res.status(200).json({
-            success: true,
-            message: "Question deleted successfully",
-        });
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message,
-        });
+  try {
+    const question = await findQuestionByIdService(req.params.id);
+    if (!question) {
+      return res.status(404).json({
+        success: false,
+        message: "Question not found",
+      });
     }
+    await question.remove();
+    res.status(200).json({
+      success: true,
+      message: "Question deleted successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
 };
-
-
 
 // @routes GET api/question/questions-for-house/:id
 // @desc Get All the questions for particular house
 // @access Private
 
 const getQuestionsForHouse = async (req, res) => {
+  const { limit, page } = req.query;
   const houseId = req.params.id;
+ 
 
   try {
-    const questions = await getQuestionsForHouseService(houseId);
+    let filters = {};
+
+    if (limit && page) {
+      const skip = (page - 1) * limit;
+      filters = {
+        limit: parseInt(limit),
+        skip: parseInt(skip),
+      };
+    }
+
+    const questions = await getQuestionsForHouseService(houseId, filters);
+    const count = await Question.countDocuments({ house: houseId });
     res.send({
       success: true,
       message: "Found Questions",
       data: questions,
+      count,
     });
   } catch (error) {
     res.status(404).send({
@@ -144,7 +156,6 @@ const deleteQuestion = async (req, res) => {
 // @access Private
 
 const getQuestionByAuthor = async (req, res) => {
-
   const authorId = req.params.authorId;
 
   try {
@@ -175,5 +186,5 @@ module.exports = {
   acceptQuestionAndAnswer,
   deleteQuestion,
   getQuestionByAuthor,
-  deleteQuestionById
+  deleteQuestionById,
 };
