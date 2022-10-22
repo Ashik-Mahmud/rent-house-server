@@ -7,6 +7,7 @@ const { findByIdHouseService } = require("../services/house.services");
 const {
   createReportServices,
   reportsForHouseService,
+  deleteReportService,
 } = require("../services/reportHoues.services");
 const { sendReportEmail } = require("../utils/sendEmail");
 
@@ -65,4 +66,27 @@ const reportsForHouse = async (req, res) => {
   }
 };
 
-module.exports = { createReport, reportsForHouse };
+
+// @routes DELETE api/v1/report-house/delete/:id
+// @desc Delete Report by ID
+// @access Private
+const deleteReport = async (req, res) => {
+    const reportId = req.params.id;
+    try {
+        const report = await deleteReportService(reportId);
+        res.status(201).send({
+            success: true,
+            message: "Report Deleted Successfully",
+            data: report
+        })
+    } catch (error) {
+        res.status(404).send({
+            success: false,
+            message: "Server Error"
+        })
+    }
+}
+
+
+
+module.exports = { createReport, reportsForHouse, deleteReport };

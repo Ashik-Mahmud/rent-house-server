@@ -13,3 +13,9 @@ exports.reportsForHouseService = async(id) =>{
     const result = await Report.find({house: id});
     return result;
 }
+
+/* Delete Report Services */
+exports.deleteReportService = async(id) =>{
+    const result = await Report.findByIdAndDelete(id);
+    return result;
+}
