@@ -39,29 +39,29 @@ const UserSchema = new mongoose.Schema(
     role: {
       type: String,
       default: "user",
-      enum: ["user", "admin", 'customer', 'manager'],
+      enum: ["user", "admin", "customer", "manager"],
     },
     facebookLink: {
-        type: String,
-        trim: true,
+      type: String,
+      trim: true,
     },
     twitterLink: {
-        type: String,
-        trim: true,
-        validate: {
-            validator: function (v) {
-              return validator.isURL(v);
-            },
-          },
+      type: String,
+      trim: true,
+      validate: {
+        validator: function (v) {
+          return validator.isURL(v);
+        },
+      },
     },
     instagramLink: {
-        type: String,
-        trim: true,
-        validate: {
-            validator: function (v) {
-              return validator.isURL(v);
-            },
-          },
+      type: String,
+      trim: true,
+      validate: {
+        validator: function (v) {
+          return validator.isURL(v);
+        },
+      },
     },
     avatar: {
       type: String,
@@ -74,24 +74,24 @@ const UserSchema = new mongoose.Schema(
       },
     },
     profileImage: {
-        type: String,
-        trim: true
+      type: String,
+      trim: true,
     },
     verificationToken: {
-        type: String,
-        default: null,
+      type: String,
+      default: null,
     },
     isVerified: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     verificationTokenExpires: {
-        type: Date,
-        default: null,
+      type: Date,
+      default: null,
     },
     blogAllowed: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     status: {
       type: String,
@@ -99,12 +99,16 @@ const UserSchema = new mongoose.Schema(
       enum: ["active", "inactive"],
     },
     isBlogRequestSent: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     isHouseHolderReqSent: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
+    },
+    cloudinaryId: {
+      type: String,
+      default: null,
     },
   },
   {

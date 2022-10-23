@@ -22,6 +22,10 @@ const { default: mongoose } = require("mongoose");
 const House = require("../models/house.model");
 const Blog = require("../models/blog.model");
 const { Reviews } = require("../models/review.model");
+const {
+  uploadProfileImage,
+  deleteProfileImage,
+} = require("../utils/Cloudinary");
 
 //@routes POST /api/users
 //@desc Register a user
@@ -63,8 +67,14 @@ const createUser = async (req, res) => {
       return res
         .status(400)
         .json({ success: false, message: "User already exists" });
-   
-    const newUser = new User({ name, email, password, role, phone: phone ? phone : "" });
+
+    const newUser = new User({
+      name,
+      email,
+      password,
+      role,
+      phone: phone ? phone : "",
+    });
 
     //Create salt & hash
     bcrypt.genSalt(10, (err, salt) => {
@@ -87,7 +97,7 @@ const createUser = async (req, res) => {
     // send Verification Email to User
     sendVerificationEmail(email, token);
   } catch (error) {
-    res.status(500).json({ success: false, message: "Server Error"+ error });
+    res.status(500).json({ success: false, message: "Server Error" + error });
   }
 };
 
@@ -422,16 +432,20 @@ const changeProfileImage = async (req, res, next) => {
         .json({ success: false, message: "User does not exist" });
 
     if (user?.profileImage) {
-      await deleteFile(user?.profileImage);
+      await deleteProfileImage(user?.cloudinaryId, email);
     }
 
-    user.profileImage = req.file.filename;
+    const profileImage = await uploadProfileImage(req.file.path, email);
+    user.profileImage = profileImage?.secure_url;
+    user.cloudinaryId = profileImage?.public_id;
     await user.save();
-    res.send({
-      success: true,
-      message: "Profile picture updated successfully done.",
-      user: user,
-    });
+    if (profileImage) {
+      res.send({
+        success: true,
+        message: "Profile picture updated successfully done.",
+        user: user,
+      });
+    }
   } catch (error) {
     res.status(500).json({ success: false, message: "Server Error", error });
   }
@@ -522,8 +536,6 @@ const getUserById = async (req, res) => {
 /* Send Feature Request */
 
 const sendFeatureRequest = async (req, res) => {
-  console.log(req.body);
-
   const { subject, requestText, author } = req.body;
 
   if (!subject || !requestText) {

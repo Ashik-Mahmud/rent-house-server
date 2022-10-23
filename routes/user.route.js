@@ -45,6 +45,23 @@ const upload = multer({
   },
 });
 
+const uploadProfileImage = multer({
+    storage: multer.diskStorage({}),
+    limits: {
+      fileSize: 1000000, //1MB
+    },
+    fileFilter: (req, file, cb) => {
+      if (
+        file.mimetype === "image/png" ||
+        file.mimetype === "image/jpg" ||
+        file.mimetype === "image/jpeg"
+      ) {
+        cb(null, true);
+      } else {
+        cb(new Error("Only .png, .jpg, or .jpeg file allowed."));
+      }
+    },
+  });
 
 /* Putting Limiter for Reset Password Routes */
 
@@ -70,7 +87,7 @@ router.post("/create", usersController.createUser);
 router.get("/verify-email/:token", usersController.verifyEmail);
 router.get("/verify-reset-password-email/:token", usersController.verifyResetPasswordMail);
 router.patch("/update-profile", VerifyToken, usersController.updateProfile);
-router.post("/change-profile-picture", VerifyToken, upload.single("profileImage"),  usersController.changeProfileImage);
+router.post("/change-profile-picture", VerifyToken, uploadProfileImage.single("profileImage"),  usersController.changeProfileImage);
 router.post("/login", loginLimiter,usersController.loginUser);
 router.post("/reset-password", putLimiterForCallApi,  usersController.resetPassword);
 router.post("/change-password", usersController.changePassword);
