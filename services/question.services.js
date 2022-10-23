@@ -22,7 +22,7 @@ exports.findQuestionByIdService = async (id) => {
 };
 
 /* Find Questions by Author ID */
-exports.getQuestionsByAuthorService = async (id) => {
-  const result = await Question.find({ author: id });
+exports.getQuestionsByAuthorService = async (id, houseId) => {
+  const result = await Question.find({ author: id , house: houseId});
   return result;
 };

@@ -137,9 +137,12 @@ const acceptQuestionAndAnswer = async (req, res) => {
 
 const getQuestionByAuthor = async (req, res) => {
   const authorId = req.params.authorId;
+  const { houseId } = req.query;
 
+    
   try {
-    const questions = await getQuestionsByAuthorService(authorId);
+    const questions = await getQuestionsByAuthorService(authorId, houseId);
+      
     if (!questions) {
       return res.status(404).send({
         success: false,
