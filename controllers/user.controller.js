@@ -453,19 +453,7 @@ const changeProfileImage = async (req, res, next) => {
   }
 };
 
-const deleteFile = async (fileName) => {
-  try {
-    const filePath = path.join(__dirname, `../uploads/profiles/${fileName}`);
-    await fs.unlink(filePath, (err) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
+
 
 // @Routes GET /api/users/house-list
 // @desc Get House List

@@ -1,6 +1,7 @@
 // @routes /api/v1/reviews/public-review
 // @desc Public review
 
+const appReview = require("../models/AppReview");
 const { Reviews, ReviewsForHouse } = require("../models/review.model");
 const { getHouseByIdService } = require("../services/house.services");
 const {
@@ -244,7 +245,7 @@ const updateReviewById = async (req, res) => {
 // @access Private
 const getAllReviews = async (req, res) => {
   try {
-    const reviews = await Reviews.find();
+    const reviews = await appReview.find({}).populate("author");
     res.status(200).json({
       success: true,
       data: reviews,

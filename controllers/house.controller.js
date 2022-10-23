@@ -1,4 +1,7 @@
 const House = require("../models/house.model");
+const Question = require("../models/question.model");
+const { ReviewsForHouse } = require("../models/review.model")
+const Report = require("../models/reportHouse.model");
 const path = require("path");
 const fs = require("fs");
 const {
@@ -408,13 +411,23 @@ const deleteHouse = async (req, res) => {
         message: "House not found",
       });
     }
-
     if (house.owner?._id.toString() !== req.user.id) {
       return res.status(401).json({
         success: false,
         message: "Not authorized",
       });
     }
+
+    /* Delete All Questions Related of This */
+    await Question.deleteMany({ house: req.params.id });
+
+    /* Delete All Reviews Related of This */
+    await ReviewsForHouse.deleteMany({ house: req.params.id });
+    
+    /* Delete All Reports Related of This */
+    await Report.deleteMany({ house: req.params.id });
+
+
     await deleteHousesImages(house.image, req.user?.email, house.gallery);
     await house.remove();
     res.status(200).json({
