@@ -25,6 +25,8 @@ const { Reviews } = require("../models/review.model");
 const {
   uploadProfileImage,
   deleteProfileImage,
+  deleteImages,
+  uploadImages,
 } = require("../utils/Cloudinary");
 
 //@routes POST /api/users
@@ -432,10 +434,10 @@ const changeProfileImage = async (req, res, next) => {
         .json({ success: false, message: "User does not exist" });
 
     if (user?.profileImage) {
-      await deleteProfileImage(user?.cloudinaryId, email);
+      await deleteImages(user?.cloudinaryId, email, "profiles");
     }
 
-    const profileImage = await uploadProfileImage(req.file.path, email);
+    const profileImage = await uploadImages(req.file.path, email, "profiles");
     user.profileImage = profileImage?.secure_url;
     user.cloudinaryId = profileImage?.public_id;
     await user.save();

@@ -9,7 +9,7 @@ const VerifyUser = require("../middlewares/VerifyUser");
 
 
 /* Config for Upload Preview Image */
-const storage = multer.diskStorage({
+/* const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     if (file.fieldname === "galleryImage") {
       cb(null, "./uploads/gallery/");
@@ -33,9 +33,9 @@ const storage = multer.diskStorage({
       cb(null, "preview-" + fileName + fileExt);
     }
   },
-});
+}); */
 const upload = multer({
-  storage: storage,
+  storage: multer.diskStorage({}),
   limits: {
     fileSize: 1000000, //1MB
   },
@@ -48,6 +48,22 @@ const upload = multer({
       cb(null, true);
     } else {
       cb(new Error("Only .png, .jpg, or .jpeg file allowed."));
+    }
+  },
+  filename: (req, file, cb) => {
+    const fileExt = path.extname(file.originalname);
+    const fileName =
+      file.originalname
+        .replace(fileExt, "")
+        .toLowerCase()
+        .split(" ")
+        .join("-") +
+      "-" +
+      Date.now();
+    if (file.fieldname === "galleryImage") {
+      cb(null, "gallery-" + fileName + fileExt);
+    } else {
+      cb(null, "preview-" + fileName + fileExt);
     }
   },
 });

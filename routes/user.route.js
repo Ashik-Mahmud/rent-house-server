@@ -9,6 +9,8 @@ const VerifyToken = require("../middlewares/VerifyToken");
 const VerifyAdmin = require("../middlewares/VerifyAdmin");
 const VerifySupAdmin = require("../middlewares/VerifySupAdmin");
 
+
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./uploads/profiles/");
@@ -27,25 +29,9 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 1000000, //1MB
-  },
-  fileFilter: (req, file, cb) => {
-    if (
-      file.mimetype === "image/png" ||
-      file.mimetype === "image/jpg" ||
-      file.mimetype === "image/jpeg"
-    ) {
-      cb(null, true);
-    } else {
-      cb(new Error("Only .png, .jpg, or .jpeg file allowed."));
-    }
-  },
-});
 
-const uploadProfileImage = multer({
+
+const upload = multer({
     storage: multer.diskStorage({}),
     limits: {
       fileSize: 1000000, //1MB
@@ -87,7 +73,7 @@ router.post("/create", usersController.createUser);
 router.get("/verify-email/:token", usersController.verifyEmail);
 router.get("/verify-reset-password-email/:token", usersController.verifyResetPasswordMail);
 router.patch("/update-profile", VerifyToken, usersController.updateProfile);
-router.post("/change-profile-picture", VerifyToken, uploadProfileImage.single("profileImage"),  usersController.changeProfileImage);
+router.post("/change-profile-picture", VerifyToken, upload.single("profileImage"),  usersController.changeProfileImage);
 router.post("/login", loginLimiter,usersController.loginUser);
 router.post("/reset-password", putLimiterForCallApi,  usersController.resetPassword);
 router.post("/change-password", usersController.changePassword);

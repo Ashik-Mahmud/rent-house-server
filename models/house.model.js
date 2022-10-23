@@ -121,14 +121,25 @@ const houseSchema = new mongoose.Schema(
       required: [true, "Please enter house description"],
     },
     image: {
-      type: String,
-      required: true,
+      img: {
+        type: String,
+        required: [true, "Please enter house image"],
+      },
+      public_id: {
+        type: String,
+        required: true,
+      },
     },
     gallery: [
       {
-        type: String,
-        required: true,
-        message: "Please enter valid image URLs",
+        image: {
+          type: String,
+          required: [true, "Please enter house image"],
+        },
+        public_id: {
+          type: String,
+          required: true,
+        },
       },
     ],
     district: {
@@ -192,6 +203,7 @@ const houseSchema = new mongoose.Schema(
     totalReviews: {
       type: Number,
       trim: true,
+      default: 0,
     },
     totalQuestions: {
       type: Number,

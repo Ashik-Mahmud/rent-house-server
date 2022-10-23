@@ -12,6 +12,7 @@ const {
   getTop4HousesService,
 } = require("../services/house.services");
 const { sendHouseAddedEmail } = require("../utils/sendEmail");
+const { uploadImages } = require("../utils/Cloudinary");
 
 // @Routes POST /api/v1/houses/create
 // @Desc Create a new house
@@ -24,7 +25,7 @@ const createHouse = async (req, res) => {
     price,
     district,
     city,
-    googleMapLocation,
+
     bathrooms,
     bedrooms,
     category,
@@ -54,28 +55,61 @@ const createHouse = async (req, res) => {
       .json({ success: false, message: "Please enter all fields" });
   }
 
-  const previewImage = req.files.previewImage[0].filename;
-  const galleryImages = req.files.galleryImage?.map((image) => image.filename);
-
   try {
-    const house = await createHouseService({
-      ...data,
-      image: previewImage,
-      gallery: galleryImages,
-      owner: author?.id,
-    });
-    res.status(201).json({
-      success: true,
-      message: "House created successfully & sent you email",
-      data: house,
-    });
-    sendHouseAddedEmail(author.email, house.name);
+    const previewImage = req.files.previewImage[0].path;
+    const galleryImages = req.files.galleryImage?.map((image) => image.path);
+
+    if (previewImage && galleryImages) {
+      const previewImageUpload = await uploadImages(
+        previewImage,
+        req.user?.email,
+        "previewImages"
+      );
+
+      const images = await uploadMultipleImages(galleryImages, req.user?.email);
+      if (previewImageUpload && images.length > 0) {
+        const house = await createHouseService({
+          ...data,
+          image: {
+            img: previewImageUpload.secure_url,
+            public_id: previewImageUpload.public_id,
+          },
+          gallery: images,
+          owner: author?.id,
+        });
+        res.status(201).json({
+          success: true,
+          message: "House created successfully & sent you email",
+          data: house,
+        });
+        sendHouseAddedEmail(author.email, house.name);
+      } else {
+        res.status(500).json({
+          success: false,
+          message: "Something went wrong",
+        });
+      }
+    }
   } catch (error) {
     res.status(500).json({
       success: false,
       message: "Server Error",
     });
   }
+};
+
+const uploadMultipleImages = async (gallery, mail) => {
+  let galleryImagesUpload = [];
+  for (let i = 0; i < gallery.length; i++) {
+    const image = gallery[i];
+    const imageUpload = await uploadImages(image, mail, "galleryImages");
+    galleryImagesUpload.push({
+      image: imageUpload.secure_url,
+      public_id: imageUpload.public_id,
+    });
+  }
+
+  return galleryImagesUpload;
 };
 
 // @route   GET api/houses
