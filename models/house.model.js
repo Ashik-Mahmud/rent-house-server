@@ -39,7 +39,6 @@ const houseSchema = new mongoose.Schema(
     price: {
       type: Number,
       required: [true, "Please enter house price per month"],
-      
     },
     bedrooms: {
       type: Number,
@@ -143,7 +142,6 @@ const houseSchema = new mongoose.Schema(
     googleMapLocation: {
       type: String,
       trim: true,
-      
     },
     owner: {
       type: mongoose.Schema.ObjectId,
@@ -151,15 +149,15 @@ const houseSchema = new mongoose.Schema(
     },
     isAvailable: {
       type: String,
-      enum: ['Yes', "No"],
+      enum: ["Yes", "No"],
     },
     isBooked: {
-        type: String,
-        enum: ['Yes', "No"],
+      type: String,
+      enum: ["Yes", "No"],
     },
     isBachelorRoom: {
-        type: String,
-        enum: ['Yes', "No"],
+      type: String,
+      enum: ["Yes", "No"],
     },
     status: {
       type: String,
@@ -171,26 +169,40 @@ const houseSchema = new mongoose.Schema(
     },
     allowQuestion: {
       type: String,
-      enum: ['Yes', "No"],
-      default: 'No'
+      enum: ["Yes", "No"],
+      default: "No",
     },
     allowReview: {
       type: String,
-      enum: ['Yes', "No"],
-      default: 'No'
+      enum: ["Yes", "No"],
+      default: "No",
     },
     likes: {
-        type: Number,
-        default: 0,
+      type: Number,
+      default: 0,
     },
     views: {
-        type: Number,
-        default: 0,
+      type: Number,
+      default: 0,
     },
     isBlock: {
-        type: Boolean,
-        default: false
-    }
+      type: Boolean,
+      default: false,
+    },
+    totalReviews: {
+      type: Number,
+      trim: true,
+    },
+    totalQuestions: {
+      type: Number,
+      default: 0,
+      trim: true,
+    },
+    totalReports: {
+      type: Number,
+      default: 0,
+      trim: true,
+    },
   },
   {
     timestamps: true,

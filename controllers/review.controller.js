@@ -2,6 +2,7 @@
 // @desc Public review
 
 const { Reviews, ReviewsForHouse } = require("../models/review.model");
+const { getHouseByIdService } = require("../services/house.services");
 const {
   createReviewService,
   createReviewForHouseService,
@@ -41,7 +42,6 @@ const createReview = async (req, res) => {
 const getAllReviewByUserId = async (req, res) => {
   const { id } = req.params;
 
-   
   if (!id) {
     return res.status(400).json({
       success: false,
@@ -49,7 +49,7 @@ const getAllReviewByUserId = async (req, res) => {
     });
   }
   try {
-    const reviews = await getAllReviewsByUserId(id);    
+    const reviews = await getAllReviewsByUserId(id);
     res.status(201).json({
       success: true,
       message: "Get all reviews successfully",
@@ -113,14 +113,16 @@ const createReviewForHouse = async (req, res) => {
 // @access Private
 const acceptReviewById = async (req, res) => {
   const { id } = req.params;
+  const { houseId, houseReview } = req.query;
   if (!id) {
     return res.status(400).json({
       success: false,
       message: "bad request",
     });
   }
+
   try {
-    const review = await findByIdReviewService(id);
+    const review = await findByIdReviewService({ id, houseReview, houseId });
     if (!review) {
       return res.status(400).json({
         success: false,
@@ -179,10 +181,10 @@ const getAllReviewsByHouseId = async (req, res) => {
 // @access Private
 const deleteReviewById = async (req, res) => {
   const { id } = req.params;
-  const {reviewApp, houseReview} = req.query;
+  const { houseId } = req.query;
 
   try {
-    const review = await findByIdReviewService(id, reviewApp, houseReview);
+    const review = await ReviewsForHouse.findById(id)
     if (!review) {
       return res.status(404).json({
         success: false,
@@ -190,6 +192,11 @@ const deleteReviewById = async (req, res) => {
       });
     }
     await review.remove();
+    const house = await getHouseByIdService(houseId);
+    if(house){
+        house.totalReviews = house.totalReviews - 1;
+    }
+    await house.save();
     res.status(200).json({
       success: true,
       message: "Review deleted successfully",
@@ -236,7 +243,6 @@ const updateReviewById = async (req, res) => {
 // @desc Get all reviews
 // @access Private
 const getAllReviews = async (req, res) => {
-    
   try {
     const reviews = await Reviews.find();
     res.status(200).json({

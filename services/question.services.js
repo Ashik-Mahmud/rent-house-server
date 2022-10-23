@@ -1,8 +1,14 @@
 /* Ask Question to the Users Services*/
+const House = require("../models/house.model");
 const Question = require("../models/question.model");
 
 exports.createQuestionService = async (data) => {
   const newQuestion = await Question.create(data);
+  const house = await House.findById(data?.house);
+  if (house) {
+    house.totalQuestions = house.totalQuestions + 1;
+    await house.save();
+  }
   return newQuestion;
 };
 
@@ -23,6 +29,6 @@ exports.findQuestionByIdService = async (id) => {
 
 /* Find Questions by Author ID */
 exports.getQuestionsByAuthorService = async (id, houseId) => {
-  const result = await Question.find({ author: id , house: houseId});
+  const result = await Question.find({ author: id, house: houseId });
   return result;
 };

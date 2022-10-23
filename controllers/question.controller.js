@@ -8,6 +8,7 @@ const {
   getQuestionsByAuthorService,
 } = require("../services/question.services");
 const Question = require("../models/question.model");
+const House = require("../models/house.model");
 
 // @access Private
 const askQuestion = async (req, res) => {
@@ -43,6 +44,7 @@ const askQuestion = async (req, res) => {
 // @desc Delete question
 // @access Private
 const deleteQuestionById = async (req, res) => {
+  const { houseId } = req.query;
   try {
     const question = await findQuestionByIdService(req.params.id);
     if (!question) {
@@ -52,6 +54,11 @@ const deleteQuestionById = async (req, res) => {
       });
     }
     await question.remove();
+    const house = await House.findById(houseId);
+    if (house) {
+      house.totalQuestions = house.totalQuestions - 1;
+      await house.save();
+    }
     res.status(200).json({
       success: true,
       message: "Question deleted successfully",
@@ -139,10 +146,9 @@ const getQuestionByAuthor = async (req, res) => {
   const authorId = req.params.authorId;
   const { houseId } = req.query;
 
-    
   try {
     const questions = await getQuestionsByAuthorService(authorId, houseId);
-      
+
     if (!questions) {
       return res.status(404).send({
         success: false,
@@ -165,7 +171,12 @@ const getQuestionByAuthor = async (req, res) => {
 
 const getAllQuestions = async (req, res) => {
   try {
-    const questions = await Question.find({ accepted: true, house: req.params.id }).select("question answer").populate("author", "name email profileImage role avatar");
+    const questions = await Question.find({
+      accepted: true,
+      house: req.params.id,
+    })
+      .select("question answer")
+      .populate("author", "name email profileImage role avatar");
     res.status(200).json({
       success: true,
       message: "All questions",
