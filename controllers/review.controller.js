@@ -40,6 +40,8 @@ const createReview = async (req, res) => {
 // @access Private
 const getAllReviewByUserId = async (req, res) => {
   const { id } = req.params;
+
+   
   if (!id) {
     return res.status(400).json({
       success: false,
@@ -47,7 +49,7 @@ const getAllReviewByUserId = async (req, res) => {
     });
   }
   try {
-    const reviews = await getAllReviewsByUserId(id);
+    const reviews = await getAllReviewsByUserId(id);    
     res.status(201).json({
       success: true,
       message: "Get all reviews successfully",
@@ -177,8 +179,10 @@ const getAllReviewsByHouseId = async (req, res) => {
 // @access Private
 const deleteReviewById = async (req, res) => {
   const { id } = req.params;
+  const {reviewApp, houseReview} = req.query;
+
   try {
-    const review = await findByIdReviewService(id);
+    const review = await findByIdReviewService(id, reviewApp, houseReview);
     if (!review) {
       return res.status(404).json({
         success: false,
@@ -232,6 +236,7 @@ const updateReviewById = async (req, res) => {
 // @desc Get all reviews
 // @access Private
 const getAllReviews = async (req, res) => {
+    
   try {
     const reviews = await Reviews.find();
     res.status(200).json({

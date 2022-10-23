@@ -12,6 +12,12 @@ router.get(
   VerifyToken,
   reviewController.getAllReviewByUserId
 );
+
+router.patch(
+    "/update-review/:id",
+    VerifyToken,
+    reviewController.updateReviewById
+  );
 router.delete(
   "/delete-review/:id",
   VerifyToken,
@@ -34,10 +40,8 @@ router.patch(
   VerifyUser,
   reviewController.acceptReviewById
 );
-router.patch(
-  "/update-review/:id",
-  VerifyToken,
-  reviewController.updateReviewById
-);
+
+
+router.get("/all", VerifyToken, reviewController.getAllReviews);
 
 module.exports = router;
