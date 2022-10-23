@@ -12,7 +12,7 @@ const {
   getTop4HousesService,
 } = require("../services/house.services");
 const { sendHouseAddedEmail } = require("../utils/sendEmail");
-const { uploadImages } = require("../utils/Cloudinary");
+const { uploadImages, deleteImages } = require("../utils/Cloudinary");
 
 // @Routes POST /api/v1/houses/create
 // @Desc Create a new house
@@ -415,12 +415,12 @@ const deleteHouse = async (req, res) => {
         message: "Not authorized",
       });
     }
+    await deleteHousesImages(house.image, req.user?.email, house.gallery);
     await house.remove();
     res.status(200).json({
       success: true,
       message: "House deleted successfully",
     });
-    deleteHousesImages(house.image, house.gallery);
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -430,21 +430,15 @@ const deleteHouse = async (req, res) => {
 };
 
 /* Delete all the images related this houses */
-const deleteHousesImages = (image, gallery) => {
-  const previewImagePath = path.join(__dirname, `../uploads/previews/${image}`);
-  const galleryImagePath = path.join(__dirname, `../uploads/gallery/`);
-  fs.unlink(previewImagePath, (err) => {
-    if (err) {
-      console.log(err);
+const deleteHousesImages = async (image, email, gallery) => {
+  if (image) {
+    await deleteImages(image?.public_id, email, "previewImages");
+  }
+  if (gallery.length > 0) {
+    for (let i = 0; i < gallery.length; i++) {
+      await deleteImages(gallery[i].public_id, email, "galleryImages");
     }
-  });
-  gallery.forEach((img) => {
-    fs.unlink(galleryImagePath + img, (err) => {
-      if (err) {
-        console.log(err);
-      }
-    });
-  });
+  }
 };
 
 // @route PATCH /api/v1/houses/change-status/:id
