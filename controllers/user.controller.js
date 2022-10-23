@@ -21,7 +21,7 @@ const {
 const { default: mongoose } = require("mongoose");
 const House = require("../models/house.model");
 const Blog = require("../models/blog.model");
-const { Reviews } = require("../models/review.model");
+const { ReviewsForHouse } = require("../models/review.model");
 const {
   uploadProfileImage,
   deleteProfileImage,
@@ -625,6 +625,9 @@ const deleteAccountByUser = async (req, res) => {
       await house.remove();
     });
   }
+
+  
+  
   /* Remove Articles for particular Users */
   const articles = await Blog.find({ author: user._id });
   if (articles) {
@@ -632,15 +635,18 @@ const deleteAccountByUser = async (req, res) => {
       await article.remove();
     });
   }
-
+ 
   /* Remove Reviews for this users */
-  const reviews = await Reviews.find({ "author.userId": user._id });
+  const reviews = await ReviewsForHouse.find({ "author.userId": user._id });
   if (reviews) {
     reviews.forEach(async (review) => {
       await review.remove();
     });
   }
-
+  /* Remove Profile Image for this User */
+  if(user.profileImage){
+    await deleteImages(user?.cloudinaryId, user.email, "profiles");
+  }
   await user.remove();
   res.status(200).send({
     success: true,
