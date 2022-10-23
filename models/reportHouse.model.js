@@ -17,6 +17,11 @@ const reportHouseSchema = new mongoose.Schema({
     trim: true,
     required: true,
   },
+  houseHolder: {
+    type: mongoose.Schema.ObjectId,
+    required: true,
+    ref: "user"
+  },
   house: {
     type: mongoose.Schema.ObjectId,
     required: true,

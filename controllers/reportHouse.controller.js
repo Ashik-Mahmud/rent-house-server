@@ -14,8 +14,6 @@ const { sendReportEmail } = require("../utils/sendEmail");
 const createReport = async (req, res) => {
   const { house, houseUrl, reportType, reportMessage } = req.body;
 
-  const { houseId } = req.query;
-
   const ownerInfo = await House.findById(house)
     .populate("owner", "email")
     .select("owner");
@@ -33,8 +31,13 @@ const createReport = async (req, res) => {
       otherReportType: undefined,
       house: house,
     });
-    ownerInfo.totalReports = ownerInfo.totalReports + 1;
-    ownerInfo.save();
+
+    const houseInfo = await House.findById(ownerInfo?._id.toString());
+    if (houseInfo) {
+      houseInfo.totalReports = houseInfo?.totalReports + 1;
+      await houseInfo.save();
+    }
+
     res.status(201).send({
       success: true,
       message: "Report Added successfully.",

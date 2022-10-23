@@ -4,6 +4,7 @@ const router = require('express').Router();
 const requestController = require('../controllers/request.controller');
 const VerifyAdmin = require('../middlewares/VerifyAdmin');
 const VerifyToken = require('../middlewares/VerifyToken');
+const VerifyUser = require('../middlewares/VerifyUser')
 
 /* Init Routes */
 
@@ -31,6 +32,12 @@ router.delete("/cancel-request/:id", VerifyToken, VerifyAdmin, requestController
 //@desc Send request for house
 //@access private
 router.post("/for-house", VerifyToken, requestController.createHouseHolderRequest);
+
+
+// @routes GET api/v1/request/notifications
+// @desc Get All the Notifications
+// @access private
+router.get("/notifications", VerifyToken, VerifyUser, requestController.getAllNotifications)
 
 
 module.exports = router;

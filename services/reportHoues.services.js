@@ -11,7 +11,7 @@ exports.createReportServices = async(data) =>{
 
 /* Reports By House ID Services */
 exports.reportsForHouseService = async(id) =>{
-    const result = await Report.find({house: id});
+    const result = await Report.find({house: id})
     return result;
 }
 
