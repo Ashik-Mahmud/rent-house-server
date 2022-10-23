@@ -14,6 +14,8 @@ const { sendReportEmail } = require("../utils/sendEmail");
 const createReport = async (req, res) => {
   const { house, houseUrl, reportType, reportMessage } = req.body;
 
+  const { houseId } = req.query;
+
   const ownerInfo = await House.findById(house)
     .populate("owner", "email")
     .select("owner");
@@ -31,6 +33,8 @@ const createReport = async (req, res) => {
       otherReportType: undefined,
       house: house,
     });
+    ownerInfo.totalReports = ownerInfo.totalReports + 1;
+    ownerInfo.save();
     res.status(201).send({
       success: true,
       message: "Report Added successfully.",
@@ -66,27 +70,25 @@ const reportsForHouse = async (req, res) => {
   }
 };
 
-
 // @routes DELETE api/v1/report-house/delete/:id
 // @desc Delete Report by ID
 // @access Private
 const deleteReport = async (req, res) => {
-    const reportId = req.params.id;
-    try {
-        const report = await deleteReportService(reportId);
-        res.status(201).send({
-            success: true,
-            message: "Report Deleted Successfully",
-            data: report
-        })
-    } catch (error) {
-        res.status(404).send({
-            success: false,
-            message: "Server Error"
-        })
-    }
-}
-
-
+  const reportId = req.params.id;
+  const { houseId } = req.query;
+  try {
+    const report = await deleteReportService(reportId, houseId);
+    res.status(201).send({
+      success: true,
+      message: "Report Deleted Successfully",
+      data: report,
+    });
+  } catch (error) {
+    res.status(404).send({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};
 
 module.exports = { createReport, reportsForHouse, deleteReport };

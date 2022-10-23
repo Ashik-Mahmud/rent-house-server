@@ -1,5 +1,6 @@
 /* Create Report Services */
 
+const House = require("../models/house.model");
 const Report = require("../models/reportHouse.model")
 
 
@@ -15,7 +16,12 @@ exports.reportsForHouseService = async(id) =>{
 }
 
 /* Delete Report Services */
-exports.deleteReportService = async(id) =>{
+exports.deleteReportService = async(id, houseId) =>{
     const result = await Report.findByIdAndDelete(id);
+    const house = await House.findById(houseId)
+    if(house.totalReports > 0){
+        house.totalReports = house.totalReports - 1;
+        await house.save();
+    }
     return result;
 }
