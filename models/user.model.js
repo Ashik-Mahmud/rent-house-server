@@ -112,7 +112,7 @@ const UserSchema = new mongoose.Schema(
     },
     bookedHouses: [
       {
-        type: mongoose.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "House",
       },
     ],
