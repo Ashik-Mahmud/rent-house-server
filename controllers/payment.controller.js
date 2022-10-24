@@ -1,6 +1,7 @@
 const User = require("../models/user.model");
 const { saveBookingsServices } = require("../services/payment.services");
 const { sendEmailForPaymentSuccess, sendEmailToHouseHolderForBookedHouse } = require("../utils/sendEmail");
+const House = require("../models/house.model");
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
@@ -41,14 +42,15 @@ const saveBookings = async (req, res) => {
         { new: true }
       );
       if (usersSavedBookedId) {
+        const houseHolder = await User.findById(data?.author);
+        const house = await House.findById(data?.house); 
+        const customer = await User.findById(req?.user?.id);
+        sendEmailForPaymentSuccess(email, customer?.name, house, data?.transactionId)
+        sendEmailToHouseHolderForBookedHouse(houseHolder?.email, houseHolder?.name, customer?.name, house, data?.transactionId)
         res.status(201).send({
           success: true,
           message: "Bookings saved successfully",
-          data: bookings,
         });
-        sendEmailToHouseHolderForBookedHouse(usersSavedBookedId?.email, usersSavedBookedId?.name, name, usersSavedBookedId, data?.transactionId)
-        sendEmailForPaymentSuccess(email, name, usersSavedBookedId, data?.transactionId)
-        
       }
     }
   } catch (err) {

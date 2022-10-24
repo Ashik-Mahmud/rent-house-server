@@ -293,8 +293,8 @@ const sendEmailForPaymentSuccess = (email, name, house, payment) => {
         subject: "Congratulation! Your Payment is Successfully done.",
         text: `Congratulation! Your Payment is Success`,
         html: `<div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
-            <p style="font-weight: bold">Hello ${author?.name},</p>
-            <p >Congratulation! Your Payment is Successfully done. Now you can see your ${house?.name} details</p>
+            <p style="font-weight: bold">Hello ${name},</p>
+            <p >Congratulation! Your Payment is Successfully done. Now you can see your <b>${house?.name} </b> details</p>
             <p> here is your transaction id - <b>${payment}</b></p>
             <p>Regards - <br/> <a href="https://tools-manufactures.web.app" target="_blank" >Rent House</a></p>
             <address>Rangpur Road, Gobindagonj, Gaibandha</address>
