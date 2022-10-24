@@ -48,6 +48,8 @@ const upload = multer({
 /* Init Controllers */
 
 
+router.get("/get-holder-reports/:id", VerifyToken, VerifyUser, houseController.getHouseHolderReports);
+
 router.get("/", houseController.getAllHouses);
 router.get("/top-4-houses", houseController.getTop4Houses);
 router.get("/:id", ViewsCount, houseController.getHouseById);

@@ -2,6 +2,7 @@ const House = require("../models/house.model");
 const Question = require("../models/question.model");
 const { ReviewsForHouse } = require("../models/review.model");
 const Report = require("../models/reportHouse.model");
+const Blog = require("../models/blog.model");
 const path = require("path");
 const fs = require("fs");
 const {
@@ -521,33 +522,45 @@ const toggleLikeHouse = async (req, res) => {
   }
 };
 
+// @routes GET /api/v1/houses/get-house-holder-reports
+// @desc   Get house holder reports
+// @access Private
+const getHouseHolderReports = async (req, res) => {
+  const { id } = req.params;
 
-// @routes GET /api/v1/houses/get-houses-count
-// @desc   Get houses count
-// @access Public
-const getHouseCount = async (req, res) => {
-    try {
-        const approved = await House.countDocuments({status: "approved"});
-        const rejected = await House.countDocuments({status: "rejected"});
-        const unapproved = await House.countDocuments({status: "pending"});
-        res.status(200).json({
-            success: true,
-            message: "Houses count",
-            rejected,
-            approved,
-            unapproved
-        })
+  try {
+    const approved = await House.countDocuments({ owner: id, status: "approved" });
+    const pending = await House.countDocuments({ owner: id, status: "pending" });
+    const rejected = await House.countDocuments({ owner: id, status: "rejected" });
 
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Server Error" + error
-        })
-    }
-}
+    const houses = await House.find({ owner: id });
+    const housesId = houses.map((house) => house._id);
+    const reviews = await ReviewsForHouse.countDocuments({ house: { $in: housesId } });
+    const reports = await Report.countDocuments({ house: { $in: housesId } });
+    const questions = await Question.countDocuments({ house: { $in: housesId } });
+    const blogs = await Blog.countDocuments({ author: id });
 
+    res.status(200).json({
+      success: true,
+      message: "Reports found",
+      data: {
+        approved,
+        pending,
+        rejected,
+        reviews,
+        reports,
+        questions,
+        blogs,
 
-
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error" + error,
+    });
+  }
+};
 
 module.exports = {
   createHouse,
@@ -559,5 +572,5 @@ module.exports = {
   toggleLikeHouse,
   getTop4Houses,
   getHouseByUserID,
-  getHouseCount,
+  getHouseHolderReports,
 };
