@@ -5,7 +5,6 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 /* Create Payment Instance for stripe */
 const createPaymentInstance = async (req, res) => {
-  const data = req.body;
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: 100 * 100,
