@@ -1,21 +1,60 @@
+const { saveBookingsServices } = require("../services/payment.services");
 
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 /* Create Payment Instance for stripe */
-const createPaymentInstance = async(req, res) =>{
+const createPaymentInstance = async (req, res) => {
+  const data = req.body;
+
+  console.log(data);
+
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: 100 * 100,
+      currency: "usd",
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+
+    res.status(201).send({
+      success: true,
+      client_secret: paymentIntent.client_secret,
+      message: "Welcome to payment instance route",
+    });
+  } catch (err) {
+    res.status(404).send({
+      success: false,
+      message: "Server Error" + err,
+    });
+  }
+};
+
+
+
+/* Save Bookings */
+const saveBookings = async(req, res) => {
+    const data = req.body;
+    console.log(data);
+    
     try{
-        res.status(201).send({
-            success: true,
-            message: "Welcome to payment instance route"
-        })
+        
+        const bookings = await saveBookingsServices(data);
+        if(bookings){
+            res.status(202).send({
+                success: true,
+                message: "Bookings save successfully done"
+            })
+        }
+
     }catch(err){
         res.status(404).send({
             success: false,
-            message: 'Server Error'+ err
+            message: `Server error `+ err
         })
     }
 }
 
 
-
 //exports
-module.exports = {createPaymentInstance}
+module.exports = { createPaymentInstance, saveBookings };
