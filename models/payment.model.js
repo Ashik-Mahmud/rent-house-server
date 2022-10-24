@@ -7,6 +7,11 @@ const PaymentSchema = new Schema({
     required: true,
     ref: "user",
   },
+  author: {
+    type: mongoose.ObjectId,
+    required: true,
+    ref: "user",
+  },
   house: {
     type: mongoose.ObjectId,
     required: true,
@@ -23,11 +28,16 @@ const PaymentSchema = new Schema({
     trim: true,
     unique: true,
   },
+  money: {
+    type: Number,
+    required: true,
+  },
   status: {
     type: String,
     default: "pending",
     enum: ["pending", "booked", "canceled"],
   },
 });
+const Bookings = mongoose.model("bookings", PaymentSchema);
 
-
+module.exports = Bookings;
