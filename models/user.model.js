@@ -110,6 +110,12 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    bookedHouses: [
+      {
+        type: mongoose.ObjectId,
+        ref: "House",
+      },
+    ],
   },
   {
     timestamps: true,
