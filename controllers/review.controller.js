@@ -245,7 +245,7 @@ const updateReviewById = async (req, res) => {
 // @access Private
 const getAllReviews = async (req, res) => {
   try {
-    const reviews = await appReview.find({}).populate("author");
+    const reviews = await appReview.find();
     res.status(200).json({
       success: true,
       data: reviews,
@@ -258,6 +258,9 @@ const getAllReviews = async (req, res) => {
   }
 };
 
+
+
+
 module.exports = {
   createReview,
   createReviewForHouse,
@@ -267,4 +270,5 @@ module.exports = {
   getAllReviews,
   updateReviewById,
   acceptReviewById,
+ 
 };

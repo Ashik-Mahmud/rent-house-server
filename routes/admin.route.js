@@ -5,6 +5,9 @@ const adminController = require('../controllers/admin.controller');
 const VerifyAdmin = require('../middlewares/VerifyAdmin');
 const VerifyToken = require('../middlewares/VerifyToken');
 const VerifySupAdmin = require("../middlewares/VerifySupAdmin")
+
+
+
 /* Init Routes */
 router.patch('/accept/:id', VerifyToken, VerifyAdmin, adminController.acceptHouse);
 router.patch('/reject/:id', VerifyToken, VerifyAdmin, adminController.rejectHouse);
@@ -19,8 +22,9 @@ router.post("/change-app-name", VerifyToken, VerifySupAdmin, adminController.cha
 router.get("/houses/:slug", VerifyToken, VerifyAdmin, adminController.getHouseByQuery);
 
 
+router.get("/get-houses-count", VerifyToken, VerifyAdmin, adminController.getHouseCountForAdmin)
+
 // public routes
 router.get("/app-options",  adminController.getAppOptions)
-
 
 module.exports = router;

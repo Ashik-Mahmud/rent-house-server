@@ -2,6 +2,7 @@
 // @desc Accept house
 
 const AppOption = require("../models/app.model");
+const House = require("../models/house.model");
 const {
   getAllUsersService,
   findByIdUserService,
@@ -339,6 +340,34 @@ const getHouseByQuery = async (req, res) => {
   }
 };
 
+
+// @routes GET /api/v1/houses/get-houses-count
+// @desc   Get houses count
+// @access Public
+const getHouseCountForAdmin = async (req, res) => {
+    
+    
+    try {
+        const approved = await House.countDocuments({status: "approved"});
+        const rejected = await House.countDocuments({status: "rejected"});
+        const unapproved = await House.countDocuments({status: "pending"});
+        res.status(200).json({
+            success: true,
+            message: "Houses count",
+            rejected,
+            approved,
+            unapproved
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Server Error" + error
+        })
+    }
+}
+
+
 module.exports = {
   acceptHouse,
   rejectHouse,
@@ -351,4 +380,5 @@ module.exports = {
   getAppOptions,
   getHouseByQuery,
   deleteHouseByAdmin,
+  getHouseCountForAdmin
 };

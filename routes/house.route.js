@@ -8,6 +8,7 @@ const ViewsCount = require("../middlewares/ViewsCount");
 const VerifyUser = require("../middlewares/VerifyUser");
 
 
+
 /* Config for Upload Preview Image */
 
 const upload = multer({
@@ -45,6 +46,8 @@ const upload = multer({
 });
 
 /* Init Controllers */
+
+
 router.get("/", houseController.getAllHouses);
 router.get("/top-4-houses", houseController.getTop4Houses);
 router.get("/:id", ViewsCount, houseController.getHouseById);

@@ -1,6 +1,6 @@
 const House = require("../models/house.model");
 const Question = require("../models/question.model");
-const { ReviewsForHouse } = require("../models/review.model")
+const { ReviewsForHouse } = require("../models/review.model");
 const Report = require("../models/reportHouse.model");
 const path = require("path");
 const fs = require("fs");
@@ -274,7 +274,7 @@ const getAllHouses = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: "Server Error" + error,
     });
   }
 };
@@ -299,7 +299,7 @@ const getHouseById = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: "Server Error" + error,
     });
   }
 };
@@ -343,7 +343,7 @@ const getHouseByUserID = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Server error",
+      message: "Server error" + error,
     });
   }
 };
@@ -375,7 +375,7 @@ const updateHouse = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: "Server Error" + error,
     });
   }
 };
@@ -394,7 +394,7 @@ const getTop4Houses = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: "Server Error" + error,
     });
   }
 };
@@ -423,10 +423,9 @@ const deleteHouse = async (req, res) => {
 
     /* Delete All Reviews Related of This */
     await ReviewsForHouse.deleteMany({ house: req.params.id });
-    
+
     /* Delete All Reports Related of This */
     await Report.deleteMany({ house: req.params.id });
-
 
     await deleteHousesImages(house.image, req.user?.email, house.gallery);
     await house.remove();
@@ -437,7 +436,7 @@ const deleteHouse = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: "Server Error" + error,
     });
   }
 };
@@ -481,7 +480,7 @@ const changeIsBooked = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: "Server Error" + error,
     });
   }
 };
@@ -517,10 +516,38 @@ const toggleLikeHouse = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Server Error",
+      message: "Server Error" + error,
     });
   }
 };
+
+
+// @routes GET /api/v1/houses/get-houses-count
+// @desc   Get houses count
+// @access Public
+const getHouseCount = async (req, res) => {
+    try {
+        const approved = await House.countDocuments({status: "approved"});
+        const rejected = await House.countDocuments({status: "rejected"});
+        const unapproved = await House.countDocuments({status: "pending"});
+        res.status(200).json({
+            success: true,
+            message: "Houses count",
+            rejected,
+            approved,
+            unapproved
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Server Error" + error
+        })
+    }
+}
+
+
+
 
 module.exports = {
   createHouse,
@@ -532,4 +559,5 @@ module.exports = {
   toggleLikeHouse,
   getTop4Houses,
   getHouseByUserID,
+  getHouseCount,
 };
