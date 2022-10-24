@@ -15,18 +15,37 @@ const questionRouter = require('../routes/question.route');
 const reportHouseRouter = require("../routes/reportHouse.route")
 const blogRouter = require("../routes/blogs.route")
 const requestRouter = require("../routes/request.route")
+const paymentRouter = require("../routes/payment.route")
 
 
 /* Init Routes */
+
+//house route
 app.use("/api/v1/houses", houseRouter);
+
+//user route
 app.use("/api/v1/users", userRouter);
+
+//admin route
 app.use("/api/v1/admin", adminRouter);
+
+//reviews route
 app.use("/api/v1/reviews", reviewRouter);
+
+//question route
 app.use("/api/v1/questions", questionRouter);
+
+//reports route
 app.use("/api/v1/reports", reportHouseRouter)
+
+// blog route
 app.use("/api/v1/blogs", blogRouter);
+
+// request route
 app.use("/api/v1/request", requestRouter);
 
+// payment route 
+app.use("/api/v1/payment", paymentRouter)
 
 
 
