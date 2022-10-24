@@ -324,7 +324,7 @@ const sendEmailToHouseHolderForBookedHouse = (email, name, customer, house, paym
         text: `Congratulation! Your House is Booked`,
         html: `<div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
             <p style="font-weight: bold">Hello ${name},</p>
-            <p >Congratulation! Your House is Booked. <b>${customer}</b> has been booked  ${house?.name} this house</p>
+            <p >Congratulation! Your House is Booked. <b>${customer}</b> has been booked your <b> ${house?.name}</b> this house</p>
             <p> here is him/her transaction id - <b>${payment}</b></p>
             <p>Regards - <br/> <a href="https://tools-manufactures.web.app" target="_blank" >Rent House</a></p>
             <address>Rangpur Road, Gobindagonj, Gaibandha</address>
