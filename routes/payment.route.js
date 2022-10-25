@@ -48,6 +48,13 @@ router.get("/get-all-reports", VerifyToken, paymentController.getAllPaymentRepor
 router.post("/send-thanks-email", VerifyToken, VerifyUser, paymentController.sendThanksEmail)
 
 
+// @routes GET /api/payment/ssl-request
+// @desc Request for payment with SSL
+// @access private
+
+router.get("/ssl-request", VerifyToken, paymentController.initSSLCOMMERZMethod)
+
+
 
 //exports
 module.exports = router;
