@@ -166,7 +166,15 @@ const deletePaymentStatement = async (req, res) => {
   const { id } = req?.params;
   try {
     const payment = await Bookings.findByIdAndDelete(id);
-    if (payment) {
+
+    /* Delete from User Model as well */
+    const user = await User.findByIdAndUpdate(
+      { _id: payment?.user },
+      { $pull: { bookedHouses: payment?.house } },
+      { new: true }
+    );
+
+    if (payment && user) {
       res.status(200).send({
         success: true,
         message: "Payment statement deleted successfully",
@@ -186,5 +194,5 @@ module.exports = {
   saveBookings,
   getBookedHouses,
   getPaymentStatement,
-  deletePaymentStatement
+  deletePaymentStatement,
 };
