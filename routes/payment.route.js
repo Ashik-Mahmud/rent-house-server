@@ -15,6 +15,11 @@ router.post("/create-payment-instance", VerifyToken, paymentController.createPay
 // @access private
 router.post("/bookings", VerifyToken, paymentController.saveBookings)
 
+// @routes GET /api/payment/booked-houses
+// @desc Get all booked houses
+// @access private
+router.get("/booked-houses", VerifyToken, paymentController.getBookedHouses)
+
 
 //exports
 module.exports = router;

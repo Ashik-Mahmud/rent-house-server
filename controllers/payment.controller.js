@@ -1,6 +1,9 @@
 const User = require("../models/user.model");
 const { saveBookingsServices } = require("../services/payment.services");
-const { sendEmailForPaymentSuccess, sendEmailToHouseHolderForBookedHouse } = require("../utils/sendEmail");
+const {
+  sendEmailForPaymentSuccess,
+  sendEmailToHouseHolderForBookedHouse,
+} = require("../utils/sendEmail");
 const House = require("../models/house.model");
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
@@ -43,10 +46,21 @@ const saveBookings = async (req, res) => {
       );
       if (usersSavedBookedId) {
         const houseHolder = await User.findById(data?.author);
-        const house = await House.findById(data?.house); 
+        const house = await House.findById(data?.house);
         const customer = await User.findById(req?.user?.id);
-        sendEmailForPaymentSuccess(email, customer?.name, house, data?.transactionId)
-        sendEmailToHouseHolderForBookedHouse(houseHolder?.email, houseHolder?.name, customer?.name, house, data?.transactionId)
+        sendEmailForPaymentSuccess(
+          email,
+          customer?.name,
+          house,
+          data?.transactionId
+        );
+        sendEmailToHouseHolderForBookedHouse(
+          houseHolder?.email,
+          houseHolder?.name,
+          customer?.name,
+          house,
+          data?.transactionId
+        );
         res.status(201).send({
           success: true,
           message: "Bookings saved successfully",
@@ -61,5 +75,25 @@ const saveBookings = async (req, res) => {
   }
 };
 
+/* Get Booked Houses */
+const getBookedHouses = async (req, res) => {
+  const { id } = req?.user;
+  try {
+    const bookedHouses = await User.findById(id).populate("bookedHouses");
+    if (bookedHouses) {
+      res.status(200).send({
+        success: true,
+        message: "Booked houses fetched successfully",
+        data: bookedHouses,
+      });
+    }
+  } catch (err) {
+    res.status(404).send({
+      success: false,
+      message: "Server error" + err,
+    });
+  }
+};
+
 //exports
-module.exports = { createPaymentInstance, saveBookings };
+module.exports = { createPaymentInstance, saveBookings, getBookedHouses };
