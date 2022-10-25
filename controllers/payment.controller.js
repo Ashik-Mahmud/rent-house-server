@@ -79,21 +79,34 @@ const saveBookings = async (req, res) => {
 /* Get Booked Houses */
 const getBookedHouses = async (req, res) => {
   const { id } = req?.user;
+  const { page, limit, filter, search } = req?.query;
+  console.log(filter);
+  
   try {
-    const payments = await Bookings.find({ user: id })
+   
 
-    /* Booked Houses */
+    const fields = {};
+    if(search || id){
+        fields.user = id;
+        fields.$or = [ { transactionId: { $regex: search, $options: "i" } } ]
+    }
+    const payments = await Bookings.find(fields).sort(filter);
+    const count = await Bookings.countDocuments({ user: id });
+        
+    
+    /* Booked Houses With Search*/
     const bookedHouses = await House.find({
-      _id: { $in: payments?.map((payment) => payment?.house) },
+      _id: { $in: payments?.map((payment) => payment?.house) }, $or: [{name: new RegExp(search, "i")}, {location: new RegExp(search, "i")}]
     }).populate(
       "owner",
       "name email phone address profileImage facebookLink instagramLink twitterLink"
     );
+       
     if (payments) {
       res.status(200).send({
         success: true,
         message: "Booked houses fetched successfully",
-        data: { bookedHouses },
+        data: { bookedHouses , count},
       });
     }
   } catch (err) {
