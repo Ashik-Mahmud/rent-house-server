@@ -166,7 +166,7 @@ const getPaymentStatement = async (req, res) => {
 /* Get Payment Statement  for house holder*/
 const getPaymentStatementForHouseHolder = async (req, res) => {
   const { id } = req?.user;
-  const { page, limit } = req?.query;
+  const { page, limit, search } = req?.query;
 
   try {
     const fields = {};
@@ -174,15 +174,16 @@ const getPaymentStatementForHouseHolder = async (req, res) => {
       fields.skip = (parseInt(page) - 1) * parseInt(limit);
       fields.limit = parseInt(limit);
     }
-    if (id) {
+    if (id || search) {
       fields.author = id;
+      fields.$or = [{ transactionId: { $regex: search, $options: "i" } }];
     }
     const payments = await Bookings.find(fields)
       .skip(fields?.skip)
       ?.limit(fields?.limit)
       .sort("-createdAt")
       .populate("house", "name address price bathrooms bedrooms image")
-      .populate("user", "name email phone address profileImage avatar");
+      .populate("user", "name email phone address profileImage avatar role");
     const count = await Bookings.countDocuments({ author: id });
 
     if (payments) {
