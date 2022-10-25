@@ -20,6 +20,11 @@ router.post("/bookings", VerifyToken, paymentController.saveBookings)
 // @access private
 router.get("/booked-houses", VerifyToken, paymentController.getBookedHouses)
 
+// @routes GET /api/payment/payment-statement
+// @desc Get all the statement for logged User
+// @access private
+router.get("/payment-statement", VerifyToken, paymentController.getPaymentStatement)
+
 
 //exports
 module.exports = router;

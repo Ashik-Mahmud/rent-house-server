@@ -124,5 +124,44 @@ const getBookedHouses = async (req, res) => {
   }
 };
 
+
+/* Get Payment Statement */
+const getPaymentStatement = async (req, res) => {
+    const { id } = req?.user;
+    const { page, limit, filter, search } = req?.query;
+
+    try {
+        const fields = {};
+        if (page || limit) {
+            fields.skip = (parseInt(page) - 1) * parseInt(limit);
+            fields.limit = parseInt(limit);
+        }
+        if (search || id) {
+            fields.user = id;
+            fields.$or = [{ transactionId: { $regex: search, $options: "i" } }];
+        }
+        const payments = await Bookings.find(fields)
+            .skip(fields?.skip)
+            ?.limit(fields?.limit)
+            .sort(filter);
+        const count = await Bookings.countDocuments({ user: id });
+
+        if (payments) {
+            res.status(200).send({
+                success: true,
+                message: "Payment statement fetched successfully",
+                data: { payments, count },
+            });
+        }
+    } catch (err) {
+        res.status(404).send({
+            success: false,
+            message: "Server error" + err,
+        });
+    }
+};
+
+
+
 //exports
-module.exports = { createPaymentInstance, saveBookings, getBookedHouses };
+module.exports = { createPaymentInstance, saveBookings, getBookedHouses , getPaymentStatement};
