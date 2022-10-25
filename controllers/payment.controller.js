@@ -5,6 +5,7 @@ const {
   sendEmailToHouseHolderForBookedHouse,
 } = require("../utils/sendEmail");
 const House = require("../models/house.model");
+const Bookings = require("../models/payment.model");
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
@@ -79,12 +80,24 @@ const saveBookings = async (req, res) => {
 const getBookedHouses = async (req, res) => {
   const { id } = req?.user;
   try {
-    const bookedHouses = await User.findById(id).populate("bookedHouses").select("bookedHouses");
-    if (bookedHouses) {
+    const payments = await Bookings.find({ user: id })
+      .populate(
+        "author",
+        "name email phone address profileImage facebookLink instagramLink twitterLink"
+      )
+      .populate("house");
+
+    const bookedHouses = payments.map((payment) => payment.house);
+    const paymentStatements = await Bookings.find({ user: id }).populate(
+      "author",
+      "name email phone address profileImage facebookLink instagramLink twitterLink"
+    );
+
+    if (payments) {
       res.status(200).send({
         success: true,
         message: "Booked houses fetched successfully",
-        data: bookedHouses,
+        data: { bookedHouses, paymentStatements },
       });
     }
   } catch (err) {
