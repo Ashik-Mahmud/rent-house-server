@@ -81,23 +81,19 @@ const getBookedHouses = async (req, res) => {
   const { id } = req?.user;
   try {
     const payments = await Bookings.find({ user: id })
-      .populate(
-        "author",
-        "name email phone address profileImage facebookLink instagramLink twitterLink"
-      )
-      .populate("house");
 
-    const bookedHouses = payments.map((payment) => payment.house);
-    const paymentStatements = await Bookings.find({ user: id }).populate(
-      "author",
+    /* Booked Houses */
+    const bookedHouses = await House.find({
+      _id: { $in: payments?.map((payment) => payment?.house) },
+    }).populate(
+      "owner",
       "name email phone address profileImage facebookLink instagramLink twitterLink"
     );
-
     if (payments) {
       res.status(200).send({
         success: true,
         message: "Booked houses fetched successfully",
-        data: { bookedHouses, paymentStatements },
+        data: { bookedHouses },
       });
     }
   } catch (err) {
