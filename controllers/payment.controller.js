@@ -127,7 +127,7 @@ const getBookedHouses = async (req, res) => {
 /* Get Payment Statement */
 const getPaymentStatement = async (req, res) => {
   const { id } = req?.user;
-  const { page, limit, search } = req?.query;
+  const { page, limit } = req?.query;
 
   try {
     const fields = {};
@@ -143,7 +143,7 @@ const getPaymentStatement = async (req, res) => {
       ?.limit(fields?.limit)
       .sort("-createdAt")
       .populate("house", "name address price bathrooms bedrooms image")
-      .populate("author", "name email phone address profileImage ");
+      .populate("author", "name email phone address profileImage avatar");
     const count = await Bookings.countDocuments({ user: id });
 
     if (payments) {
