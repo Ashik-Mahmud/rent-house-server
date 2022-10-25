@@ -2,6 +2,7 @@ const router = require("express").Router();
 
 
 const VerifyToken = require("../middlewares/VerifyToken");
+const VerifyUser = require("../middlewares/VerifyUser");
 // imports controller
 const paymentController = require("./../controllers/payment.controller");
 
@@ -24,6 +25,12 @@ router.get("/booked-houses", VerifyToken, paymentController.getBookedHouses)
 // @desc Get all the statement for logged User
 // @access private
 router.get("/payment-statement", VerifyToken, paymentController.getPaymentStatement)
+
+// @routes GET /api/payment/holder/payment-statement
+// @desc Get all the statement for logged User
+// @access private
+router.get("/holder/payment-statement", VerifyToken, VerifyUser, paymentController.getPaymentStatementForHouseHolder)
+
 
 // @routes GET /api/payment/delete-statement
 // @desc Delete a statement

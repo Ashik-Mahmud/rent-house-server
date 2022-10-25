@@ -163,6 +163,43 @@ const getPaymentStatement = async (req, res) => {
   }
 };
 
+/* Get Payment Statement  for house holder*/
+const getPaymentStatementForHouseHolder = async (req, res) => {
+  const { id } = req?.user;
+  const { page, limit } = req?.query;
+
+  try {
+    const fields = {};
+    if (page || limit) {
+      fields.skip = (parseInt(page) - 1) * parseInt(limit);
+      fields.limit = parseInt(limit);
+    }
+    if (id) {
+      fields.author = id;
+    }
+    const payments = await Bookings.find(fields)
+      .skip(fields?.skip)
+      ?.limit(fields?.limit)
+      .sort("-createdAt")
+      .populate("house", "name address price bathrooms bedrooms image")
+      .populate("user", "name email phone address profileImage avatar");
+    const count = await Bookings.countDocuments({ author: id });
+
+    if (payments) {
+      res.status(200).send({
+        success: true,
+        message: "Payment statement fetched successfully",
+        data: { payments, count },
+      });
+    }
+  } catch (err) {
+    res.status(404).send({
+      success: false,
+      message: "Server error" + err,
+    });
+  }
+};
+
 /* Delete Payment Statement */
 const deletePaymentStatement = async (req, res) => {
   const { id } = req?.params;
@@ -204,7 +241,11 @@ const getAllPaymentReports = async (req, res) => {
 
     const recentBookedHouse = await Bookings.find({ user: id })
       .sort({ createdAt: -1 })
-      .limit(3).populate("house", "name address price bathrooms bedrooms image houseType description");
+      .limit(3)
+      .populate(
+        "house",
+        "name address price bathrooms bedrooms image houseType description"
+      );
 
     res.status(200).send({
       success: true,
@@ -233,4 +274,5 @@ module.exports = {
   getPaymentStatement,
   deletePaymentStatement,
   getAllPaymentReports,
+  getPaymentStatementForHouseHolder,
 };
