@@ -30,6 +30,11 @@ router.get("/payment-statement", VerifyToken, paymentController.getPaymentStatem
 // @access private
 router.delete("/delete-statement/:id", VerifyToken, paymentController.deletePaymentStatement)
 
+// @routes GET /api/payment/get-all-reports
+// @desc Get all reports
+// @access private
+router.get("/get-all-reports", VerifyToken, paymentController.getAllPaymentReports)
+
 
 
 //exports

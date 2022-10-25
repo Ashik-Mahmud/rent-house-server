@@ -6,6 +6,8 @@ const {
 } = require("../utils/sendEmail");
 const House = require("../models/house.model");
 const Bookings = require("../models/payment.model");
+const appReview = require("../models/AppReview");
+const Blog = require("../models/blog.model");
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
@@ -188,6 +190,36 @@ const deletePaymentStatement = async (req, res) => {
   }
 };
 
+/* Get all the report for customer */
+const getAllPaymentReports = async (req, res) => {
+  const { id } = req?.user;
+  try {
+    const bookedHouse = await Bookings.countDocuments({ user: id });
+    const totalReviews = await appReview.countDocuments({ author: id });
+    const totalBlogs = await Blog.countDocuments({ author: id });
+    const blog = await Blog.find({ author: id });
+    const countLikes = blog?.reduce((acc, cur) => {
+        return acc + cur?.likes?.length;
+    }, 0);
+
+    res.status(200).send({
+      success: true,
+      message: "Payment reports fetched successfully",
+      data: {
+        house: bookedHouse,
+        reviews: totalReviews,
+        blogs: totalBlogs,
+        likes: countLikes,
+      },
+    });
+  } catch (err) {
+    res.status(404).send({
+      success: false,
+      message: "Server error" + err,
+    });
+  }
+};
+
 //exports
 module.exports = {
   createPaymentInstance,
@@ -195,4 +227,5 @@ module.exports = {
   getBookedHouses,
   getPaymentStatement,
   deletePaymentStatement,
+  getAllPaymentReports,
 };
