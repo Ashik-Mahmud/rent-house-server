@@ -142,7 +142,7 @@ const getAllHouses = async (req, res) => {
   const parseHouseType = JSON.parse(houseType);
   const parseHouseUseFor = JSON.parse(houseUseFor);
 
-  let queries = { status: "approved" };
+  let queries = { status: "approved", isBooked: "No", isAvailable: "Yes" };
   let sortByFilter = {};
 
   if (sortBy) {
@@ -529,15 +529,28 @@ const getHouseHolderReports = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const approved = await House.countDocuments({ owner: id, status: "approved" });
-    const pending = await House.countDocuments({ owner: id, status: "pending" });
-    const rejected = await House.countDocuments({ owner: id, status: "rejected" });
+    const approved = await House.countDocuments({
+      owner: id,
+      status: "approved",
+    });
+    const pending = await House.countDocuments({
+      owner: id,
+      status: "pending",
+    });
+    const rejected = await House.countDocuments({
+      owner: id,
+      status: "rejected",
+    });
 
     const houses = await House.find({ owner: id });
     const housesId = houses.map((house) => house._id);
-    const reviews = await ReviewsForHouse.countDocuments({ house: { $in: housesId } });
+    const reviews = await ReviewsForHouse.countDocuments({
+      house: { $in: housesId },
+    });
     const reports = await Report.countDocuments({ house: { $in: housesId } });
-    const questions = await Question.countDocuments({ house: { $in: housesId } });
+    const questions = await Question.countDocuments({
+      house: { $in: housesId },
+    });
     const blogs = await Blog.countDocuments({ author: id });
 
     res.status(200).json({
@@ -551,7 +564,6 @@ const getHouseHolderReports = async (req, res) => {
         reports,
         questions,
         blogs,
-
       },
     });
   } catch (error) {
