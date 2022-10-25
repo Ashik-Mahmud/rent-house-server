@@ -168,16 +168,21 @@ const getPaymentStatementForHouseHolder = async (req, res) => {
   const { id } = req?.user;
   const { page, limit, search } = req?.query;
 
+   
+
   try {
     const fields = {};
     if (page || limit) {
       fields.skip = (parseInt(page) - 1) * parseInt(limit);
       fields.limit = parseInt(limit);
     }
-    if (id || search) {
-      fields.author = id;
+    if (id) {
+        fields.author = id;
+    }
+    if (search) {
       fields.$or = [{ transactionId: { $regex: search, $options: "i" } }];
     }
+        
     const payments = await Bookings.find(fields)
       .skip(fields?.skip)
       ?.limit(fields?.limit)
