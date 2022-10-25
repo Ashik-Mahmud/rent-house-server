@@ -457,27 +457,36 @@ const deleteHousesImages = async (image, email, gallery) => {
 // @route PATCH /api/v1/houses/change-status/:id
 // @desc Change status of house
 // @access Private
-const changeIsBooked = async (req, res) => {
+const housePrices = async (req, res) => {
   try {
-    const house = await findByIdHouseService(req.params.id);
+
+    const house = await House.find({});
     if (!house) {
       return res.status(404).json({
         success: false,
         message: "House not found",
       });
     }
-    if (house.owner.toString() !== req.user.id) {
-      return res.status(401).json({
-        success: false,
-        message: "Not authorized",
-      });
-    }
-    const updatedHouse = await changeIsBookedService(req.params.id, req.body);
+
+    const highestPrice = house.reduce((prev, current) => {
+        return prev.price > current.price ? prev : current;
+    });
+
+    const lowestPrice = house.reduce((prev, current) => {
+        return prev.price < current.price ? prev : current;
+    });
+
+
+
     res.status(200).json({
       success: true,
       message: "House status updated successfully",
-      data: updatedHouse,
+      data: {
+        highestPrice: highestPrice?.price,
+        lowestPrice:lowestPrice?.price,
+      }
     });
+
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -580,7 +589,7 @@ module.exports = {
   getHouseById,
   updateHouse,
   deleteHouse,
-  changeIsBooked,
+  housePrices,
   toggleLikeHouse,
   getTop4Houses,
   getHouseByUserID,
