@@ -17,6 +17,7 @@ const {
 } = require("../services/house.services");
 const { sendHouseAddedEmail } = require("../utils/sendEmail");
 const { uploadImages, deleteImages } = require("../utils/Cloudinary");
+const Bookings = require("../models/payment.model");
 
 // @Routes POST /api/v1/houses/create
 // @Desc Create a new house
@@ -561,6 +562,9 @@ const getHouseHolderReports = async (req, res) => {
       house: { $in: housesId },
     });
     const blogs = await Blog.countDocuments({ author: id });
+    const payments = await Bookings.countDocuments({author: id});
+
+
 
     res.status(200).json({
       success: true,
@@ -573,6 +577,7 @@ const getHouseHolderReports = async (req, res) => {
         reports,
         questions,
         blogs,
+        payments
       },
     });
   } catch (error) {
