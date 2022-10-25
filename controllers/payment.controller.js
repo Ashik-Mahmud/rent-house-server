@@ -79,7 +79,7 @@ const saveBookings = async (req, res) => {
 const getBookedHouses = async (req, res) => {
   const { id } = req?.user;
   try {
-    const bookedHouses = await User.findById(id).populate("bookedHouses");
+    const bookedHouses = await User.findById(id).populate("bookedHouses").select("bookedHouses");
     if (bookedHouses) {
       res.status(200).send({
         success: true,
