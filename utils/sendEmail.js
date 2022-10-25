@@ -280,19 +280,17 @@ const sendEmailForDeleteHouseByAdmin = (author) => {
       console.log("Message sent: ", info.response);
     }
   });
-
 };
-
 
 /* Send Email for Payment successfully done */
 const sendEmailForPaymentSuccess = (email, name, house, payment) => {
-    const emails = `${email}`;
-    var emailFormat = {
-        from: process.env.EMAIL_ADDRESS,
-        to: emails,
-        subject: "Congratulation! Your Payment is Successfully done.",
-        text: `Congratulation! Your Payment is Success`,
-        html: `<div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
+  const emails = `${email}`;
+  var emailFormat = {
+    from: process.env.EMAIL_ADDRESS,
+    to: emails,
+    subject: "Congratulation! Your Payment is Successfully done.",
+    text: `Congratulation! Your Payment is Success`,
+    html: `<div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
             <p style="font-weight: bold">Hello ${name},</p>
             <p >Congratulation! Your Payment is Successfully done. Now you can see your <b>${house?.name} </b> details</p>
             <p> here is your transaction id - <b>${payment}</b></p>
@@ -303,26 +301,31 @@ const sendEmailForPaymentSuccess = (email, name, house, payment) => {
         </div>
 
         `,
-    };
-    client.sendMail(emailFormat, function (err, info) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log("Message sent: ", info.response);
-        }
-    });
+  };
+  client.sendMail(emailFormat, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Message sent: ", info.response);
+    }
+  });
 };
 
-
 /* Send Email to the House Holder */
-const sendEmailToHouseHolderForBookedHouse = (email, name, customer, house, payment) => {
-    const emails = `${email}`;
-    var emailFormat = {
-        from: process.env.EMAIL_ADDRESS,
-        to: emails,
-        subject: "Congratulation! Your House is Booked",
-        text: `Congratulation! Your House is Booked`,
-        html: `<div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
+const sendEmailToHouseHolderForBookedHouse = (
+  email,
+  name,
+  customer,
+  house,
+  payment
+) => {
+  const emails = `${email}`;
+  var emailFormat = {
+    from: process.env.EMAIL_ADDRESS,
+    to: emails,
+    subject: "Congratulation! Your House is Booked",
+    text: `Congratulation! Your House is Booked`,
+    html: `<div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
             <p style="font-weight: bold">Hello ${name},</p>
             <p >Congratulation! Your House is Booked. <b>${customer}</b> has been booked your <b> ${house?.name}</b> this house</p>
             <p> here is him/her transaction id - <b>${payment}</b></p>
@@ -333,17 +336,46 @@ const sendEmailToHouseHolderForBookedHouse = (email, name, customer, house, paym
         </div>
 
         `,
-    };
-    client.sendMail(emailFormat, function (err, info) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log("Message sent: ", info.response);
-        }
-    });
+  };
+  client.sendMail(emailFormat, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Message sent: ", info.response);
+    }
+  });
 };
 
+/* Send Email With Thanks to the Customer */
+const sendThanksEmailTemplate = async (to, from, text, subject, data) => {
+  const emails = `${to}`;
+  var emailFormat = {
+    from: from,
+    to: emails,
+    subject: subject || "Thanks for Booked",
+    text: subject,
+    html: `<div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
+            <p style="font-weight: bold">Hello ${data?.customerName},</p>
+            <p >Thanks for booked our house named <b> ${data?.houseName}</b></p>
+            <p>
+              ${text}            
+            </p>
+            <p>Regards - <br/> <a href="https://tools-manufactures.web.app" target="_blank" >Rent House</a></p>
+            <address>Rangpur Road, Gobindagonj, Gaibandha</address>
+            <p>Mobile: +8801875474547</p>
+            <p>Email: houselagbe@gmail.com </p>
+        </div>
 
+        `,
+  };
+  client.sendMail(emailFormat, function (err, info) {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Message sent: ", info.response);
+    }
+  });
+};
 
 module.exports = {
   sendHouseAddedEmail,
@@ -356,5 +388,6 @@ module.exports = {
   sendApprovedSuccessMail,
   sendEmailForDeleteHouseByAdmin,
   sendEmailForPaymentSuccess,
-  sendEmailToHouseHolderForBookedHouse
+  sendEmailToHouseHolderForBookedHouse,
+  sendThanksEmailTemplate,
 };

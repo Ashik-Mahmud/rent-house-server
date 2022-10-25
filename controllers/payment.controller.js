@@ -3,6 +3,7 @@ const { saveBookingsServices } = require("../services/payment.services");
 const {
   sendEmailForPaymentSuccess,
   sendEmailToHouseHolderForBookedHouse,
+  sendThanksEmailTemplate,
 } = require("../utils/sendEmail");
 const House = require("../models/house.model");
 const Bookings = require("../models/payment.model");
@@ -272,7 +273,7 @@ const getAllPaymentReports = async (req, res) => {
 
 /* Send Thanks Email to user */
 const sendThanksEmail = async (req, res) => {
-  const { to, from, subject, text } = req?.body;
+  const { to, from, subject, text, data } = req?.body;
 
   if (!to || !from || !subject || !text) {
     return res.status(404).send({
@@ -280,7 +281,7 @@ const sendThanksEmail = async (req, res) => {
       message: "All fields are required.",
     });
   }
-  await sendThanksEmailTemplate();
+  await sendThanksEmailTemplate(to, from, text, subject, data);
   res.status(201).send({
     success: true,
     message: `Successfully sent your thanks mail.`
