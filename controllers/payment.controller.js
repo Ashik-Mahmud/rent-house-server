@@ -161,10 +161,30 @@ const getPaymentStatement = async (req, res) => {
   }
 };
 
+/* Delete Payment Statement */
+const deletePaymentStatement = async (req, res) => {
+  const { id } = req?.params;
+  try {
+    const payment = await Bookings.findByIdAndDelete(id);
+    if (payment) {
+      res.status(200).send({
+        success: true,
+        message: "Payment statement deleted successfully",
+      });
+    }
+  } catch (err) {
+    res.status(404).send({
+      success: false,
+      message: "Server error" + err,
+    });
+  }
+};
+
 //exports
 module.exports = {
   createPaymentInstance,
   saveBookings,
   getBookedHouses,
   getPaymentStatement,
+  deletePaymentStatement
 };

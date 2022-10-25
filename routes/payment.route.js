@@ -25,6 +25,12 @@ router.get("/booked-houses", VerifyToken, paymentController.getBookedHouses)
 // @access private
 router.get("/payment-statement", VerifyToken, paymentController.getPaymentStatement)
 
+// @routes GET /api/payment/delete-statement
+// @desc Delete a statement
+// @access private
+router.delete("/delete-statement/:id", VerifyToken, paymentController.deletePaymentStatement)
+
+
 
 //exports
 module.exports = router;
