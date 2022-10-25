@@ -168,8 +168,6 @@ const getPaymentStatementForHouseHolder = async (req, res) => {
   const { id } = req?.user;
   const { page, limit, search } = req?.query;
 
-   
-
   try {
     const fields = {};
     if (page || limit) {
@@ -177,12 +175,12 @@ const getPaymentStatementForHouseHolder = async (req, res) => {
       fields.limit = parseInt(limit);
     }
     if (id) {
-        fields.author = id;
+      fields.author = id;
     }
     if (search) {
       fields.$or = [{ transactionId: { $regex: search, $options: "i" } }];
     }
-        
+
     const payments = await Bookings.find(fields)
       .skip(fields?.skip)
       ?.limit(fields?.limit)
@@ -272,6 +270,25 @@ const getAllPaymentReports = async (req, res) => {
   }
 };
 
+/* Send Thanks Email to user */
+const sendThanksEmail = async (req, res) => {
+  const { to, from, subject, text } = req?.body;
+
+  if (!to || !from || !subject || !text) {
+    return res.status(404).send({
+      success: false,
+      message: "All fields are required.",
+    });
+  }
+  await sendThanksEmailTemplate();
+  res.status(201).send({
+    success: true,
+    message: `Successfully sent your thanks mail.`
+  })
+
+
+};
+
 //exports
 module.exports = {
   createPaymentInstance,
@@ -281,4 +298,5 @@ module.exports = {
   deletePaymentStatement,
   getAllPaymentReports,
   getPaymentStatementForHouseHolder,
+  sendThanksEmail
 };

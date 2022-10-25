@@ -42,6 +42,11 @@ router.delete("/delete-statement/:id", VerifyToken, paymentController.deletePaym
 // @access private
 router.get("/get-all-reports", VerifyToken, paymentController.getAllPaymentReports)
 
+// @routes POST /api/payment/send-thanks-email
+// @desc Send thanks email to user
+// @access private
+router.post("/send-thanks-email", VerifyToken, VerifyUser, paymentController.sendThanksEmail)
+
 
 
 //exports
