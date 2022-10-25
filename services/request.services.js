@@ -15,7 +15,7 @@ exports.sendRequestService = async(req) => {
 /* Get All blog Request Services */
 exports.getAllRequestService = async(filter) => {
     try{
-        const request = await Request.find(filter.filter).skip(filter.skip).limit(filter.limit).populate("author", "name avatar profileImage email phone isVerified role _id");
+        const request = await Request.find(filter.filter).skip(filter.skip).limit(filter.limit).populate("author", "name avatar profileImage email phone isVerified role _id").sort("-createdAt");
         return request;
     }
     catch(err){
