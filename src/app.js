@@ -4,7 +4,6 @@ const cors = require('cors');
 const path = require('path');
 const port = process.env.PORT || 5000;
 
-
 /* Apply Global Middle ware */
 app.use(express.json())
 app.use(cors());
