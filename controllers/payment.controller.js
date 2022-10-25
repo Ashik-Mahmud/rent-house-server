@@ -199,8 +199,12 @@ const getAllPaymentReports = async (req, res) => {
     const totalBlogs = await Blog.countDocuments({ author: id });
     const blog = await Blog.find({ author: id });
     const countLikes = blog?.reduce((acc, cur) => {
-        return acc + cur?.likes?.length;
+      return acc + cur?.likes?.length;
     }, 0);
+
+    const recentBookedHouse = await Bookings.find({ user: id })
+      .sort({ createdAt: -1 })
+      .limit(3).populate("house", "name address price bathrooms bedrooms image houseType description");
 
     res.status(200).send({
       success: true,
@@ -210,6 +214,7 @@ const getAllPaymentReports = async (req, res) => {
         reviews: totalReviews,
         blogs: totalBlogs,
         likes: countLikes,
+        bookedHouse: recentBookedHouse,
       },
     });
   } catch (err) {
