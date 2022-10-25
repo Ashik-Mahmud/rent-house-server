@@ -80,33 +80,40 @@ const saveBookings = async (req, res) => {
 const getBookedHouses = async (req, res) => {
   const { id } = req?.user;
   const { page, limit, filter, search } = req?.query;
-  console.log(filter);
-  
-  try {
-   
 
+  try {
     const fields = {};
-    if(search || id){
-        fields.user = id;
-        fields.$or = [ { transactionId: { $regex: search, $options: "i" } } ]
+    if (page || limit) {
+      fields.skip = (parseInt(page) - 1) * parseInt(limit);
+      fields.limit = parseInt(limit);
     }
-    const payments = await Bookings.find(fields).sort(filter);
+    if (search || id) {
+      fields.user = id;
+      fields.$or = [{ transactionId: { $regex: search, $options: "i" } }];
+    }
+    const payments = await Bookings.find(fields)
+      .skip(fields?.skip)
+      ?.limit(fields?.limit)
+      .sort(filter);
     const count = await Bookings.countDocuments({ user: id });
-        
-    
+
     /* Booked Houses With Search*/
     const bookedHouses = await House.find({
-      _id: { $in: payments?.map((payment) => payment?.house) }, $or: [{name: new RegExp(search, "i")}, {location: new RegExp(search, "i")}]
+      _id: { $in: payments?.map((payment) => payment?.house) },
+      $or: [
+        { name: new RegExp(search, "i") },
+        { location: new RegExp(search, "i") },
+      ],
     }).populate(
       "owner",
       "name email phone address profileImage facebookLink instagramLink twitterLink"
     );
-       
+
     if (payments) {
       res.status(200).send({
         success: true,
         message: "Booked houses fetched successfully",
-        data: { bookedHouses , count},
+        data: { bookedHouses, count },
       });
     }
   } catch (err) {
