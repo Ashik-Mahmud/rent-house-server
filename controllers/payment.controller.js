@@ -41,6 +41,7 @@ const createPaymentInstance = async (req, res) => {
 const saveBookings = async (req, res) => {
   const data = req.body;
   const { email, name } = req?.user;
+
   try {
     const bookings = await saveBookingsServices(data);
     if (bookings) {
@@ -361,7 +362,7 @@ const initSSLCOMMERZMethod = async (req, res) => {
 /*  SSL Response    */
 const sslcommerzResponse = async (req, res) => {
   const { user, author, house } = req.query;
-  const { status, bank_tran_id, val_id, amount, card_type } = req?.body;
+  const { status,  val_id, amount, card_type } = req?.body;
 
   try {
     if (status === "VALID") {
@@ -373,7 +374,6 @@ const sslcommerzResponse = async (req, res) => {
         money: amount,
         status: "booked",
         transactionId: val_id,
-        bankTransactionId: bank_tran_id,
       });
 
       const customer = await User.findByIdAndUpdate(
@@ -388,7 +388,25 @@ const sslcommerzResponse = async (req, res) => {
         { $push: { bookedBy: payment?.user } },
         { new: true }
       );
+
+      const houseHolder = await User.findById(payment?.author);
+      const customerHolder  = await User.findById(payment?.user);
+
+
       if (payment && customer && thisHouse) {
+        sendEmailForPaymentSuccess(
+            customerHolder?.email,
+            customer?.name,
+            thisHouse,
+            payment?.transactionId
+          );
+        sendEmailToHouseHolderForBookedHouse(
+            houseHolder?.email,
+            houseHolder?.name,
+            customer?.name,
+            thisHouse,
+            payment?.transactionId
+          );
         res.status(200).redirect(`http://localhost:3000/dashboard/bookings?q=success`);
       }
 
