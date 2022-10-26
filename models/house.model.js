@@ -158,6 +158,12 @@ const houseSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: "user",
     },
+    bookedBy: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "user",
+      },
+    ],
     isAvailable: {
       type: String,
       enum: ["Yes", "No"],
@@ -183,6 +189,7 @@ const houseSchema = new mongoose.Schema(
       enum: ["Yes", "No"],
       default: "No",
     },
+
     allowReview: {
       type: String,
       enum: ["Yes", "No"],

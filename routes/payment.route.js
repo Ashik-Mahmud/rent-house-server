@@ -58,7 +58,7 @@ router.get("/sslcommerz/create-session", VerifyToken,  paymentController.initSSL
 // @routes POST /api/payment/ssl-response
 // @desc Response for payment with SSL
 // @access private
-router.post("/sslcommerz/success", VerifyToken, paymentController.sslcommerzResponse)
+router.post("/sslcommerz/success", paymentController.sslcommerzResponse)
 
 
 

@@ -29,6 +29,11 @@ const PaymentSchema = new Schema(
       trim: true,
       unique: true,
     },
+    bankTransactionId: {
+      type: String,
+      trim: true,
+      unique: true,
+    },
     money: {
       type: Number,
       required: true,

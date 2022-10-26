@@ -49,7 +49,15 @@ const saveBookings = async (req, res) => {
         { $push: { bookedHouses: bookings.house } },
         { new: true }
       );
-      if (usersSavedBookedId) {
+
+      const saveUserIdOnHouse = await House.findByIdAndUpdate(
+        { _id: bookings?.house },
+
+        { $push: { bookedBy: bookings?.user } },
+        { new: true }
+      );
+
+      if (usersSavedBookedId && saveUserIdOnHouse) {
         const houseHolder = await User.findById(data?.author);
         const house = await House.findById(data?.house);
         const customer = await User.findById(req?.user?.id);
@@ -292,22 +300,23 @@ const sendThanksEmail = async (req, res) => {
 /* Init SSL Payment method */
 const initSSLCOMMERZMethod = async (req, res) => {
   const { id } = req?.user;
-  console.log(req.query);
+
+  const { user, author, house, amount } = req.query;
 
   try {
     const data = {
-      total_amount: 100,
+      total_amount: amount,
       currency: "BDT",
-      tran_id: "REF123", // use unique tran_id for each api call
-      success_url: "http://localhost:5000/sslcommerz/success",
-      fail_url: "http://localhost:4000/fail",
+      tran_id: Date.now(), // use unique tran_id for each api call
+      success_url: `http://localhost:5000/api/v1/payment/sslcommerz/success?user=${user}&author=${author}&house=${house}`,
+      fail_url: "http://localhost:5000/fail",
       cancel_url: "http://localhost:5000/cancel",
       ipn_url: "http://localhost:5000/ipn",
       shipping_method: "Courier",
-      product_name: "Computer.",
+      product_name: house,
       product_category: "Electronic",
       product_profile: "general",
-      cus_name: "Customer Name",
+      cus_name: user,
       cus_email: "customer@example.com",
       cus_add1: "Dhaka",
       cus_add2: "Dhaka",
@@ -317,7 +326,7 @@ const initSSLCOMMERZMethod = async (req, res) => {
       cus_country: "Bangladesh",
       cus_phone: "01711111111",
       cus_fax: "01711111111",
-      ship_name: "Customer Name",
+      ship_name: author,
       ship_add1: "Dhaka",
       ship_add2: "Dhaka",
       ship_city: "Dhaka",
@@ -351,41 +360,46 @@ const initSSLCOMMERZMethod = async (req, res) => {
 
 /*  SSL Response    */
 const sslcommerzResponse = async (req, res) => {
-    const { id } = req?.user;
+  const { user, author, house } = req.query;
+  const { status, bank_tran_id, val_id, amount, card_type } = req?.body;
 
-    const { status, tran_id, val_id, amount, currency, store_amount, card_type, card_no, bank_tran_id, card_issuer, card_brand, card_issuer_country, card_issuer_country_code, currency_type, currency_amount, verify_sign, verify_key, risk_level, risk_title, APIConnect, validated_on, gw_version, } = req?.body;
+  try {
+    if (status === "VALID") {
+      const payment = await Bookings.create({
+        user,
+        author,
+        house,
+        method: card_type,
+        money: amount,
+        status: "booked",
+        transactionId: val_id,
+        bankTransactionId: bank_tran_id,
+      });
 
-    return console.log(req.body);
-    
+      const user = await User.findByIdAndUpdate(
+        { _id: payment?.user },
+        { $push: { bookedHouses: payment?.house } },
+        { new: true }
+      );
 
-    try {
-        const payment = await Bookings.findByIdAndUpdate(
-            { _id: id },
-            {
-                $set: {
-                    status: "Paid",
-                    paymentMethod: "SSLCommerz",
-                    paymentId: tran_id,
-                    paymentDate: Date.now(),
-                },
-            },
-            { new: true }
-        );
+      const house = await House.findByIdAndUpdate(
+        { _id: payment?.house },
 
-        if (payment) {
-            res.status(200).send({
-                success: true,
-                message: "Payment success",
-            });
-        }
-    } catch (err) {
-        res.status(404).send({
-            success: false,
-            message: "Server Error" + err,
-        });
+        { $push: { bookedBy: payment?.user } },
+        { new: true }
+      );
+
+      if (payment && user && house) {
+        res.status(200).redirect(`http://localhost:3000/dashboard/bookings`);
+      }
     }
+  } catch (err) {
+    res.status(404).send({
+      success: false,
+      message: "Server error" + err,
+    });
+  }
 };
-
 
 //exports
 module.exports = {
@@ -398,5 +412,5 @@ module.exports = {
   getPaymentStatementForHouseHolder,
   sendThanksEmail,
   initSSLCOMMERZMethod,
-  sslcommerzResponse
+  sslcommerzResponse,
 };
