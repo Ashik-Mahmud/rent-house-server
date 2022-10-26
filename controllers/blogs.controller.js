@@ -241,14 +241,16 @@ const toggleLikeBlog = async (req, res) => {
 const getAllBlog = async (req, res) => {
   try {
     const { page, limit, q, category } = req.query;
- 
+
+    
     let filter = {};
     filter.status = "active";
     const skip = (parseInt(page) - 1) * parseInt(limit);
+    let fields = {}
 
     if (page && limit) {
-      filter.skip = skip;
-      filter.limit = Number(limit);
+        fields.skip = skip;
+        fields.limit = Number(limit);
     }
 
     if(category === 'All'){
@@ -265,7 +267,7 @@ const getAllBlog = async (req, res) => {
     }
 
     const count = await Blog.countDocuments({ status: "active" });
-    const data = await findBlogsService(filter);
+    const data = await findBlogsService(filter ,fields);
     const withoutFilter = await Blog.find({ status: "active" });
 
     if (!data)

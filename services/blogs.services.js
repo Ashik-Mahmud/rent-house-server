@@ -41,7 +41,7 @@ exports.findBlogAndDeleteService = async (id, userId) => {
 
 /* Get All blog Services */
 
-exports.findBlogsService = async (filter) => {
-    const blogs = await Blog.find(filter).populate("author", "name").skip(filter.skip).limit(filter.limit).sort({ createdAt: -1 })
+exports.findBlogsService = async (filter, fields) => {   
+    const blogs = await Blog.find(filter).skip(fields.skip).limit(fields.limit).sort({ createdAt: -1 })
     return blogs;
 };
