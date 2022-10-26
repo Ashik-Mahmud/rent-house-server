@@ -3,6 +3,7 @@ const Question = require("../models/question.model");
 const { ReviewsForHouse } = require("../models/review.model");
 const Report = require("../models/reportHouse.model");
 const Blog = require("../models/blog.model");
+
 const path = require("path");
 const fs = require("fs");
 const {
@@ -460,7 +461,6 @@ const deleteHousesImages = async (image, email, gallery) => {
 // @access Private
 const housePrices = async (req, res) => {
   try {
-
     const house = await House.find({});
     if (!house) {
       return res.status(404).json({
@@ -470,24 +470,21 @@ const housePrices = async (req, res) => {
     }
 
     const highestPrice = house.reduce((prev, current) => {
-        return prev.price > current.price ? prev : current;
+      return prev.price > current.price ? prev : current;
     });
 
     const lowestPrice = house.reduce((prev, current) => {
-        return prev.price < current.price ? prev : current;
+      return prev.price < current.price ? prev : current;
     });
-
-
 
     res.status(200).json({
       success: true,
       message: "House status updated successfully",
       data: {
         highestPrice: highestPrice?.price,
-        lowestPrice:lowestPrice?.price,
-      }
+        lowestPrice: lowestPrice?.price,
+      },
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -552,6 +549,10 @@ const getHouseHolderReports = async (req, res) => {
       status: "rejected",
     });
 
+    const bookedHouse = await Bookings.countDocuments({
+      user: id,
+    });
+
     const houses = await House.find({ owner: id });
     const housesId = houses.map((house) => house._id);
     const reviews = await ReviewsForHouse.countDocuments({
@@ -562,9 +563,7 @@ const getHouseHolderReports = async (req, res) => {
       house: { $in: housesId },
     });
     const blogs = await Blog.countDocuments({ author: id });
-    const payments = await Bookings.countDocuments({author: id});
-
-
+    const payments = await Bookings.countDocuments({ author: id });
 
     res.status(200).json({
       success: true,
@@ -577,7 +576,8 @@ const getHouseHolderReports = async (req, res) => {
         reports,
         questions,
         blogs,
-        payments
+        payments,
+        bookedHouse,
       },
     });
   } catch (error) {
