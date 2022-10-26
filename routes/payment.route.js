@@ -52,7 +52,7 @@ router.post("/send-thanks-email", VerifyToken, VerifyUser, paymentController.sen
 // @desc Request for payment with SSL
 // @access private
 
-router.get("/sslcommerz", VerifyToken,  paymentController.initSSLCOMMERZMethod)
+router.get("/sslcommerz/create-session", VerifyToken,  paymentController.initSSLCOMMERZMethod)
 
 
 

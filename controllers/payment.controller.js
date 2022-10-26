@@ -292,6 +292,8 @@ const sendThanksEmail = async (req, res) => {
 /* Init SSL Payment method */
 const initSSLCOMMERZMethod = async (req, res) => {
   const { id } = req?.user;
+  console.log(req.query);
+
   try {
     const data = {
       total_amount: 100,
@@ -331,9 +333,13 @@ const initSSLCOMMERZMethod = async (req, res) => {
     sslcz.init(data).then((apiResponse) => {
       // Redirect the user to payment gateway
       let GatewayPageURL = apiResponse?.GatewayPageURL;
-      console.log(apiResponse);
-      console.log("Redirecting to: ", GatewayPageURL);
-      return res.status(202).redirect(GatewayPageURL)
+      if (GatewayPageURL) {
+        res.status(202).send({
+          success: true,
+          message: "Payment gateway url",
+          url: GatewayPageURL,
+        });
+      }
     });
   } catch (err) {
     res.status(404).send({
