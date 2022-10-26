@@ -13,12 +13,13 @@ const {
 const Blog = require("../models/blog.model");
 
 const createBlog = async (req, res) => {
-  const { title, description, imageUrl, author, category } = req.body;
+  const { title, description, imageUrl, author, category, excerpt } = req.body;
   try {
     var newBlogPost = new Blog({
       title,
       category,
       description,
+      excerpt,
       imageUrl,
       author: author?.id || author,
     });
@@ -142,9 +143,9 @@ const updateBlogById = async (req, res) => {
 
 const deleteBlogById = async (req, res) => {
   const { id } = req.params;
-
+  
   try {
-    const blog = await findBlogAndDeleteService(id);
+      const blog = await Blog.findOne({author: req?.user?.id, _id: id});
     if (!blog)
       return res.status(403).send({
         success: false,

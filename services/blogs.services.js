@@ -31,8 +31,10 @@ exports.updateBlogByIdService = async (data, id) => {
 };
 
 /* Find Blogs ANd Delete Blog by ID */
-exports.findBlogAndDeleteService = async (id) => {
-  const result = await Blog.findOneAndDelete(id);
+exports.findBlogAndDeleteService = async (id, userId) => {
+  console.log(id, userId);
+  
+  const result = await Blog.findOne({author: userId, _id: id});
   return result;
 };
 
