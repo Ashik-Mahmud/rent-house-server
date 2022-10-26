@@ -376,22 +376,24 @@ const sslcommerzResponse = async (req, res) => {
         bankTransactionId: bank_tran_id,
       });
 
-      const user = await User.findByIdAndUpdate(
+      const customer = await User.findByIdAndUpdate(
         { _id: payment?.user },
         { $push: { bookedHouses: payment?.house } },
         { new: true }
       );
 
-      const house = await House.findByIdAndUpdate(
+      const thisHouse = await House.findByIdAndUpdate(
         { _id: payment?.house },
 
         { $push: { bookedBy: payment?.user } },
         { new: true }
       );
 
-      if (payment && user && house) {
-        res.status(200).redirect(`http://localhost:3000/dashboard/bookings`);
+      if (payment && customer && thisHouse) {
+        res.status(200).redirect(`http://localhost:3000/dashboard/bookings?q=success`);
       }
+
+
     }
   } catch (err) {
     res.status(404).send({

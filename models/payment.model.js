@@ -21,7 +21,6 @@ const PaymentSchema = new Schema(
     method: {
       type: String,
       required: true,
-      enum: ["SSLCOMMERZ", "Stripe"],
     },
     transactionId: {
       type: String,
