@@ -24,7 +24,7 @@ exports.findBlogByIdService = async (id) => {
 
 /* Update Blog By Blog ID */
 exports.updateBlogByIdService = async (data, id) => {
-  const result = await Blog.findOneAndUpdate({ _id: id }, data, {
+  const result = await Blog.findByIdAndUpdate({ _id: id }, data, {
     new: true,
   });
   return result;
