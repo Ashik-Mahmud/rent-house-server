@@ -55,6 +55,12 @@ router.post("/send-thanks-email", VerifyToken, VerifyUser, paymentController.sen
 router.get("/sslcommerz/create-session", VerifyToken,  paymentController.initSSLCOMMERZMethod)
 
 
+// @routes POST /api/payment/ssl-response
+// @desc Response for payment with SSL
+// @access private
+router.post("/sslcommerz/success", VerifyToken, paymentController.sslcommerzResponse)
+
+
 
 //exports
 module.exports = router;

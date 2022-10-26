@@ -299,8 +299,8 @@ const initSSLCOMMERZMethod = async (req, res) => {
       total_amount: 100,
       currency: "BDT",
       tran_id: "REF123", // use unique tran_id for each api call
-      success_url: "http://localhost:5000/success",
-      fail_url: "http://localhost:5000/fail",
+      success_url: "http://localhost:5000/sslcommerz/success",
+      fail_url: "http://localhost:4000/fail",
       cancel_url: "http://localhost:5000/cancel",
       ipn_url: "http://localhost:5000/ipn",
       shipping_method: "Courier",
@@ -349,7 +349,43 @@ const initSSLCOMMERZMethod = async (req, res) => {
   }
 };
 
-/*    */
+/*  SSL Response    */
+const sslcommerzResponse = async (req, res) => {
+    const { id } = req?.user;
+
+    const { status, tran_id, val_id, amount, currency, store_amount, card_type, card_no, bank_tran_id, card_issuer, card_brand, card_issuer_country, card_issuer_country_code, currency_type, currency_amount, verify_sign, verify_key, risk_level, risk_title, APIConnect, validated_on, gw_version, } = req?.body;
+
+    return console.log(req.body);
+    
+
+    try {
+        const payment = await Bookings.findByIdAndUpdate(
+            { _id: id },
+            {
+                $set: {
+                    status: "Paid",
+                    paymentMethod: "SSLCommerz",
+                    paymentId: tran_id,
+                    paymentDate: Date.now(),
+                },
+            },
+            { new: true }
+        );
+
+        if (payment) {
+            res.status(200).send({
+                success: true,
+                message: "Payment success",
+            });
+        }
+    } catch (err) {
+        res.status(404).send({
+            success: false,
+            message: "Server Error" + err,
+        });
+    }
+};
+
 
 //exports
 module.exports = {
@@ -362,4 +398,5 @@ module.exports = {
   getPaymentStatementForHouseHolder,
   sendThanksEmail,
   initSSLCOMMERZMethod,
+  sslcommerzResponse
 };
