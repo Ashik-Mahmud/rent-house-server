@@ -453,8 +453,6 @@ const changeProfileImage = async (req, res, next) => {
   }
 };
 
-
-
 // @Routes GET /api/users/house-list
 // @desc Get House List
 // @access Private
@@ -623,11 +621,16 @@ const deleteAccountByUser = async (req, res) => {
     const houses = await House.find({ owner: user._id });
     houses.forEach(async (house) => {
       await house.remove();
+      /* Remove houses image on cloudinary */
+      await deleteImages(house?.image?.public_id, user.email, "previewImages");
+
+      /* Remove houses gallery images on cloudinary */
+      house?.gallery?.forEach(async (image) => {
+        await deleteImages(image?.public_id, user.email, "galleryImages");
+      });
     });
   }
 
-  
-  
   /* Remove Articles for particular Users */
   const articles = await Blog.find({ author: user._id });
   if (articles) {
@@ -635,7 +638,7 @@ const deleteAccountByUser = async (req, res) => {
       await article.remove();
     });
   }
- 
+
   /* Remove Reviews for this users */
   const reviews = await ReviewsForHouse.find({ "author.userId": user._id });
   if (reviews) {
@@ -644,9 +647,10 @@ const deleteAccountByUser = async (req, res) => {
     });
   }
   /* Remove Profile Image for this User */
-  if(user.profileImage){
+  if (user.profileImage) {
     await deleteImages(user?.cloudinaryId, user.email, "profiles");
   }
+
   await user.remove();
   res.status(200).send({
     success: true,

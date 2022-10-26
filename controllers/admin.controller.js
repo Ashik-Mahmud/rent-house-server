@@ -2,7 +2,9 @@
 // @desc Accept house
 
 const AppOption = require("../models/app.model");
+const Blog = require("../models/blog.model");
 const House = require("../models/house.model");
+const { ReviewsForHouse } = require("../models/review.model");
 const {
   getAllUsersService,
   findByIdUserService,
@@ -10,6 +12,7 @@ const {
   findHousesBySlugService,
 } = require("../services/admin.services");
 const { findByIdHouseService } = require("../services/house.services");
+const { deleteImages } = require("../utils/Cloudinary");
 const {
   sendBulkEmailForAllUsers,
   sendEmailWithRejectNotes,
@@ -192,6 +195,46 @@ const deleteUser = async (req, res) => {
         message: "Can not delete admin",
       });
     }
+
+    /* Remove House For if they house holder */
+    if (user.role === "user") {
+      const houses = await House.find({ owner: user._id });
+      houses.forEach(async (house) => {
+        await house.remove();
+        /* Remove houses image on cloudinary */
+        await deleteImages(
+          house?.image?.public_id,
+          user.email,
+          "previewImages"
+        );
+
+        /* Remove houses gallery images on cloudinary */
+        house?.gallery?.forEach(async (image) => {
+          await deleteImages(image?.public_id, user.email, "galleryImages");
+        });
+      });
+    }
+
+    /* Remove Articles for particular Users */
+    const articles = await Blog.find({ author: user._id });
+    if (articles) {
+      articles.forEach(async (article) => {
+        await article.remove();
+      });
+    }
+
+    /* Remove Reviews for this users */
+    const reviews = await ReviewsForHouse.find({ "author.userId": user._id });
+    if (reviews) {
+      reviews.forEach(async (review) => {
+        await review.remove();
+      });
+    }
+    /* Remove Profile Image for this User */
+    if (user.profileImage) {
+      await deleteImages(user?.cloudinaryId, user.email, "profiles");
+    }
+
     await user.remove();
     res.status(200).json({
       success: true,
@@ -340,33 +383,28 @@ const getHouseByQuery = async (req, res) => {
   }
 };
 
-
 // @routes GET /api/v1/houses/get-houses-count
 // @desc   Get houses count
 // @access Public
 const getHouseCountForAdmin = async (req, res) => {
-    
-    
-    try {
-        const approved = await House.countDocuments({status: "approved"});
-        const rejected = await House.countDocuments({status: "rejected"});
-        const unapproved = await House.countDocuments({status: "pending"});
-        res.status(200).json({
-            success: true,
-            message: "Houses count",
-            rejected,
-            approved,
-            unapproved
-        })
-
-    } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: "Server Error" + error
-        })
-    }
-}
-
+  try {
+    const approved = await House.countDocuments({ status: "approved" });
+    const rejected = await House.countDocuments({ status: "rejected" });
+    const unapproved = await House.countDocuments({ status: "pending" });
+    res.status(200).json({
+      success: true,
+      message: "Houses count",
+      rejected,
+      approved,
+      unapproved,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error" + error,
+    });
+  }
+};
 
 module.exports = {
   acceptHouse,
@@ -380,5 +418,5 @@ module.exports = {
   getAppOptions,
   getHouseByQuery,
   deleteHouseByAdmin,
-  getHouseCountForAdmin
+  getHouseCountForAdmin,
 };
