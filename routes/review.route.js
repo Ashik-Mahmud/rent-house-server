@@ -23,7 +23,6 @@ router.delete(
   VerifyToken,
   reviewController.deleteReviewById
 );
-router.get("/all", VerifyToken, reviewController.getAllReviews);
 
 router.post(
   "/create-review-for-house",
@@ -42,6 +41,6 @@ router.patch(
 );
 
 
-router.get("/all", VerifyToken, reviewController.getAllReviews);
+router.get("/all",  reviewController.getAllReviews);
 
 module.exports = router;

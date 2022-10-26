@@ -245,7 +245,7 @@ const updateReviewById = async (req, res) => {
 // @access Private
 const getAllReviews = async (req, res) => {
   try {
-    const reviews = await appReview.find();
+    const reviews = await appReview.find().populate("author", "name");
     res.status(200).json({
       success: true,
       data: reviews,
