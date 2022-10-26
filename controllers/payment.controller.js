@@ -388,7 +388,6 @@ const sslcommerzResponse = async (req, res) => {
         { $push: { bookedBy: payment?.user } },
         { new: true }
       );
-
       if (payment && customer && thisHouse) {
         res.status(200).redirect(`http://localhost:3000/dashboard/bookings?q=success`);
       }
