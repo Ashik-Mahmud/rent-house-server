@@ -187,7 +187,7 @@ const loginUser = async (req, res) => {
     if (user?.status === "inactive") {
       return res.status(400).json({
         success: false,
-        message: "You are Blocked.Please Contact Admin",
+        message: "You are Blocked.Please Contact Admin or email ashikmamdud187@gmail.com",
       });
     }
 
