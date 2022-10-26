@@ -15,7 +15,7 @@ exports.findBlogsByUserIdService = async (filter) => {
 /* Find Blog by blog Id */
 exports.findBlogByIdService = async (id) => {
   try {
-    const blog = await Blog.findById(id);
+    const blog = await Blog.findById(id).populate("author", "name");
     return blog;
   } catch (err) {
     console.log(err);
@@ -40,6 +40,6 @@ exports.findBlogAndDeleteService = async (id) => {
 /* Get All blog Services */
 
 exports.findBlogsService = async (filter) => {
-    const blogs = await Blog.find(filter).skip(filter.skip).limit(filter.limit).sort({ createdAt: -1 });
+    const blogs = await Blog.find(filter).populate("author", "name").skip(filter.skip).limit(filter.limit).sort({ createdAt: -1 })
     return blogs;
 };

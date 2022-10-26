@@ -256,6 +256,7 @@ const getAllBlog = async (req, res) => {
 
     const count = await Blog.countDocuments({ status: "active" });
     const data = await findBlogsService(filter);
+   
 
     if (!data)
       return res.status(403).send({

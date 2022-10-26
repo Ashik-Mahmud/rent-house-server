@@ -11,6 +11,7 @@ router.patch("/update/:id", VerifyToken, blogController.updateBlogById)
 router.delete("/delete/:id",VerifyToken, blogController.deleteBlogById)
 router.patch("/change-status/:id",VerifyToken, blogController.changeAvailable);
 router.patch("/like/:id", blogController.toggleLikeBlog);
+
 router.get("/all", blogController.getAllBlog)
 
 
