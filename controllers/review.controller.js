@@ -185,7 +185,7 @@ const deleteReviewById = async (req, res) => {
   const { houseId } = req.query;
 
   try {
-    const review = await ReviewsForHouse.findById(id)
+    const review = await ReviewsForHouse.findById(id);
     if (!review) {
       return res.status(404).json({
         success: false,
@@ -194,8 +194,8 @@ const deleteReviewById = async (req, res) => {
     }
     await review.remove();
     const house = await getHouseByIdService(houseId);
-    if(house){
-        house.totalReviews = house.totalReviews - 1;
+    if (house) {
+      house.totalReviews = house.totalReviews - 1;
     }
     await house.save();
     res.status(200).json({
@@ -244,11 +244,29 @@ const updateReviewById = async (req, res) => {
 // @desc Get all reviews
 // @access Private
 const getAllReviews = async (req, res) => {
+  const { limit, page } = req.query;
+
   try {
-    const reviews = await appReview.find().populate("author", "name avatar profileImage");
+    let filter = {};
+
+    if (limit && page) {
+      const startIndex = (Number(page) - 1) * Number(limit);
+      filter = { limit: Number(limit), skip: startIndex };
+    }
+
+    const reviews = await appReview
+      .find({})
+      .skip(filter.skip)
+      .limit(filter.limit)
+      .populate({ path: "author", select: "name avatar profileImage" })
+      .sort({ createdAt: -1 });
+
+    const count = await appReview.countDocuments();
+
     res.status(200).json({
       success: true,
       data: reviews,
+      count,
     });
   } catch (error) {
     res.status(500).json({
@@ -257,9 +275,6 @@ const getAllReviews = async (req, res) => {
     });
   }
 };
-
-
-
 
 module.exports = {
   createReview,
@@ -270,5 +285,4 @@ module.exports = {
   getAllReviews,
   updateReviewById,
   acceptReviewById,
- 
 };
