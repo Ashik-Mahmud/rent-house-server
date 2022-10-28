@@ -49,7 +49,6 @@ app.use("/api/v1/payment", paymentRouter)
 
 
 
-
 /* Start Server */
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
@@ -73,8 +72,6 @@ app.use((err, req, res, next) => {
 process.on("unhandledRejection", (err, promise,) => {
     if(err){
         console.log(`Logged Error: ${err}`);
-        
         app.close(() => process.exit(1));
-       
     }
 });
