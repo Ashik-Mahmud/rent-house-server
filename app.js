@@ -14,7 +14,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 
 /* Database Connections */
-const dbConnection = require('./../utils/dbConnection');
+const dbConnection = require('./utils/dbConnection');
 dbConnection();
 
 /* Test Routes */

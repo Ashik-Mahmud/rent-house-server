@@ -6,15 +6,15 @@ const app = require('./app');
 const port = process.env.PORT || 5000;
 
 /* Imports Routes */
-const houseRouter = require('./../routes/house.route');
-const userRouter = require('./../routes/user.route');
-const adminRouter = require('../routes/admin.route');
-const reviewRouter = require('../routes/review.route');
-const questionRouter = require('../routes/question.route');
-const reportHouseRouter = require("../routes/reportHouse.route")
-const blogRouter = require("../routes/blogs.route")
-const requestRouter = require("../routes/request.route")
-const paymentRouter = require("../routes/payment.route")
+const houseRouter = require('./routes/house.route');
+const userRouter = require('./routes/user.route');
+const adminRouter = require('./routes/admin.route');
+const reviewRouter = require('./routes/review.route');
+const questionRouter = require('./routes/question.route');
+const reportHouseRouter = require("./routes/reportHouse.route")
+const blogRouter = require("./routes/blogs.route")
+const requestRouter = require("./routes/request.route")
+const paymentRouter = require("./routes/payment.route")
 
 
 /* Init Routes */
