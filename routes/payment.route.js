@@ -61,6 +61,16 @@ router.get("/sslcommerz/create-session", VerifyToken,  paymentController.initSSL
 router.post("/sslcommerz/success", paymentController.sslcommerzResponse)
 
 
+// @routes POST /api/payment/ssl-fail
+// @desc Fail for payment with SSL
+// @access private
+router.post("/sslcommerz/fail", paymentController.sslcommerzFail)
+
+// @routes POST /api/payment/ssl-cancel
+// @desc Cancel for payment with SSL
+// @access private
+router.post("/sslcommerz/cancel", paymentController.sslcommerzCancel)
+
 
 //exports
 module.exports = router;

@@ -37,6 +37,9 @@ const createPaymentInstance = async (req, res) => {
   }
 };
 
+
+
+
 /* Save Bookings */
 const saveBookings = async (req, res) => {
   const data = req.body;
@@ -310,8 +313,8 @@ const initSSLCOMMERZMethod = async (req, res) => {
       currency: "BDT",
       tran_id: Date.now(), // use unique tran_id for each api call
       success_url: `http://localhost:5000/api/v1/payment/sslcommerz/success?user=${user}&author=${author}&house=${house}`,
-      fail_url: "http://localhost:5000/fail",
-      cancel_url: "http://localhost:5000/cancel",
+      fail_url: "http://localhost:5000/sslcommerz/fail",
+      cancel_url: "http://localhost:5000/sslcommerz/cancel",
       ipn_url: "http://localhost:5000/ipn",
       shipping_method: "Courier",
       product_name: house,
@@ -420,6 +423,17 @@ const sslcommerzResponse = async (req, res) => {
   }
 };
 
+/*  SSL Fail */
+const sslcommerzFail = async (req, res) => {
+    res.status(200).redirect(`http://localhost:3000/dashboard/bookings?q=fail`);
+};
+
+/*  SSL Cancel */
+const sslcommerzCancel = async (req, res) => {
+    res.status(200).redirect(`http://localhost:3000/dashboard/bookings?q=cancel`);
+};
+
+
 //exports
 module.exports = {
   createPaymentInstance,
@@ -432,4 +446,6 @@ module.exports = {
   sendThanksEmail,
   initSSLCOMMERZMethod,
   sslcommerzResponse,
+  sslcommerzFail,
+  sslcommerzCancel
 };
