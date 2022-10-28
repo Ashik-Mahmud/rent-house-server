@@ -1,10 +1,9 @@
 
-
 // Language: javascript
 // Path: server\src\app.js
 const app = require('./app');
 
-
+const port = process.env.PORT || 5000;
 
 /* Imports Routes */
 const houseRouter = require('./../routes/house.route');
@@ -50,6 +49,11 @@ app.use("/api/v1/payment", paymentRouter)
 
 
 
+
+/* Start Server */
+app.listen(port, () => {
+    console.log(`Server started on port ${port}`);
+});
 
 
 /* Global Error Handlers and Route Validations */
