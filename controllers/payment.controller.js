@@ -37,9 +37,6 @@ const createPaymentInstance = async (req, res) => {
   }
 };
 
-
-
-
 /* Save Bookings */
 const saveBookings = async (req, res) => {
   const data = req.body;
@@ -253,9 +250,7 @@ const getAllPaymentReports = async (req, res) => {
     const totalReviews = await appReview.countDocuments({ author: id });
     const totalBlogs = await Blog.countDocuments({ author: id });
     const blog = await Blog.find({ author: id });
-    const countLikes = blog?.reduce((acc, cur) => {
-      return acc + cur?.likes?.length;
-    }, 0);
+    const totalLikes = blog?.reduce((acc, cur) => acc + cur?.likes, 0);
 
     const recentBookedHouse = await Bookings.find({ user: id })
       .sort({ createdAt: -1 })
@@ -272,7 +267,7 @@ const getAllPaymentReports = async (req, res) => {
         house: bookedHouse,
         reviews: totalReviews,
         blogs: totalBlogs,
-        likes: countLikes,
+        likes: totalLikes,
         bookedHouse: recentBookedHouse,
       },
     });
@@ -365,7 +360,7 @@ const initSSLCOMMERZMethod = async (req, res) => {
 /*  SSL Response    */
 const sslcommerzResponse = async (req, res) => {
   const { user, author, house } = req.query;
-  const { status,  val_id, amount, card_type } = req?.body;
+  const { status, val_id, amount, card_type } = req?.body;
 
   try {
     if (status === "VALID") {
@@ -393,27 +388,26 @@ const sslcommerzResponse = async (req, res) => {
       );
 
       const houseHolder = await User.findById(payment?.author);
-      const customerHolder  = await User.findById(payment?.user);
-
+      const customerHolder = await User.findById(payment?.user);
 
       if (payment && customer && thisHouse) {
         sendEmailForPaymentSuccess(
-            customerHolder?.email,
-            customer?.name,
-            thisHouse,
-            payment?.transactionId
-          );
+          customerHolder?.email,
+          customer?.name,
+          thisHouse,
+          payment?.transactionId
+        );
         sendEmailToHouseHolderForBookedHouse(
-            houseHolder?.email,
-            houseHolder?.name,
-            customer?.name,
-            thisHouse,
-            payment?.transactionId
-          );
-        res.status(200).redirect(`http://localhost:3000/dashboard/bookings?q=success`);
+          houseHolder?.email,
+          houseHolder?.name,
+          customer?.name,
+          thisHouse,
+          payment?.transactionId
+        );
+        res
+          .status(200)
+          .redirect(`http://localhost:3000/dashboard/bookings?q=success`);
       }
-
-
     }
   } catch (err) {
     res.status(404).send({
@@ -425,14 +419,13 @@ const sslcommerzResponse = async (req, res) => {
 
 /*  SSL Fail */
 const sslcommerzFail = async (req, res) => {
-    res.status(200).redirect(`http://localhost:3000/dashboard/bookings?q=fail`);
+  res.status(200).redirect(`http://localhost:3000/dashboard/bookings?q=fail`);
 };
 
 /*  SSL Cancel */
 const sslcommerzCancel = async (req, res) => {
-    res.status(200).redirect(`http://localhost:3000/dashboard/bookings?q=cancel`);
+  res.status(200).redirect(`http://localhost:3000/dashboard/bookings?q=cancel`);
 };
-
 
 //exports
 module.exports = {
@@ -447,5 +440,5 @@ module.exports = {
   initSSLCOMMERZMethod,
   sslcommerzResponse,
   sslcommerzFail,
-  sslcommerzCancel
+  sslcommerzCancel,
 };
