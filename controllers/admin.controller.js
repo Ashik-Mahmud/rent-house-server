@@ -5,6 +5,7 @@ const AppOption = require("../models/app.model");
 const Blog = require("../models/blog.model");
 const House = require("../models/house.model");
 const { ReviewsForHouse } = require("../models/review.model");
+const User = require("../models/user.model");
 const {
   getAllUsersService,
   findByIdUserService,
@@ -392,6 +393,7 @@ const getHouseCountForAdmin = async (req, res) => {
     const rejected = await House.countDocuments({ status: "rejected" });
     const unapproved = await House.countDocuments({ status: "pending" });
     const blogs = await Blog.countDocuments({ status: "active" });
+    const users = await User.countDocuments({ status: "active" });
 
     res.status(200).json({
       success: true,
@@ -400,6 +402,7 @@ const getHouseCountForAdmin = async (req, res) => {
       approved,
       unapproved,
       blogs,
+      users
     });
   } catch (error) {
     res.status(500).json({
