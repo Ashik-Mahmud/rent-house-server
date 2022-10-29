@@ -261,7 +261,7 @@ const verifyResetPasswordMail = async (req, res) => {
     user.isVerified = true;
     await user.save();
 
-    res.redirect(`http://localhost:3000/new-password/${user?._id}`);
+    res.redirect(`https://houselagbe.vercel.app/new-password/${user?._id}`);
   } catch (error) {
     res.status(500).json({ success: false, message: "Server Error" });
   }

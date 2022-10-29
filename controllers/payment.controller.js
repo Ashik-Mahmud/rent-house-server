@@ -307,10 +307,10 @@ const initSSLCOMMERZMethod = async (req, res) => {
       total_amount: amount,
       currency: "BDT",
       tran_id: Date.now(), // use unique tran_id for each api call
-      success_url: `http://localhost:5000/api/v1/payment/sslcommerz/success?user=${user}&author=${author}&house=${house}`,
-      fail_url: "http://localhost:5000/sslcommerz/fail",
-      cancel_url: "http://localhost:5000/sslcommerz/cancel",
-      ipn_url: "http://localhost:5000/ipn",
+      success_url: `https://rent-house-server-production.up.railway.app/api/v1/payment/sslcommerz/success?user=${user}&author=${author}&house=${house}`,
+      fail_url: "https://rent-house-server-production.up.railway.app/sslcommerz/fail",
+      cancel_url: "https://rent-house-server-production.up.railway.app/sslcommerz/cancel",
+      ipn_url: "https://rent-house-server-production.up.railway.app/ipn",
       shipping_method: "Courier",
       product_name: house,
       product_category: "Electronic",
@@ -406,7 +406,7 @@ const sslcommerzResponse = async (req, res) => {
         );
         res
           .status(200)
-          .redirect(`http://localhost:3000/dashboard/bookings?q=success`);
+          .redirect(`https://houselagbe.vercel.app/dashboard/bookings?q=success`);
       }
     }
   } catch (err) {
@@ -419,12 +419,12 @@ const sslcommerzResponse = async (req, res) => {
 
 /*  SSL Fail */
 const sslcommerzFail = async (req, res) => {
-  res.status(200).redirect(`http://localhost:3000/dashboard/bookings?q=fail`);
+  res.status(200).redirect(`https://houselagbe.vercel.app/dashboard/bookings?q=fail`);
 };
 
 /*  SSL Cancel */
 const sslcommerzCancel = async (req, res) => {
-  res.status(200).redirect(`http://localhost:3000/dashboard/bookings?q=cancel`);
+  res.status(200).redirect(`https://houselagbe.vercel.app/dashboard/bookings?q=cancel`);
 };
 
 //exports
