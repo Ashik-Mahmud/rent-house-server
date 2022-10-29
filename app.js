@@ -16,7 +16,7 @@ const dbConnection = require("./utils/dbConnection");
 dbConnection();
 
 /* Test Routes */
-app.get("/", (req, res) => {
+app.get("/", (req, res) => {  
   res.sendFile(__dirname + "/views/api.html");
 });
 
