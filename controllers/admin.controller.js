@@ -391,12 +391,15 @@ const getHouseCountForAdmin = async (req, res) => {
     const approved = await House.countDocuments({ status: "approved" });
     const rejected = await House.countDocuments({ status: "rejected" });
     const unapproved = await House.countDocuments({ status: "pending" });
+    const blogs = await Blog.countDocuments({ status: "active" });
+
     res.status(200).json({
       success: true,
       message: "Houses count",
       rejected,
       approved,
       unapproved,
+      blogs,
     });
   } catch (error) {
     res.status(500).json({
