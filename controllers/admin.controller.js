@@ -307,7 +307,7 @@ const changeAppName = async (req, res) => {
 
   try {
     const app = await AppOption.findByIdAndUpdate(
-      "634d3c647ed73523bf53b889",
+      "635d67ad6c15bfa1775ebe7e",
       req.body
     );
     if (!app) {
@@ -332,7 +332,7 @@ const changeAppName = async (req, res) => {
 /* Public controller */
 const getAppOptions = async (req, res) => {
   try {
-    const app = await AppOption.findById("634d3c647ed73523bf53b889");
+    const app = await AppOption.findById("635d67ad6c15bfa1775ebe7e");
     res.status(200).send({
       success: true,
       app,
