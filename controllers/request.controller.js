@@ -2,6 +2,7 @@ const Report = require("../models/reportHouse.model");
 const BlogRequest = require("../models/request.model");
 const Question = require("../models/question.model");
 const House = require("../models/house.model");
+const Blog = require("../models/blog.model");
 const User = require("../models/user.model");
 const { ReviewsForHouse } = require("../models/review.model");
 const {
@@ -232,6 +233,25 @@ const getAllNotifications = async (req, res) => {
   });
 };
 
+/* Get All House Request Users */
+const getAllReportsForHomepage = async (req, res) => {
+  try {
+   
+    const customers = await User.countDocuments({ role: "customer" });
+    const totalHouses = await House.countDocuments({status: "approved"});
+    const totalBlogs = await Blog.countDocuments({status: "active"});
+    return res.status(200).send({
+      success: true,
+      message: "Get All Request",
+      data: {customers, totalHouses, totalBlogs},
+    });
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: `Something went. Please try again ${error.message}`,
+    });
+  }
+};
 module.exports = {
   createBlogRequest,
   getAllRequestsUsers,
@@ -239,4 +259,5 @@ module.exports = {
   rejectBlogRequest,
   createHouseHolderRequest,
   getAllNotifications,
+  getAllReportsForHomepage,
 };

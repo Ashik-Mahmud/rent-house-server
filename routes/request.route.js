@@ -40,4 +40,10 @@ router.post("/for-house", VerifyToken, requestController.createHouseHolderReques
 router.get("/notifications", VerifyToken, VerifyUser, requestController.getAllNotifications)
 
 
+// @routes GET api/v1/request/reports-for-homepage
+// @desc Get All the Reports for Homepage
+// @access public
+router.get("/reports-for-homepage", requestController.getAllReportsForHomepage)
+
+
 module.exports = router;
