@@ -24,8 +24,6 @@ const createBlogRequest = async (req, res) => {
       !user.phone ||
       !user.address ||
       !user.facebookLink ||
-      !user.twitterLink ||
-      !user.instagramLink ||
       !user.profileImage
     ) {
       return res.status(422).json({
@@ -175,8 +173,6 @@ const createHouseHolderRequest = async (req, res) => {
       !user.phone ||
       !user.address ||
       !user.facebookLink ||
-      !user.twitterLink ||
-      !user.instagramLink ||
       !user.profileImage
     ) {
       return res.status(422).json({
