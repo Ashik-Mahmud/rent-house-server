@@ -19,7 +19,7 @@ const sendHouseAddedEmail = async (email, name) => {
           <p style="font-weight: bold">Hello ${email},</p>
           <p>Thanks for your patients <br/> Your house <strong>${name} </strong> successfully created at <b>${new Date().toDateString()} at ${new Date().toLocaleTimeString()}</b> Now Waiting for Admin Approved. It might be take 24 hours. Have nice day. </p>
           
-          <p>Regards - <br/> <a href="https://tools-manufactures.web.app" target="_blank" >Rent House</a></p>
+          <p>Regards - <br/> <a href="https://houselagbe.vercel.app" target="_blank" >Rent House</a></p>
           <address>Rangpur Road, Gobindagonj, Gaibandha</address>
           <p>Mobile: +8801875474547</p>
           <p>Email: rent@house.com</p>
@@ -76,7 +76,7 @@ const sendReportEmail = async (email, houseUrl, reportTitle, reportDetails) => {
 
                 <b>Admin Speech:</b> <br/>
                 <p> Here is the House Link Please Take look Otherwise We will mute your house. Thanks sir. </p>
-                <a href="${houseUrl}" target="_blank" >${houseUrl}</a>
+                <a href="${houseUrl}" style="background: #00D39C;color: #fff; display: block; padding: .4rem 2rem; margin: .5rem 0rem; border-radius: 4px;" target="_blank" >Open House</a>
                 <p>Regards - <br/> <a href="https://houselagbe.vercel.app" target="_blank" >HouseLagbe Admin Panel</a></p>
                 <address>Rangpur Road, Gobindagonj, Gaibandha</address>
                 <p>Mobile: +8801875474547</p>
@@ -100,7 +100,7 @@ const sendVerificationEmail = async (email, token) => {
   var emailFormat = {
     from: process.env.EMAIL_ADDRESS,
     to: emails,
-    subject: "Verify your email address",
+    subject: "Verify Your Account ",
     text: `Please verify your email address by clicking the link below.
 
         ${verificationUrl}
@@ -109,9 +109,9 @@ const sendVerificationEmail = async (email, token) => {
         <div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
             <p style="font-weight: bold">Hello there,</p>
             <p>Please verify your email address by clicking the link below.</p>
-            <a href="${verificationUrl}" target="_blank" >${verificationUrl}</a>
+            <a href="${verificationUrl}" style="background: #00D39C;color: #fff; display: block; padding: .4rem 2rem; margin: .5rem 0rem; border-radius: 4px;" target="_blank" >Verify Account</a>
             <p> This Link only valid for 1 hour after 1 hour this link will not work.</p>
-            <p>Regards - <br/> <a href="https://tools-manufactures.web.app" target="_blank" >Rent House</a></p>
+            <p>Regards - <br/> <a href="https://houselagbe.vercel.app" target="_blank" >Rent House</a></p>
             <address>Rangpur Road, Gobindagonj, Gaibandha</address>
             <p>Mobile: +8801875474547</p>
             <p>Email: rent@house.com</p>
@@ -143,9 +143,9 @@ const sendVerificationEmailWithResetLink = async (email, token) => {
         <div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
             <p style="font-weight: bold">Hello there,</p>
             <p>Please Click on this link to reset your password.</p>
-            <a href="${verificationUrl}" target="_blank" >${verificationUrl}</a>
+            <a href="${verificationUrl}" style="background: #00D39C;color: #fff; display: block; padding: .4rem 2rem; margin: .5rem 0rem; border-radius: 4px;" target="_blank" >Verify and reset password</a>
             <p> This Link only valid for 1 hour after 1 hour this link will not work.</p>
-            <p>Regards - <br/> <a href="https://tools-manufactures.web.app" target="_blank" >Rent House</a></p>
+            <p>Regards - <br/> <a href="https://houselagbe.vercel.app" target="_blank" >Rent House</a></p>
             <address>Rangpur Road, Gobindagonj, Gaibandha</address>
             <p>Mobile: +8801875474547</p>
             <p>Email: rent@house.com</p>
@@ -210,7 +210,7 @@ const sendEmailWithRejectNotes = (notesText, author) => {
       
       <p style="padding: 1rem;">${notesText}</p>
       
-      <p>Regards - <br/> <a href="https://tools-manufactures.web.app" target="_blank" >Rent House</a></p>
+      <p>Regards - <br/> <a href="https://houselagbe.vercel.app" target="_blank" >Rent House</a></p>
       <address>Rangpur Road, Gobindagonj, Gaibandha</address>
       <p>Mobile: +8801875474547</p>
       <p>Email: rent@house.com</p>
@@ -237,7 +237,7 @@ const sendApprovedSuccessMail = (author) => {
     html: `<div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
         <p style="font-weight: bold">Hello ${author?.name},</p>
         <p>Congratulation! Your House is Approved. Now you can see your house in the website.</p>
-        <p>Regards - <br/> <a href="https://tools-manufactures.web.app" target="_blank" >Rent House</a></p>
+        <p>Regards - <br/> <a href="https://houselagbe.vercel.app" target="_blank" >Rent House</a></p>
         <address>Rangpur Road, Gobindagonj, Gaibandha</address>
         <p>Mobile: +8801875474547</p>
         <p>Email: house@gmail.com</p>
@@ -265,7 +265,7 @@ const sendEmailForDeleteHouseByAdmin = (author) => {
     html: `<div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
             <p style="font-weight: bold">Hello ${author?.name},</p>
             <p>Opps!! Your House is Deleted. Please contact with admin for more information.</p>
-            <p>Regards - <br/> <a href="https://tools-manufactures.web.app" target="_blank" >Rent House</a></p>
+            <p>Regards - <br/> <a href="https://houselagbe.vercel.app" target="_blank" >Rent House</a></p>
             <address>Rangpur Road, Gobindagonj, Gaibandha</address>
             <p>Mobile: +8801875474547</p>
             <p>Email: rent@house.com</p>
@@ -294,7 +294,7 @@ const sendEmailForPaymentSuccess = (email, name, house, payment) => {
             <p style="font-weight: bold">Hello ${name},</p>
             <p >Congratulation! Your Payment is Successfully done. Now you can see your <b>${house?.name} </b> details</p>
             <p> here is your transaction id - <b>${payment}</b></p>
-            <p>Regards - <br/> <a href="https://tools-manufactures.web.app" target="_blank" >Rent House</a></p>
+            <p>Regards - <br/> <a href="https://houselagbe.vercel.app" target="_blank" >Rent House</a></p>
             <address>Rangpur Road, Gobindagonj, Gaibandha</address>
             <p>Mobile: +8801875474547</p>
             <p>Email: houselagbe@gmail.com </p>
@@ -329,7 +329,7 @@ const sendEmailToHouseHolderForBookedHouse = (
             <p style="font-weight: bold">Hello ${name},</p>
             <p >Congratulation! Your House is Booked. <b>${customer}</b> has been booked your <b> ${house?.name}</b> this house</p>
             <p> here is him/her transaction id - <b>${payment}</b></p>
-            <p>Regards - <br/> <a href="https://tools-manufactures.web.app" target="_blank" >Rent House</a></p>
+            <p>Regards - <br/> <a href="https://houselagbe.vercel.app" target="_blank" >Rent House</a></p>
             <address>Rangpur Road, Gobindagonj, Gaibandha</address>
             <p>Mobile: +8801875474547</p>
             <p>Email: houselagbe@gmail.com </p>
@@ -360,7 +360,7 @@ const sendThanksEmailTemplate = async (to, from, text, subject, data) => {
             <p>
               ${text}            
             </p>
-            <p>Regards - <br/> <a href="https://tools-manufactures.web.app" target="_blank" >Rent House</a></p>
+            <p>Regards - <br/> <a href="https://houselagbe.vercel.app" target="_blank" >Rent House</a></p>
             <address>Rangpur Road, Gobindagonj, Gaibandha</address>
             <p>Mobile: +8801875474547</p>
             <p>Email: houselagbe@gmail.com </p>
