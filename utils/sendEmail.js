@@ -76,7 +76,7 @@ const sendReportEmail = async (email, houseUrl, reportTitle, reportDetails) => {
 
                 <b>Admin Speech:</b> <br/>
                 <p> Here is the House Link Please Take look Otherwise We will mute your house. Thanks sir. </p>
-                <a href="${houseUrl}" style="background: #00D39C;color: #fff; display: inline-block; padding: .4rem 2rem; margin: .5rem 0rem; border-radius: 4px; text-decoration: none" target="_blank" >Open House</a>
+                <a href="${houseUrl}" style="background: #00D39C;color: #fff; display: inline-block; padding: 1rem 2rem; margin: 0rem 0rem; border-radius: 4px; text-decoration: none" target="_blank" >Open House</a>
                 <p>Regards - <br/> <a href="https://houselagbe.vercel.app" target="_blank" >HouseLagbe Admin Panel</a></p>
                 <address>Rangpur Road, Gobindagonj, Gaibandha</address>
                 <p>Mobile: +8801875474547</p>
@@ -109,7 +109,7 @@ const sendVerificationEmail = async (email, token) => {
         <div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
             <p style="font-weight: bold">Hello there,</p>
             <p>Please verify your email address by clicking the link below.</p>
-            <a href="${verificationUrl}" style="background: #00D39C;color: #fff; display: inline-block; padding: .4rem 2rem; margin: .5rem 0rem; border-radius: 4px; text-decoration: none" target="_blank" >Verify Account</a>
+            <a href="${verificationUrl}" style="background: #00D39C;color: #fff; display: inline-block; padding: 1rem 2rem; margin: 0rem 0rem; border-radius: 4px; text-decoration: none" target="_blank" >Verify Account</a>
             <p> This Link only valid for 1 hour after 1 hour this link will not work.</p>
             <p>Regards - <br/> <a href="https://houselagbe.vercel.app" target="_blank" >Rent House</a></p>
             <address>Rangpur Road, Gobindagonj, Gaibandha</address>
@@ -143,7 +143,7 @@ const sendVerificationEmailWithResetLink = async (email, token) => {
         <div style="padding: 1rem; font-family: Poppins;font-size: 16px;">
             <p style="font-weight: bold">Hello there,</p>
             <p>Please Click on this link to reset your password.</p>
-            <a href="${verificationUrl}" style="background: #00D39C;color: #fff; display: inline-block; padding: .4rem 2rem; margin: .5rem 0rem; border-radius: 4px; text-decoration: none" target="_blank" >Verify and reset password</a>
+            <a href="${verificationUrl}" style="background: #00D39C;color: #fff; display: inline-block; padding: 1rem 2rem; margin: 0rem 0rem; border-radius: 4px; text-decoration: none" target="_blank" >Verify and reset password</a>
             <p> This Link only valid for 1 hour after 1 hour this link will not work.</p>
             <p>Regards - <br/> <a href="https://houselagbe.vercel.app" target="_blank" >Rent House</a></p>
             <address>Rangpur Road, Gobindagonj, Gaibandha</address>
