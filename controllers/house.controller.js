@@ -461,7 +461,7 @@ const deleteHousesImages = async (image, email, gallery) => {
 // @access Private
 const housePrices = async (req, res) => {
   try {
-    const house = await House.find({});
+    const house = await House.find({status: "approved"});
     if (!house) {
       return res.status(404).json({
         success: false,
