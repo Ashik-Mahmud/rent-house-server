@@ -115,7 +115,6 @@ const sendVerificationEmail = async (email, token) => {
             <address>Rangpur Road, Gobindagonj, Gaibandha</address>
             <p>Mobile: +8801875474547</p>
             <p>Email: rent@house.com</p>
-            <p>${verificationUrl}</p>
         </div>
         `,
   };
