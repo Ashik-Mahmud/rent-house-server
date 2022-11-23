@@ -49,7 +49,8 @@ const upload = multer({
 
 
 router.get("/get-holder-reports/:id", VerifyToken, VerifyUser, houseController.getHouseHolderReports);
-
+/* Get top 4 Houses per user */
+router.get("/top-3-houses-by-user", VerifyToken, VerifyUser, houseController.getTop3HouseByUser);
 /* change house status */
 router.get("/house-prices",  houseController.housePrices);
 
@@ -71,9 +72,6 @@ router.post(
 router.get("/get-house-by-user/:id", VerifyToken, VerifyUser, houseController.getHouseByUserID);
 router.patch("/update/:id", VerifyToken,VerifyUser, houseController.updateHouse);
 router.delete("/delete/:id", VerifyToken, VerifyUser, houseController.deleteHouse);
-
-/* Get top 4 Houses per user */
-router.get("/houses-3-houses", VerifyToken, VerifyUser, houseController.getTop3HouseByUser);
 
 
 

@@ -406,7 +406,7 @@ const getTop4Houses = async (req, res) => {
 // @route   GET api/houses-3-houses
 // @desc    Get 3 houses
 // @access  secure
-const getTop3HouseByUser = async (req, res) => {
+const getTop3HouseByUser = async (req, res) => {    
   try {
     const houses = await getTop3HouseByUserService(req.user.id);
     res.status(200).json({
