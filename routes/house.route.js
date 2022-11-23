@@ -72,6 +72,9 @@ router.get("/get-house-by-user/:id", VerifyToken, VerifyUser, houseController.ge
 router.patch("/update/:id", VerifyToken,VerifyUser, houseController.updateHouse);
 router.delete("/delete/:id", VerifyToken, VerifyUser, houseController.deleteHouse);
 
+/* Get top 4 Houses per user */
+router.get("/houses-3-houses", VerifyToken, VerifyUser, houseController.getTop3HouseByUser);
+
 
 
 

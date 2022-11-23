@@ -15,6 +15,7 @@ const {
   changeIsBookedService,
   findByIdHouseService,
   getTop4HousesService,
+  getTop3HouseByUserService,
 } = require("../services/house.services");
 const { sendHouseAddedEmail } = require("../utils/sendEmail");
 const { uploadImages, deleteImages } = require("../utils/Cloudinary");
@@ -402,6 +403,25 @@ const getTop4Houses = async (req, res) => {
   }
 };
 
+// @route   GET api/houses-3-houses
+// @desc    Get 3 houses
+// @access  secure
+const getTop3HouseByUser = async (req, res) => {
+  try {
+    const houses = await getTop3HouseByUserService(req.user.id);
+    res.status(200).json({
+      success: true,
+      message: "3 houses",
+      data: houses,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error" + error,
+    });
+  }
+};
+
 // @route   DELETE api/houses/:id
 // @desc    Delete house
 // @access  Private
@@ -461,7 +481,7 @@ const deleteHousesImages = async (image, email, gallery) => {
 // @access Private
 const housePrices = async (req, res) => {
   try {
-    const house = await House.find({status: "approved"});
+    const house = await House.find({ status: "approved" });
     if (!house) {
       return res.status(404).json({
         success: false,
@@ -599,4 +619,5 @@ module.exports = {
   getTop4Houses,
   getHouseByUserID,
   getHouseHolderReports,
+  getTop3HouseByUser,
 };
